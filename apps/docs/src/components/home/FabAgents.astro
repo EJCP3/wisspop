@@ -11,7 +11,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 
 const agentDocUrls = Object.fromEntries(
-  ['vanilla', 'react', 'vue', 'svelte'].map((fw) => [fw, agentDocUrl(Astro.site, fw)]),
+  ['vanilla', 'react', 'vue', 'astro'].map((fw) => [fw, agentDocUrl(Astro.site, fw)]),
 );
 ---
 
@@ -20,9 +20,9 @@ const agentDocUrls = Object.fromEntries(
   
   <!-- Speed Dial Items -->
   <div id="fab-items" class="flex flex-col items-center gap-3 transition-all duration-300 opacity-0 translate-y-8 scale-95 pointer-events-none group-[.is-open]:opacity-100 group-[.is-open]:translate-y-0 group-[.is-open]:scale-100 group-[.is-open]:pointer-events-auto origin-bottom w-14">
-    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-orange-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="svelte" title="Svelte Agent Prompt">
-      <span class="text-xs font-bold">Sv</span>
-      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">Svelte</span>
+    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-orange-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="astro" title="astro Agent Prompt">
+      <span class="text-xs font-bold">As  </span>
+      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">astro</span>
     </button>
     <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-green-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="vue" title="Vue Agent Prompt">
       <span class="text-xs font-bold">Vu</span>
