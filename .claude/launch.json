@@ -18,6 +18,12 @@
       "runtimeExecutable": "pnpm",
       "runtimeArgs": ["--filter", "docs-test", "dev", "--port", "5175"],
       "port": 5175
+    },
+    {
+      "name": "docs-astro",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["--filter", "docs-astro", "dev"],
+      "port": 4323
     }
   ]
 }
