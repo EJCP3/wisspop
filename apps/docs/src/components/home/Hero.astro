@@ -1,0 +1,155 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+<!-- Hero Section -->
+<section class="min-h-screen flex flex-col items-center justify-center relative pt-24 pb-12 overflow-hidden">
+  <!-- Subtle Background Glow -->
+  <div class="absolute inset-0 flex items-center justify-center -z-10 pointer-events-none">
+    <div class="w-[500px] h-[500px] bg-gradient-to-tr from-zinc-200/50 to-zinc-400/20 dark:from-zinc-800/30 dark:to-zinc-600/10 rounded-full blur-3xl opacity-50"></div>
+  </div>
+
+  <div class="text-center space-y-6 max-w-2xl px-4">
+    <h1 class="text-7xl md:text-[6.5rem] font-bold tracking-tight">
+      <span id="hero-text" class="text-zinc-900 dark:text-zinc-100 transition-colors duration-300">wisspop</span><span id="hero-dot" class="text-zinc-300 dark:text-zinc-700 transition-colors duration-300">.</span>
+    </h1>
+    <p class="text-zinc-500 dark:text-zinc-400 text-lg leading-relaxed max-w-lg mx-auto">
+      {t('hero.description')}
+    </p>
+
+    <div class="flex justify-center pt-2">
+      <button class="copy-button group relative" id="hero-copy-btn">
+        <span class="text-zinc-400">$</span>
+        <span>{t('hero.install_command')}</span>
+        <svg class="w-4 h-4 text-zinc-400 group-hover:text-zinc-600 dark:group-hover:text-zinc-200 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+        </svg>
+        <span id="hero-copied-toast" class="absolute -top-8 left-1/2 -translate-x-1/2 bg-zinc-900 dark:bg-zinc-100 text-zinc-100 dark:text-zinc-900 text-[10px] font-sans font-medium px-2 py-0.5 rounded shadow opacity-0 pointer-events-none transition-opacity duration-200">Copied!</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Hero Interactive Demos -->
+  <div id="playground" class="mt-12 flex flex-col items-center gap-5 z-10">
+    <span class="text-xs font-bold tracking-[0.2em] text-zinc-400 dark:text-zinc-500 uppercase">{t('hero.try_it')}</span>
+    <div class="flex flex-wrap justify-center gap-3 px-4">
+      <button id="hero-btn-morph" class="px-4 py-2 text-sm font-medium bg-zinc-900 text-zinc-100 dark:bg-zinc-100 dark:text-zinc-900 rounded-lg hover:opacity-90 transition-all shadow-sm">
+        {t('hero.demo_morph')}
+      </button>
+      <button id="hero-btn-pill" class="px-4 py-2 text-sm font-medium bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-zinc-400 dark:hover:border-zinc-500 transition-all">
+        {t('hero.demo_pill')}
+      </button>
+      <button id="hero-btn-dropdown" class="px-4 py-2 text-sm font-medium bg-zinc-100 text-zinc-900 dark:bg-zinc-800 dark:text-zinc-100 border border-zinc-200 dark:border-zinc-700 rounded-lg hover:border-zinc-400 dark:hover:border-zinc-500 transition-all">
+        {t('hero.demo_dropdown')}
+      </button>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { createModal } from 'wisspop/vanilla';
+
+  function setupHeroDemos() {
+    // Copy button toast
+    const copyBtn = document.getElementById('hero-copy-btn');
+    const toast = document.getElementById('hero-copied-toast');
+    if (copyBtn && toast) {
+      copyBtn.addEventListener('click', () => {
+        navigator.clipboard.writeText('pnpm add wisspop');
+        toast.classList.remove('opacity-0');
+        setTimeout(() => toast.classList.add('opacity-0'), 1500);
+      });
+    }
+
+    // Hero Morph Modal Demo
+    const btnMorph = document.getElementById('hero-btn-morph');
+    if (btnMorph) {
+      let modal: any = null;
+      btnMorph.addEventListener('click', () => {
+        if (!modal) {
+          modal = createModal({
+            content: `
+              <div class="p-6 max-w-sm">
+                <h3 class="text-xl font-bold mb-2">MorphModal</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4">El panel nació exactamente del botón que lo presionaste y creció suavemente.</p>
+                <div class="flex justify-end">
+                  <button id="close-hero-morph" class="px-3 py-1.5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded text-xs font-semibold">Cerrar</button>
+                </div>
+              </div>
+            `,
+            placement: 'center',
+            onMount: (el) => {
+              el.querySelector('#close-hero-morph')?.addEventListener('click', () => modal?.close());
+            }
+          });
+        }
+        modal.open(btnMorph);
+      });
+    }
+
+    // Hero Pill Modal Demo
+    const btnPill = document.getElementById('hero-btn-pill');
+    if (btnPill) {
+      let pillModal: any = null;
+      btnPill.addEventListener('click', () => {
+        if (!pillModal) {
+          pillModal = createModal({
+            type: 'pill',
+            content: `
+              <div class="p-6 max-w-sm">
+                <h3 data-wisspop-title class="text-xl font-bold mb-2">Pill Modal</h3>
+                <p class="text-sm text-zinc-500 dark:text-zinc-400 mb-4">¡El texto viajó desde el botón hasta este título interpolando tamaño y posición!</p>
+                <div class="flex justify-end">
+                  <button id="close-hero-pill" class="px-3 py-1.5 bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-900 rounded text-xs font-semibold">Cerrar</button>
+                </div>
+              </div>
+            `,
+            placement: 'center',
+            onMount: (el) => {
+              el.querySelector('#close-hero-pill')?.addEventListener('click', () => pillModal?.close());
+            }
+          });
+        }
+        pillModal.open(btnPill, 'Pill Modal');
+      });
+    }
+
+    // Hero Dropdown Demo
+    const btnDropdown = document.getElementById('hero-btn-dropdown');
+    if (btnDropdown) {
+      let dropdown: any = null;
+      btnDropdown.addEventListener('click', () => {
+        if (!dropdown) {
+          dropdown = createModal({
+            type: 'dropdown',
+            content: `
+              <div class="p-2 w-48 text-sm space-y-1">
+                <a href="#instalacion" class="block px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800">Instalación</a>
+                <a href="#uso-basico" class="block px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800">Uso Básico</a>
+                <a href="#opciones" class="block px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800">Opciones</a>
+              </div>
+            `,
+            placement: 'bottom',
+            align: 'center',
+            gap: 8,
+            onMount: (el) => {
+              el.querySelectorAll('a').forEach(a => a.addEventListener('click', () => dropdown?.close()));
+            }
+          });
+        }
+        dropdown.open(btnDropdown);
+      });
+    }
+  }
+
+  setupHeroDemos();
+  document.addEventListener('astro:after-swap', setupHeroDemos);
+</script>

@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WissPop — docs</title>
+    <link rel="stylesheet" href="/src/docs.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>WissPop</h1>
+        <p class="lead">
+          El panel no aparece de la nada: nace del elemento que lo abrió y vuelve a él al
+          cerrarse.
+        </p>
+        <p class="note">
+          Esta página es HTML y CSS plano. Las demos usan
+          <code>wisspop/vanilla</code> directo, sin ningún framework — que es justamente la
+          prueba de que el core no depende de ninguno.
+        </p>
+      </header>
+
+      <section>
+        <h2>Anclado a un botón</h2>
+        <p class="hint">
+          El panel nace del botón y se abre hacia el lado que le pidas. <code>align</code> es la
+          posición sobre el <strong>eje cruzado</strong>: con el panel arriba o abajo alinea en
+          horizontal, y al costado alinea en vertical. Por eso acepta los dos vocabularios —
+          <code>left</code>/<code>top</code>/<code>start</code> pegan al inicio,
+          <code>right</code>/<code>bottom</code>/<code>end</code> al final.
+        </p>
+        <div class="matriz" id="matriz-anclado"></div>
+        <p class="hint">
+          Ninguno puede taparse a sí mismo ni salirse: el panel se acota al espacio libre de su
+          lado —el alto si va arriba o abajo, el ancho si va al costado— y después al margen de
+          la ventana.
+        </p>
+        <pre><code>createModal({
+  content: "&lt;ul class='menu'&gt;…&lt;/ul&gt;",
+  placement: "top",    // top · bottom · left · right
+  align: "center",     // start · center · end
+}).open(boton);</code></pre>
+      </section>
+
+      <section>
+        <h2>Desde un botón circular</h2>
+        <p class="hint">
+          El radio del origen se lee del CSS y se acota a la mitad del lado menor, así que un
+          círculo se abre como círculo. <code>ease: "power3.out"</code> — sin overshoot, porque
+          en un panel grande el rebote se lee como «salió más grande de lo que debía».
+        </p>
+        <div class="row"><button id="btn-fab" class="round">+</button></div>
+        <pre><code>createModal({
+  placement: "center",
+  ease: "power3.out",
+  duration: 0.35,
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>Crecer en el lugar</h2>
+        <p class="hint">
+          <code>placement: "origin"</code> — el panel comparte el centro con el botón y crece
+          ahí mismo, sin viajar al medio de la pantalla. Útil cuando el botón ya está donde el
+          usuario está mirando y moverlo rompería el hilo. Si el botón está pegado a un borde,
+          el panel se mete en la ventana respetando el margen.
+        </p>
+        <div class="row"><button id="btn-inline">Renombrar</button></div>
+        <pre><code>createModal({
+  content: "…",
+  placement: "origin",
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>Drawer</h2>
+        <p class="hint">
+          <code>drawer-left</code> · <code>drawer-right</code> · <code>drawer-top</code> ·
+          <code>drawer-bottom</code> — pegado a su borde, ocupando todo el eje largo: los
+          laterales toman el alto completo y los de arriba y abajo, el ancho completo. Ignoran
+          <code>margin</code> a propósito, porque un cajón despegado del borde no es un cajón.
+        </p>
+        <div class="row" id="fila-drawers"></div>
+      </section>
+
+      <section>
+        <h2>Texto viajero</h2>
+        <p class="hint">
+          El label del botón sale a 14px, viaja por la pantalla creciendo, y aterriza justo
+          encima del elemento marcado con <code>data-wisspop-title</code>, que en ese momento toma
+          el relevo. El destino <strong>se mide</strong>: el título puede estar en cualquier
+          parte del contenido y no hay ni un offset hardcodeado.
+        </p>
+        <p class="hint">
+          Los dos botones son <strong>la misma instancia</strong>: el tercer argumento de
+          <code>open()</code> son opciones solo para esa apertura, así que la posición se elige
+          al abrir en vez de quedar fija al crear el modal.
+        </p>
+        <div class="row">
+            <h3>Modal center</h3>
+          <button id="btn-auth-center" class="pill">Crear cuenta</button>
+           <h3>Modal origin</h3>
+          <button id="btn-auth-origin" class="pill">Crear cuenta</button>
+        </div>
+        <pre><code>modal.open(boton, "Crear cuenta");                          // como se creó
+modal.open(boton, "Crear cuenta", { placement: "origin" }); // esta vez, en el lugar</code></pre>
+      </section>
+
+      <section>
+        <h2>Formatos del elemento viajero</h2>
+        <p class="hint">
+          Lo que viaja puede ser texto, un nodo, o las dos cosas. El core elige cómo escalarlo:
+          con texto anima <code>font-size</code> —lo único que lo mantiene nítido en cada
+          frame— y sin texto anima <code>width</code>/<code>height</code>, porque una imagen no
+          escala con el tamaño de fuente. Se puede forzar con <code>flyingMode</code>.
+        </p>
+        <p class="hint">
+          Si le pasás un nodo que <em>vive dentro del botón</em>, su posición se mide y no hace
+          falta ningún offset a mano: el icono despega exactamente de donde estaba.
+        </p>
+        <div class="row">
+          <button id="btn-f-texto" class="pill">Solo texto</button>
+          <button id="btn-f-mixto" class="pill">
+            <span class="con-icono">
+              <svg
+                class="ico"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                aria-hidden="true"
+              >
+                <path
+                  d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"
+                />
+              </svg>
+              <span>Me gusta</span>
+            </span>
+          </button>
+          <button id="btn-f-icono" class="round">
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"
+              />
+            </svg>
+          </button>
+          <button id="btn-f-imagen" class="avatar-btn">
+            <img id="avatar" alt="" />
+          </button>
+        </div>
+        <pre><code>// texto suelto
+modal.open(boton, "Solo texto");
+
+// un nodo del botón: se mide, viaja y aterriza en el [data-wisspop-title]
+modal.open(boton, boton.querySelector("svg"));</code></pre>
+      </section>
+
+      <section>
+        <h2>Cerrar con el gesto</h2>
+        <p class="hint">
+          <code>swipeToClose: true</code> — arrastrá el panel con el mouse o el dedo hacia
+          cualquier lado, como una notificación de celular. Pasado el umbral se va para donde lo
+          tiraste; si soltás antes, vuelve solo a su lugar. Descartado por gesto
+          <strong>no vuelve al origen</strong>: la mano ya dijo a dónde va, y hacerlo volver al
+          botón contradiría el gesto.
+        </p>
+        <div class="row"><button id="btn-swipe">Arrastrame para cerrar</button></div>
+        <pre><code>createModal({
+  content: "…",
+  swipeToClose: true,
+  swipeThreshold: 90,   // px de arrastre para que cuente como descarte
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>FlipModal — Elementos compartidos</h2>
+        <p class="hint">
+          Los elementos con <code>data-flip-id</code> viajan del origen al modal conservando su identidad visual.
+          Útil para tarjetas expandibles, álbumes y detalle de productos.
+        </p>
+        <div class="row">
+          <div id="card-flip-trigger" data-flip-id="demo-card" class="card-demo" style="cursor: pointer; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; width: 16rem;">
+            <img data-flip-id="demo-img" src="/gato.jpg" style="width: 100%; height: 100px; object-fit: cover; border-radius: 0.5rem;" alt="" />
+            <h3 data-flip-id="demo-title" style="margin-top: 0.5rem; font-size: 1.1rem;">Gato Viajero</h3>
+            <p class="trigger-fade-item-demo" style="font-size: 0.85rem; color: #888;">Clic para expandir detalle</p>
+          </div>
+        </div>
+        <pre><code>createFlipModal({
+  trigger: document.getElementById('card-flip-trigger'),
+  flipId: 'demo',
+  content: '…'
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>DropdownPanel — Despliegue elástico</h2>
+        <p class="hint">
+          Animación elástica ligera con <code>enterDropdownAnimation</code> y <code>leaveDropdownAnimation</code> (scaleY 0→1).
+        </p>
+        <div class="row" style="position: relative;">
+          <button id="btn-dropdown-demo" data-dir="down">↓ Abajo</button>
+          <button id="btn-dropdown-demo-up" data-dir="up">↑ Arriba</button>
+          <button id="btn-dropdown-demo-right" data-dir="right">→ Derecha</button>
+          <button id="btn-dropdown-demo-left" data-dir="left">← Izquierda</button>
+          <!-- Fondo y sombra vía `.panel` (docs.css): la versión anterior tenía
+               `background: var(--surface-2)`, una variable que no existe en
+               :root, así que el background caía a transparente. -->
+          <div id="dropdown-demo-panel" class="panel" style="display: none; position: absolute; padding: 0.75rem 1rem; z-index: 50;">
+            <ul class="menu" style="margin: 0; padding: 0; list-style: none;">
+              <li>Opción 1</li>
+              <li>Opción 2</li>
+              <li>Opción 3</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <h2>Scroll con el panel abierto</h2>
+        <p class="hint">
+          Depende de si la posición del panel depende del origen. Los anclados
+          (<code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>,
+          <code>origin</code>) <strong>siguen al botón</strong> al scrollear: uno anclado que se
+          queda fijo se despega de su origen y deja de leerse como suyo.
+          <code>center</code> y los drawers no están atados a nada, así que se quedan quietos.
+          Abrí cualquiera de los de arriba y scrolleá para verlo.
+        </p>
+      </section>
+
+      <section>
+        <h2>Alto reactivo</h2>
+        <p class="hint">
+          Los botones dentro del modal de arriba ejercitan lo difícil:
+          <code>resync()</code> reajusta el alto cuando aparece un error, y
+          <code>changeView()</code> cambia de vista sin cerrar. El panel crece
+          <em>y se achica</em>, recentrándose en cada paso.
+        </p>
+      </section>
+
+      <footer>
+        <p class="note">
+          <code>prefers-reduced-motion: reduce</code> salta a la geometría final sin animar.
+          Probalo activando «reducir movimiento» en tu sistema.
+        </p>
+      </footer>
+    </main>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

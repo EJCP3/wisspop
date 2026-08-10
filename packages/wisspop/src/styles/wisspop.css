@@ -1,0 +1,237 @@
+/**
+ * wisspop — solo estructura.
+ *
+ * Ni un color, ni una tipografía, ni un borde: eso es del consumidor y entra
+ * por `modalClass` / `overlayClass`. Acá está únicamente lo que la animación
+ * necesita para funcionar (posicionamiento fijo, apilado, recorte), que sin
+ * esto obligaría a cada consumidor a traer Tailwind.
+ */
+
+html {
+  scrollbar-gutter: stable;
+}
+
+.wisspop-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--wisspop-z-overlay, 40);
+}
+
+.wisspop-box {
+  position: fixed;
+  z-index: var(--wisspop-z-box, 50);
+  display: flex;
+  flex-direction: column;
+  /* El core pisa esto con `overflow: hidden` inline mientras anima: el
+     contenido todavía no entra en la caja y el navegador dibujaría una barra
+     de scroll que aparece y desaparece (design.md §7). */
+  overflow-x: hidden;
+  overflow-y: auto;
+  transform-origin: top left;
+}
+
+.wisspop-flip-box {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--wisspop-z-box, 50);
+  pointer-events: none;
+}
+
+.wisspop-flip-box > * {
+  pointer-events: auto;
+}
+
+/* Cuando el box está dentro del wrapper flip (vanilla: dos elementos, wrapper
+   > box), es un flex-item de ese wrapper — `width/height: auto` ya encoge
+   solo a su contenido ahí, no hace falta más. */
+.wisspop-flip-box > .wisspop-box {
+  position: relative;
+  width: auto;
+  height: auto;
+}
+
+/**
+ * Vue y React arman esto distinto: las dos clases van en el MISMO elemento
+ * (no hay wrapper aparte), así que sin esta regla se queda con el
+ * `position: fixed; inset: 0` de `.wisspop-flip-box` de más arriba —
+ * pantalla completa en vez de su tamaño real. Rompía dos cosas a la vez: el
+ * botón de cerrar (`position: absolute; top/right: 12px`) anclaba a la
+ * esquina de la VENTANA en vez de a la de la tarjeta, y el reposo final
+ * —una vez que Flip suelta el `position: absolute` temporal— centraba el
+ * contenido contra toda la pantalla en vez de encoger a su tamaño real.
+ *
+ * `inset: 0` fuerza el ancho a llenar el hueco entre `left` y `right` sea
+ * cual sea el `display` (CSS2.1, resolución de "over-constrained" en
+ * posicionados). Por eso el `top/left` + `translate` en vez de `inset: 0`:
+ * con un solo punto de anclaje por eje, un fixed/absolute con `width: auto`
+ * SÍ encoge a su contenido ("shrink-to-fit") — pero solo si sigue siendo
+ * `position: fixed` (o absolute); un `position: relative` no entra en ese
+ * cálculo y vuelve a ocupar el ancho disponible completo.
+ */
+.wisspop-box.wisspop-flip-box {
+  position: fixed;
+  inset: auto;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: auto;
+  height: auto;
+}
+
+/**
+ * Nada que participe de un flip puede recortar. Durante el viaje los elementos
+ * con `data-flip-id` están posicionados sobre el trigger — fuera de los límites
+ * de la caja, que ya ocupa su tamaño final y centrada. Con el `overflow` de
+ * `.wisspop-box` salían cortados a la mitad todo el recorrido; es la misma
+ * razón por la que el texto viajero vive fuera del contenedor (design.md §6).
+ *
+ * Los dos selectores porque los adaptadores arman distinto: vanilla anida
+ * wrapper > box, y el de Vue pone las dos clases en el mismo elemento.
+ */
+.wisspop-flip-box > .wisspop-box,
+.wisspop-box.wisspop-flip-box {
+  overflow: visible;
+}
+
+/**
+ * Sin `height: 100%` a propósito. Con alto completo, el `scrollHeight` del
+ * contenido nunca puede ser menor que el alto actual de la caja — es un piso
+ * que solo sube — así que el panel crecía al aparecer un error pero no se
+ * achicaba al volver a una vista más corta, y el ResizeObserver solo veía sus
+ * propios cambios de tamaño. Con alto natural, medir y observar dicen la verdad.
+ */
+/**
+ * Con el gesto activo el navegador no puede quedarse con el arrastre para
+ * scrollear la página: si lo hace, el panel se queda quieto mientras el dedo se
+ * mueve. `touch-action: none` cede el gesto al panel.
+ */
+.wisspop-swipe {
+  touch-action: none;
+  cursor: grab;
+  /* Sin esto, arrastrar con el mouse sobre el texto del panel inicia una
+     selección —y sobre texto ya seleccionado, un drag nativo— que se queda con
+     el gesto y lo corta con un `pointercancel`. El panel deja de seguir la mano. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.wisspop-swipe:active {
+  cursor: grabbing;
+}
+
+.wisspop-content {
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+/**
+ * Botón de cerrar opcional (`closeButton: true`). Solo lo estructural —
+ * posición, tamaño, reset del botón nativo — para que sea usable sin que el
+ * consumidor escriba una línea de CSS. El color sale de `currentColor`, así
+ * que hereda el color de texto del panel; para más que eso, `closeButtonClass`
+ * se suma a esta clase, no la reemplaza.
+ *
+ * `position: absolute` y no `fixed`: contra la caja (su containing block), no
+ * contra la ventana, y sin moverse cuando el contenido scrollea adentro — un
+ * hijo absoluto no sigue el scroll de su propio contenedor, se ancla a la
+ * caja del contenedor mismo.
+ */
+.wisspop-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  /**
+   * Por encima de los elementos que viajan en un FlipModal, que durante todo
+   * el vuelo llevan `zIndex: 100` puesto por GSAP Flip. Con el `1` de antes la
+   * × se fundía hacia visible TAPADA por la tarjeta, y aparecía recién cuando
+   * `clearProps` soltaba ese z-index al terminar: un salto de invisible a
+   * opaca en un frame, justo lo que la entrada escalonada quería evitar.
+   * Queda dentro del contexto de apilado de la caja, así que no se escapa por
+   * encima de nada de la página.
+   */
+  z-index: var(--wisspop-z-close, 101);
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: rgb(128 128 128 / 0.14);
+  color: inherit;
+  cursor: pointer;
+}
+
+.wisspop-close:hover {
+  background: rgb(128 128 128 / 0.24);
+}
+
+/**
+ * El título real está oculto hasta que el texto viajero aterriza; si no, se
+ * verían los dos a la vez durante todo el viaje. Es una regla CSS y no un
+ * `gsap.set` inline porque al volver de una sub-vista el título se recrea
+ * desde cero y un estilo aplicado una sola vez al abrir no sobrevive
+ * (design.md §6).
+ */
+/**
+ * Sin transición en ninguna de las dos direcciones, a propósito.
+ *
+ * El relevo copia → original es un corte, no un crossfade: para cuando ocurre,
+ * el elemento viajero ya coincide con el destino en posición, tamaño, color,
+ * radio y recorte, así que cambiar uno por el otro no se ve. Con un fade de por
+ * medio pasaba lo contrario — el volador se ocultaba de golpe y el título
+ * tardaba 150ms en aparecer, dejando una ventana donde no se veía ninguno de
+ * los dos: un parpadeo justo al terminar la animación de entrada.
+ *
+ * El core agrega `.wisspop-open` y oculta el volador en el mismo bloque síncrono,
+ * así que el navegador no llega a pintar un frame intermedio.
+ */
+.wisspop-has-flying [data-wisspop-title] {
+  opacity: 0;
+}
+
+.wisspop-box.wisspop-open [data-wisspop-title] {
+  opacity: 1;
+}
+
+.wisspop-flying-text {
+  position: fixed;
+  z-index: var(--wisspop-z-flying, 51);
+  pointer-events: none;
+  white-space: nowrap;
+  transform-origin: left;
+  will-change: transform, font-size, top, left;
+  /* El core escribe `line-height` inline en cada punta del viaje para que el
+     glifo caiga en el mismo lugar dentro de su caja que en el destino. Esto es
+     solo el piso por si alguien lo usa sin pasar por el core. */
+  line-height: 1;
+  margin: 0;
+}
+
+/**
+ * Modo `box`: el core anima el `width`/`height` del contenedor, así que lo que
+ * viaja adentro tiene que seguirlo. Se aplica solo en este modo — en modo texto
+ * un icono no debe estirarse, tiene que escalar con el `font-size`.
+ */
+.wisspop-flying-text.wisspop-flying-box {
+  /* El core anima el `border-radius` del contenedor de una punta a la otra;
+     recortando acá, lo que viaja adentro sigue ese redondeo sin que haya que
+     tocarle los estilos a la copia. */
+  overflow: hidden;
+}
+
+.wisspop-flying-text.wisspop-flying-box > * {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+/* Modo texto con icono: medilo en `em` y viaja junto con el texto sin más. */
+.wisspop-flying-text img,
+.wisspop-flying-text svg {
+  vertical-align: middle;
+}

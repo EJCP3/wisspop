@@ -1,0 +1,23 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navbar from '../components/home/Navbar.astro';
+import Hero from '../components/home/Hero.astro';
+import Sidebar from '../components/home/Sidebar.astro';
+import DocsContent from '../components/home/DocsContent.astro';
+import FabAgents from '../components/home/FabAgents.astro';
+---
+
+<Layout lang="en">
+  <Navbar lang="en" />
+  <Hero lang="en" />
+
+  <!-- Documentation Section -->
+  <section id="docs" class="bg-[#f8faff] dark:bg-zinc-950/50 min-h-screen py-24 transition-colors duration-300 border-t border-zinc-100 dark:border-zinc-900">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 flex gap-12 relative">
+      <Sidebar lang="en" />
+      <DocsContent lang="en" />
+    </div>
+  </section>
+
+  <FabAgents lang="en" />
+</Layout>

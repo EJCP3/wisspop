@@ -1,0 +1,91 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { agentDocUrl } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const agentDocUrls = Object.fromEntries(
+  ['vanilla', 'react', 'vue', 'svelte'].map((fw) => [fw, agentDocUrl(Astro.site, fw)]),
+);
+---
+
+<!-- FAB AI Agents -->
+<div id="fab-container" class="fixed bottom-8 right-8 z-50 flex flex-col items-center gap-4 group">
+  
+  <!-- Speed Dial Items -->
+  <div id="fab-items" class="flex flex-col items-center gap-3 transition-all duration-300 opacity-0 translate-y-8 scale-95 pointer-events-none group-[.is-open]:opacity-100 group-[.is-open]:translate-y-0 group-[.is-open]:scale-100 group-[.is-open]:pointer-events-auto origin-bottom w-14">
+    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-orange-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="svelte" title="Svelte Agent Prompt">
+      <span class="text-xs font-bold">Sv</span>
+      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">Svelte</span>
+    </button>
+    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-green-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="vue" title="Vue Agent Prompt">
+      <span class="text-xs font-bold">Vu</span>
+      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">Vue</span>
+    </button>
+    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-blue-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="react" title="React Agent Prompt">
+      <span class="text-xs font-bold">Re</span>
+      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">React</span>
+    </button>
+    <button class="agent-fab-btn relative w-10 h-10 bg-white dark:bg-zinc-800 text-yellow-500 rounded-full shadow-md flex items-center justify-center hover:bg-zinc-50 dark:hover:bg-zinc-700 border border-zinc-100 dark:border-zinc-700 transition-colors group/btn" data-fw="vanilla" title="Vanilla Agent Prompt">
+      <span class="text-xs font-bold">JS</span>
+      <span class="absolute right-14 bg-white dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 text-sm font-medium px-3 py-1.5 rounded-lg shadow-sm border border-zinc-100 dark:border-zinc-700 whitespace-nowrap opacity-0 group-hover/btn:opacity-100 transition-opacity pointer-events-none">Vanilla JS</span>
+    </button>
+  </div>
+
+  <!-- Main Button -->
+  <button id="fab-main-btn" type="button" aria-expanded="false" class="relative z-50 w-14 h-14 bg-zinc-900 hover:bg-zinc-800 dark:bg-zinc-100 dark:hover:bg-zinc-200 text-white dark:text-zinc-900 rounded-full shadow-lg flex items-center justify-center transition-transform active:scale-95 group-[.is-open]:rotate-45" title="AI Agent Rules">
+    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+    </svg>
+  </button>
+</div>
+
+<!-- Toast notification for copy action -->
+<div id="fab-toast" class="fixed bottom-24 right-8 z-50 bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 px-4 py-2 rounded-lg shadow-lg text-sm font-medium opacity-0 translate-y-2 pointer-events-none transition-all duration-300">
+  Copied AI Prompt to clipboard!
+</div>
+
+<script is:inline define:vars={{ agentDocUrls }}>
+  function setupFab() {
+    const container = document.getElementById('fab-container');
+    const mainBtn = document.getElementById('fab-main-btn');
+    const toast = document.getElementById('fab-toast');
+
+    if (!container || !mainBtn) return;
+
+    mainBtn.addEventListener('click', () => {
+      const isOpen = container.classList.toggle('is-open');
+      mainBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+
+    document.querySelectorAll('.agent-fab-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const fw = btn.getAttribute('data-fw');
+        if (!fw) return;
+        const url = agentDocUrls[fw];
+        const promptText = `Revisa la documentación e instrucciones de wisspop para ${fw}: ${url}`;
+
+        try {
+          await navigator.clipboard.writeText(promptText);
+          if (toast) {
+            toast.classList.remove('opacity-0', 'translate-y-2');
+            setTimeout(() => {
+              toast.classList.add('opacity-0', 'translate-y-2');
+            }, 2000);
+          }
+        } catch (err) {
+          console.error('Failed to copy', err);
+        }
+      });
+    });
+  }
+
+  setupFab();
+  document.addEventListener('astro:after-swap', setupFab);
+</script>

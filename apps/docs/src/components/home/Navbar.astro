@@ -1,0 +1,61 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import { GITHUB_URL, NPM_URL } from '../../config/site';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const otherLang = lang === 'en' ? 'es' : 'en';
+const langTargetUrl = lang === 'en' ? '/es/' : '/';
+---
+
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors duration-300 border-b border-zinc-100 dark:border-zinc-900">
+  <div class="font-bold text-lg tracking-tight">
+    <a href={lang === 'es' ? '/es/' : '/'} class="hover:opacity-80 transition-opacity">
+      <span id="nav-text" class="text-zinc-900 dark:text-zinc-100 transition-colors duration-300">wisspop</span><span id="nav-dot" class="text-zinc-400">.</span>
+    </a>
+  </div>
+  <div class="flex items-center gap-4 md:gap-6 text-sm font-medium text-zinc-500 dark:text-zinc-400">
+    <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.github')}</a>
+    <a href={NPM_URL} target="_blank" rel="noopener noreferrer" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.npm')}</a>
+    <a href="#docs" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.docs')}</a>
+
+    <div class="hidden md:block w-px h-4 bg-zinc-200 dark:bg-zinc-800"></div>
+
+    <a href={langTargetUrl} class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors font-medium">
+      {t('nav.lang_toggle')}
+    </a>
+
+    <button id="theme-toggle" type="button" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center" title={t('nav.theme_toggle_tooltip')}>
+      <svg class="w-5 h-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+      </svg>
+      <svg class="w-5 h-5 hidden dark:block text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+      </svg>
+    </button>
+  </div>
+</nav>
+
+<script>
+  function setupThemeToggle() {
+    const toggleBtn = document.getElementById('theme-toggle');
+    if (!toggleBtn) return;
+    toggleBtn.addEventListener('click', () => {
+      const isDark = document.documentElement.classList.contains('dark');
+      if (isDark) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('theme', 'dark');
+      }
+    });
+  }
+  setupThemeToggle();
+  document.addEventListener('astro:after-swap', setupThemeToggle);
+</script>

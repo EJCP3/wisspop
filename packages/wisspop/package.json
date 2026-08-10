@@ -1,0 +1,78 @@
+{
+  "name": "wisspop",
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Modales y dropdowns con animaciones ancladas al origen: el panel nace del elemento que lo abrió",
+  "license": "MIT",
+  "author": "euddy.javier@gmail.com",
+  "keywords": [
+    "modal",
+    "dropdown",
+    "animation",
+    "gsap",
+    "vue",
+    "react",
+    "flip",
+    "transition"
+  ],
+  "files": [
+    "dist",
+    "src/astro"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core.js",
+      "require": "./dist/core.cjs"
+    },
+    "./vanilla": {
+      "types": "./dist/vanilla/index.d.ts",
+      "import": "./dist/vanilla.js",
+      "require": "./dist/vanilla.cjs"
+    },
+    "./vue": {
+      "types": "./dist/vue/index.d.ts",
+      "import": "./dist/vue.js",
+      "require": "./dist/vue.cjs"
+    },
+    "./react": {
+      "types": "./dist/react/index.d.ts",
+      "import": "./dist/react.js",
+      "require": "./dist/react.cjs"
+    },
+    "./astro": "./src/astro/index.js",
+    "./astro/*": "./src/astro/*",
+    "./styles.css": "./dist/wisspop.css"
+  },
+  "scripts": {
+    "build": "vite build",
+    "test": "node --test"
+  },
+  "peerDependencies": {
+    "gsap": ">=3.12",
+    "vue": ">=3.4",
+    "react": ">=18",
+    "react-dom": ">=18"
+  },
+  "peerDependenciesMeta": {
+    "vue": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^6.0.1",
+    "gsap": "^3.13.0",
+    "jsdom": "^30.0.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^7.1.7",
+    "vite-plugin-dts": "^4.5.4",
+    "vue": "^3.5.22"
+  }
+}

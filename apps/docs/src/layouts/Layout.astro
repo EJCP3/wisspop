@@ -1,0 +1,65 @@
+---
+import '@fontsource/ibm-plex-sans';
+import '@fontsource/ibm-plex-mono';
+import '../styles/global.css';
+import 'wisspop/styles.css';
+import '../styles/docs-test.css';
+import { ViewTransitions } from 'astro:transitions';
+import { useTranslations, type Lang, defaultLang } from '../i18n/utils';
+
+interface Props {
+  title?: string;
+  description?: string;
+  lang?: Lang;
+}
+
+const { lang = defaultLang, title, description } = Astro.props;
+const t = useTranslations(lang);
+
+const finalTitle = title ? `${title} — wisspop` : t('meta.title');
+const finalDescription = description || t('meta.description');
+const canonicalURL = new URL(Astro.url.pathname, Astro.site || Astro.url.origin);
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{finalTitle}</title>
+    <meta name="title" content={finalTitle} />
+    <meta name="description" content={finalDescription} />
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={finalTitle} />
+    <meta property="og:description" content={finalDescription} />
+
+    <!-- View Transitions -->
+    <ViewTransitions />
+
+    <!-- Dark Mode Init script (Inline to prevent FOUC) -->
+    <script is:inline>
+      function initTheme() {
+        if (
+          localStorage.theme === 'dark' ||
+          (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      }
+      initTheme();
+      document.addEventListener('astro:after-swap', initTheme);
+    </script>
+  </head>
+  <body class="min-h-screen bg-white dark:bg-zinc-950 text-zinc-900 dark:text-zinc-100 transition-colors duration-300 antialiased selection:bg-zinc-200 dark:selection:bg-zinc-800">
+    <slot />
+  </body>
+</html>
