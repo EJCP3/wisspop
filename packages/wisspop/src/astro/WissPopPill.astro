@@ -1,99 +1,64 @@
 ---
+/**
+ * Igual que WissPopMorph, con el preset del pill: el label del botón viaja
+ * hasta el `[data-wisspop-title]` del panel. Los defaults son los mismos que
+ * los del wrapper de React (ver WissPopPill.jsx); cualquiera se puede pisar.
+ */
 interface Props {
   id: string;
   trigger?: string;
   placement?: string;
-  align?: string;
-  gap?: number;
-  margin?: number;
+  width?: number;
+  radius?: number;
+  duration?: number;
+  ease?: string;
   swipeToClose?: boolean;
-  closeOnEscape?: boolean;
-  restoreFocus?: boolean;
-  lockScroll?: boolean;
+  closeButton?: boolean;
   modalClass?: string;
+  overlayClass?: string;
+  flyingTextClass?: string;
+  [key: string]: any;
 }
 
 const {
   id,
   trigger = `[data-wisspop-trigger="${id}"]`,
   placement = 'center',
-  align = 'center',
-  gap = 8,
-  margin = 16,
-  swipeToClose = false,
-  closeOnEscape = true,
-  restoreFocus = true,
-  lockScroll = true,
-  modalClass = '',
+  width = 540,
+  radius = 40,
+  originRadius = 999,
+  fullscreenOnMobile = true,
+  duration = 0.45,
+  ease = 'power3.inOut',
+  closeDuration = 0.6,
+  closeEase = 'power3.inOut',
+  contentBlur = false,
+  flyingTextClass = '',
+  ...opciones
 } = Astro.props;
+
+const opts = JSON.stringify({
+  trigger,
+  placement,
+  width,
+  radius,
+  originRadius,
+  fullscreenOnMobile,
+  duration,
+  ease,
+  closeDuration,
+  closeEase,
+  contentBlur,
+  flyingTextClass,
+  ...opciones,
+});
 ---
 
-<dialog
-  id={id}
-  class:list={['wisspop-dialog', modalClass]}
-  data-wisspop-astro-modal="pill"
-  data-trigger={trigger}
-  data-placement={placement}
-  data-align={align}
-  data-gap={gap}
-  data-margin={margin}
-  data-swipe-to-close={swipeToClose ? 'true' : 'false'}
-  data-close-on-escape={closeOnEscape ? 'true' : 'false'}
-  data-restore-focus={restoreFocus ? 'true' : 'false'}
-  data-lock-scroll={lockScroll ? 'true' : 'false'}
-  style="display: none;"
->
+<template data-wisspop="pill" data-id={id} data-opts={opts}>
   <slot />
-</dialog>
+</template>
 
 <script>
-  import { createModal } from 'wisspop/vanilla';
-
-  function initPillModals() {
-    document.querySelectorAll<HTMLElement>('dialog[data-wisspop-astro-modal="pill"]').forEach((dialogEl) => {
-      if ((dialogEl as any)._wisspop) return;
-
-      const triggerSel = dialogEl.getAttribute('data-trigger');
-      const placement = (dialogEl.getAttribute('data-placement') as any) || 'center';
-      const align = (dialogEl.getAttribute('data-align') as any) || 'center';
-      const gap = Number(dialogEl.getAttribute('data-gap') || 8);
-      const margin = Number(dialogEl.getAttribute('data-margin') || 16);
-      const swipeToClose = dialogEl.getAttribute('data-swipe-to-close') === 'true';
-      const closeOnEscape = dialogEl.getAttribute('data-close-on-escape') !== 'false';
-      const restoreFocus = dialogEl.getAttribute('data-restore-focus') !== 'false';
-      const lockScroll = dialogEl.getAttribute('data-lock-scroll') !== 'false';
-
-      const modal = createModal({
-        target: dialogEl,
-        type: 'pill',
-        placement,
-        align,
-        gap,
-        margin,
-        swipeToClose,
-        closeOnEscape,
-        restoreFocus,
-        lockScroll,
-      });
-
-      (dialogEl as any)._wisspop = modal;
-
-      if (triggerSel) {
-        document.querySelectorAll<HTMLElement>(triggerSel).forEach((btn) => {
-          btn.addEventListener('click', () => {
-            const label = btn.getAttribute('data-wisspop-label') || btn.textContent?.trim() || '';
-            modal.open(btn, label);
-          });
-        });
-      }
-
-      dialogEl.querySelectorAll<HTMLElement>('[data-wisspop-close]').forEach((btn) => {
-        btn.addEventListener('click', () => modal.close());
-      });
-    });
-  }
-
-  initPillModals();
-  document.addEventListener('astro:page-load', initPillModals);
-  document.addEventListener('astro:after-swap', initPillModals);
+  import { initWissPop } from './client.js';
+  initWissPop('pill');
 </script>

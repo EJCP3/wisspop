@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "pnpm --filter docs dev",
-    "build": "pnpm --filter docs build",
+    "dev:astro": "pnpm --filter docs-astro dev",
+    "build": "pnpm --filter wisspop build && pnpm --filter docs build",
     "test": "pnpm --filter wisspop test"
   },
   "devDependencies": {

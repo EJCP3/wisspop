@@ -1,75 +1,33 @@
 ---
+/**
+ * Transición de elementos compartidos. Los `[data-flip-id]` del trigger y los
+ * del panel se emparejan por nombre, así que `flipId` es el prefijo común:
+ * con `flipId="demo"` viajan `demo-card`, `demo-img`, `demo-title`…
+ */
 interface Props {
   id: string;
+  /** Prefijo de los `data-flip-id` que viajan. Obligatorio. */
+  flipId: string;
   trigger?: string;
+  duration?: number;
+  ease?: string;
   swipeToClose?: boolean;
-  closeOnEscape?: boolean;
-  restoreFocus?: boolean;
-  lockScroll?: boolean;
+  closeButton?: boolean;
   modalClass?: string;
+  overlayClass?: string;
+  [key: string]: any;
 }
 
-const {
-  id,
-  trigger = `[data-wisspop-trigger="${id}"]`,
-  swipeToClose = false,
-  closeOnEscape = true,
-  restoreFocus = true,
-  lockScroll = true,
-  modalClass = '',
-} = Astro.props;
+const { id, flipId, trigger = `[data-wisspop-trigger="${id}"]`, ...opciones } = Astro.props;
+
+if (!flipId) throw new Error(`[WissPopFlip] falta flipId en "${id}"`);
 ---
 
-<dialog
-  id={id}
-  class:list={['wisspop-dialog', modalClass]}
-  data-wisspop-astro-modal="flip"
-  data-trigger={trigger}
-  data-swipe-to-close={swipeToClose ? 'true' : 'false'}
-  data-close-on-escape={closeOnEscape ? 'true' : 'false'}
-  data-restore-focus={restoreFocus ? 'true' : 'false'}
-  data-lock-scroll={lockScroll ? 'true' : 'false'}
-  style="display: none;"
->
+<template data-wisspop="flip" data-id={id} data-opts={JSON.stringify({ trigger, flipId, ...opciones })}>
   <slot />
-</dialog>
+</template>
 
 <script>
-  import { createFlipModal } from 'wisspop/vanilla';
-
-  function initFlipModals() {
-    document.querySelectorAll<HTMLElement>('dialog[data-wisspop-astro-modal="flip"]').forEach((dialogEl) => {
-      if ((dialogEl as any)._wisspop) return;
-
-      const triggerSel = dialogEl.getAttribute('data-trigger');
-      const swipeToClose = dialogEl.getAttribute('data-swipe-to-close') === 'true';
-      const closeOnEscape = dialogEl.getAttribute('data-close-on-escape') !== 'false';
-      const restoreFocus = dialogEl.getAttribute('data-restore-focus') !== 'false';
-      const lockScroll = dialogEl.getAttribute('data-lock-scroll') !== 'false';
-
-      const flip = createFlipModal({
-        target: dialogEl,
-        swipeToClose,
-        closeOnEscape,
-        restoreFocus,
-        lockScroll,
-      });
-
-      (dialogEl as any)._wisspop = flip;
-
-      if (triggerSel) {
-        document.querySelectorAll<HTMLElement>(triggerSel).forEach((btn) => {
-          btn.addEventListener('click', () => flip.open(btn));
-        });
-      }
-
-      dialogEl.querySelectorAll<HTMLElement>('[data-wisspop-close]').forEach((btn) => {
-        btn.addEventListener('click', () => flip.close());
-      });
-    });
-  }
-
-  initFlipModals();
-  document.addEventListener('astro:page-load', initFlipModals);
-  document.addEventListener('astro:after-swap', initFlipModals);
+  import { initWissPop } from './client.js';
+  initWissPop('flip');
 </script>

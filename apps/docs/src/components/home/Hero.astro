@@ -86,9 +86,9 @@ const t = useTranslations(lang);
               </div>
             `,
             placement: 'center',
-            onMount: (el) => {
-              el.querySelector('#close-hero-morph')?.addEventListener('click', () => modal?.close());
-            }
+          });
+          modal.content.addEventListener('click', (e: Event) => {
+            if ((e.target as HTMLElement).closest('#close-hero-morph')) modal?.close();
           });
         }
         modal.open(btnMorph);
@@ -102,7 +102,12 @@ const t = useTranslations(lang);
       btnPill.addEventListener('click', () => {
         if (!pillModal) {
           pillModal = createModal({
-            type: 'pill',
+            // El "pill" no es un tipo aparte: es el preset del texto viajero.
+            flyingTextClass: 'flying',
+            width: 540,
+            radius: 40,
+            originRadius: 999,
+            contentBlur: false,
             content: `
               <div class="p-6 max-w-sm">
                 <h3 data-wisspop-title class="text-xl font-bold mb-2">Pill Modal</h3>
@@ -113,9 +118,9 @@ const t = useTranslations(lang);
               </div>
             `,
             placement: 'center',
-            onMount: (el) => {
-              el.querySelector('#close-hero-pill')?.addEventListener('click', () => pillModal?.close());
-            }
+          });
+          pillModal.content.addEventListener('click', (e: Event) => {
+            if ((e.target as HTMLElement).closest('#close-hero-pill')) pillModal?.close();
           });
         }
         pillModal.open(btnPill, 'Pill Modal');
@@ -129,7 +134,6 @@ const t = useTranslations(lang);
       btnDropdown.addEventListener('click', () => {
         if (!dropdown) {
           dropdown = createModal({
-            type: 'dropdown',
             content: `
               <div class="p-2 w-48 text-sm space-y-1">
                 <a href="#instalacion" class="block px-3 py-2 rounded hover:bg-zinc-100 dark:hover:bg-zinc-800">Instalación</a>
@@ -140,9 +144,9 @@ const t = useTranslations(lang);
             placement: 'bottom',
             align: 'center',
             gap: 8,
-            onMount: (el) => {
-              el.querySelectorAll('a').forEach(a => a.addEventListener('click', () => dropdown?.close()));
-            }
+          });
+          dropdown.content.addEventListener('click', (e: Event) => {
+            if ((e.target as HTMLElement).closest('a')) dropdown?.close();
           });
         }
         dropdown.open(btnDropdown);

@@ -1,0 +1,349 @@
+---
+import { WissPopMorph, WissPopPill, WissPopFlip } from 'wisspop/astro';
+import 'wisspop/styles.css';
+import '../styles/docs.css';
+
+const ANCLADOS = [
+  { placement: 'top', align: 'start', etiqueta: '↑ inicio' },
+  { placement: 'top', align: 'center', etiqueta: '↑ centro' },
+  { placement: 'top', align: 'end', etiqueta: '↑ final' },
+  { placement: 'left', align: 'center', etiqueta: '← izquierda' },
+  { placement: 'right', align: 'center', etiqueta: 'derecha →' },
+  { placement: 'bottom', align: 'center', etiqueta: '↓ abajo' },
+];
+
+const DRAWERS = ['left', 'right', 'top', 'bottom'];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WissPop — Astro Docs</title>
+  </head>
+  <body>
+    <main class="page">
+      <header>
+        <h1>WissPop — Astro Docs</h1>
+        <p class="lead">
+          El panel no aparece de la nada: nace del elemento que lo abrió y vuelve a él al cerrarse.
+        </p>
+        <p class="note">
+          Esta página está construida con componentes nativos de Astro (<code>wisspop/astro</code>):
+          <code>WissPopMorph</code>, <code>WissPopPill</code> y <code>WissPopFlip</code>.
+        </p>
+      </header>
+
+      <!-- 1 · Anclado a un botón -->
+      <section>
+        <h2>Anclado a un botón</h2>
+        <p class="hint">
+          El panel nace del botón y se abre hacia el lado que le pidas. <code>align</code> es la
+          posición sobre el <strong>eje cruzado</strong>: con el panel arriba o abajo alinea en
+          horizontal, y al costado alinea en vertical.
+        </p>
+        <div class="matriz">
+          {ANCLADOS.map((item) => (
+            <button data-wisspop-trigger={`anclado-${item.placement}-${item.align}`}>
+              {item.etiqueta}
+            </button>
+          ))}
+        </div>
+
+        {ANCLADOS.map((item) => (
+          <WissPopMorph
+            id={`anclado-${item.placement}-${item.align}`}
+            placement={item.placement}
+            align={item.align}
+            modalClass="panel"
+            swipeToClose={true}
+          >
+            <ul class="menu">
+              <li data-wisspop-close>Más recientes</li>
+              <li data-wisspop-close>Más antiguos</li>
+              <li data-wisspop-close>Mayor monto</li>
+            </ul>
+          </WissPopMorph>
+        ))}
+      </section>
+
+      <!-- 2 · Desde un botón circular -->
+      <section>
+        <h2>Desde un botón circular</h2>
+        <p class="hint">
+          El radio del origen se lee del CSS y se acota a la mitad del lado menor, así que un
+          círculo se abre como círculo. <code>ease: "power3.out"</code>.
+        </p>
+        <div class="row">
+          <button data-wisspop-trigger="fab-demo" class="round">+</button>
+        </div>
+
+        <WissPopMorph
+          id="fab-demo"
+          placement="center"
+          ease="power3.out"
+          duration={0.65}
+          modalClass="panel"
+          flyingTextClass="flying"
+          swipeToClose={true}
+        >
+          <div class="panel-body" style="width: 22rem;">
+            <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
+            <label>Concepto</label>
+            <input placeholder="Café" />
+            <label>Monto</label>
+            <input placeholder="2500" />
+            <button data-wisspop-close>Guardar</button>
+          </div>
+        </WissPopMorph>
+      </section>
+
+      <!-- 3 · Crecer en el lugar -->
+      <section>
+        <h2>Crecer en el lugar</h2>
+        <p class="hint">
+          <code>placement: "origin"</code> — el panel comparte el centro con el botón y crece ahí mismo.
+        </p>
+        <div class="row">
+          <button data-wisspop-trigger="inline-demo">Renombrar</button>
+        </div>
+
+        <WissPopMorph
+          id="inline-demo"
+          placement="origin"
+          modalClass="panel"
+          closeButton={true}
+          swipeToClose={true}
+        >
+          <div class="panel-body" style="width: 20rem;">
+            <h3>Renombrar</h3>
+            <label>Nombre</label>
+            <input placeholder="Supermercado" />
+            <button data-wisspop-close>Listo</button>
+          </div>
+        </WissPopMorph>
+      </section>
+
+      <!-- 4 · Drawer -->
+      <section>
+        <h2>Drawer</h2>
+        <p class="hint">
+          <code>drawer-left</code> · <code>drawer-right</code> · <code>drawer-top</code> · <code>drawer-bottom</code>.
+        </p>
+        <div class="row">
+          {DRAWERS.map((lado) => (
+            <button data-wisspop-trigger={`drawer-${lado}-demo`}>drawer-{lado}</button>
+          ))}
+        </div>
+
+        {DRAWERS.map((lado) => (
+          <WissPopMorph
+            id={`drawer-${lado}-demo`}
+            placement={`drawer-${lado}`}
+            modalClass={`panel drawer drawer-${lado}`}
+            swipeToClose={true}
+          >
+            <ul class="menu">
+              <li data-wisspop-close>Inicio</li>
+              <li data-wisspop-close>Movimientos</li>
+              <li data-wisspop-close>Presupuestos</li>
+              <li data-wisspop-close>Ajustes</li>
+            </ul>
+          </WissPopMorph>
+        ))}
+      </section>
+
+      <!-- 5 · Texto viajero -->
+      <section>
+        <h2>Texto viajero</h2>
+        <p class="hint">
+          El label del botón sale a 14px, viaja por la pantalla creciendo, y aterriza justo encima de <code>data-wisspop-title</code>.
+        </p>
+        <div class="row">
+          <h3>Modal center</h3>
+          <button data-wisspop-trigger="auth-center-demo" class="pill">Crear cuenta</button>
+          <h3>Modal origin</h3>
+          <button data-wisspop-trigger="auth-origin-demo" class="pill">Crear cuenta</button>
+        </div>
+
+        <WissPopPill id="auth-center-demo" placement="center" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="pill-body">
+            <h2 data-wisspop-title>Crear cuenta</h2>
+            <label>Email</label>
+            <input placeholder="hola@ejemplo.com" />
+            <label>Contraseña</label>
+            <input type="password" placeholder="••••••••" />
+            <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
+          </div>
+        </WissPopPill>
+
+        <WissPopPill id="auth-origin-demo" placement="origin" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="pill-body">
+            <h2 data-wisspop-title>Crear cuenta</h2>
+            <label>Email</label>
+            <input placeholder="hola@ejemplo.com" />
+            <label>Contraseña</label>
+            <input type="password" placeholder="••••••••" />
+            <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
+          </div>
+        </WissPopPill>
+      </section>
+
+      <!-- 6 · Formatos del elemento viajero -->
+      <section>
+        <h2>Formatos del elemento viajero</h2>
+        <p class="hint">
+          Lo que viaja puede ser texto, un nodo, o las dos cosas.
+        </p>
+        <div class="row">
+          <button data-wisspop-trigger="fmt-texto-demo" class="pill">Solo texto</button>
+          <button data-wisspop-trigger="fmt-mixto-demo" class="pill">
+            <span class="con-icono">
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+              </svg>
+              <span>Me gusta</span>
+            </span>
+          </button>
+          <button data-wisspop-trigger="fmt-icono-demo" class="round">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path>
+            </svg>
+          </button>
+          <button data-wisspop-trigger="fmt-imagen-demo" class="avatar-btn">
+            <img src="/gato.jpg" alt="" />
+          </button>
+        </div>
+
+        <WissPopMorph id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: 21rem;">
+            <h3><span data-wisspop-title>Solo texto</span></h3>
+            <p class="nota">No hay nodo que medir, así que el punto de partida sale del texto del botón.</p>
+            <button data-wisspop-close>Cerrar</button>
+          </div>
+        </WissPopMorph>
+
+        <WissPopMorph id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: 21rem;">
+            <h3>
+              <span data-wisspop-title class="con-icono">
+                <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
+                <span>Me gusta</span>
+              </span>
+            </h3>
+            <p class="nota">El icono va en <code>em</code>: crece junto con el texto sin ninguna cuenta aparte.</p>
+            <button data-wisspop-close>Cerrar</button>
+          </div>
+        </WissPopMorph>
+
+        <WissPopMorph id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: 21rem;">
+            <h3>
+              <span data-wisspop-title class="ico-destino">
+                <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
+              </span>
+            </h3>
+            <p class="nota">Sin texto que escalar, el core pasa a <code>box</code>: anima <code>width</code>/<code>height</code>.</p>
+            <button data-wisspop-close>Cerrar</button>
+          </div>
+        </WissPopMorph>
+
+        <WissPopMorph id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: 21rem;">
+            <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
+            <h3>No hace nada, HD</h3>
+            <p class="nota">Despega desde el rect medido de la miniatura y aterriza en el destino.</p>
+            <button data-wisspop-close>Cerrar</button>
+          </div>
+        </WissPopMorph>
+      </section>
+
+      <!-- 7 · Cerrar con el gesto -->
+      <section>
+        <h2>Cerrar con el gesto</h2>
+        <p class="hint">
+          <code>swipeToClose: true</code> — arrastrá el panel con el mouse o el dedo hacia cualquier lado.
+        </p>
+        <div class="row">
+          <button data-wisspop-trigger="swipe-demo">Arrastrame para cerrar</button>
+        </div>
+
+        <WissPopMorph id="swipe-demo" placement="center" modalClass="panel" swipeToClose={true}>
+          <div class="panel-body" style="width: 20rem;">
+            <h3>Arrastrame</h3>
+            <p class="nota">Hacia cualquier lado con el mouse o dedo.</p>
+            <button data-wisspop-close>O cerrame así</button>
+          </div>
+        </WissPopMorph>
+      </section>
+
+      <!-- 8 · FlipModal — Elementos compartidos -->
+      <section>
+        <h2>FlipModal — Elementos compartidos</h2>
+        <p class="hint">
+          Los elementos con <code>data-flip-id</code> viajan del origen al modal conservando su identidad visual.
+        </p>
+        <div class="row">
+          <div data-wisspop-trigger="card-flip-demo" class="card-demo" style="cursor: pointer; padding: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: 1rem; width: 16rem;">
+            <img data-flip-id="demo-img" src="/gato.jpg" style="width: 100%; height: 100px; object-fit: cover; border-radius: 0.5rem;" alt="" />
+            <h3 data-flip-id="demo-title" style="margin-top: 0.5rem; font-size: 1.1rem;">Gato Viajero</h3>
+            <p style="font-size: 0.85rem; color: #888;">Clic para expandir detalle</p>
+          </div>
+        </div>
+
+        <WissPopFlip id="card-flip-demo" flipId="demo" swipeToClose={true}>
+          <div data-flip-id="demo-card" class="panel" style="padding: 1.5rem; width: 24rem; max-width: 90vw;">
+            <img data-flip-id="demo-img" src="/gato.jpg" style="width: 100%; height: 220px; object-fit: cover; border-radius: 0.75rem;" alt="" />
+            <h3 data-flip-id="demo-title" style="margin-top: 1rem; font-size: 1.5rem;">Gato Viajero</h3>
+            <p style="margin-top: 0.5rem; color: #aaa; line-height: 1.4;">
+              Esta foto y título viajaron directamente desde la tarjeta usando GSAP Flip.
+            </p>
+            <button data-wisspop-close style="margin-top: 1rem;">Cerrar</button>
+          </div>
+        </WissPopFlip>
+      </section>
+
+      <!-- 9 · DropdownPanel — Despliegue elástico -->
+      <section>
+        <h2>DropdownPanel — Despliegue elástico</h2>
+        <p class="hint">
+          Animación elástica ligera con <code>enterDropdownAnimation</code> y <code>leaveDropdownAnimation</code>.
+        </p>
+        <div class="row" style="position: relative;">
+          <button data-wisspop-trigger="dropdown-demo">Desplegar Dropdown</button>
+
+          <WissPopMorph id="dropdown-demo" placement="bottom" align="center" gap={8} modalClass="panel">
+            <ul class="menu">
+              <li data-wisspop-close>Opción 1</li>
+              <li data-wisspop-close>Opción 2</li>
+              <li data-wisspop-close>Opción 3</li>
+            </ul>
+          </WissPopMorph>
+        </div>
+      </section>
+
+      <!-- 10 · Scroll con el panel abierto -->
+      <section>
+        <h2>Scroll con el panel abierto</h2>
+        <p class="hint">
+          Los anclados (<code>top</code>, <code>bottom</code>, <code>left</code>, <code>right</code>, <code>origin</code>) siguen al botón al scrollear.
+        </p>
+      </section>
+
+      <!-- 11 · Alto reactivo -->
+      <section>
+        <h2>Alto reactivo</h2>
+        <p class="hint">
+          <code>resync()</code> reajusta el alto cuando cambia el contenido, y <code>changeView()</code> cambia de vista sin cerrar.
+        </p>
+      </section>
+
+      <footer>
+        <p class="note">
+          <code>prefers-reduced-motion: reduce</code> salta a la geometría final sin animar.
+        </p>
+      </footer>
+    </main>
+  </body>
+</html>
