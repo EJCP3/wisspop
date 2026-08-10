@@ -7,6 +7,7 @@
     "dev:test": "pnpm --filter docs-test dev",
     "dev:vue": "pnpm --filter vue-docs dev",
     "dev:react": "pnpm --filter react-docs dev",
+    "dev:astro": "pnpm --filter docs-astro dev",
     "build": "pnpm --filter wisspop build && pnpm --filter docs build",
     "test": "pnpm --filter wisspop test"
   },
