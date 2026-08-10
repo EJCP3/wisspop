@@ -3,3 +3,7 @@ dist/
 *.log
 .DS_Store
 .astro/
+.claude/
+design.md
+requerimientos.md
+wisspop.md
