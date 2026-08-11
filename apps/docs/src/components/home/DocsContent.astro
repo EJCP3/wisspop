@@ -152,7 +152,7 @@ const ANCLADOS = [
         <button data-wisspop-trigger="modal-inline-demo" class="demo-btn">Renombrar</button>
       </div>
 
-      <WissPopMorph id="modal-inline-demo" placement="origin" swipeToClose={true} closeButton={true}>
+      <WissPopMorph id="modal-inline-demo" placement="origin" swipeToClose={true} closeButton={false}>
         <div class="panel">
           <div class="panel-body" style="width: 20rem;">
             <h3>Renombrar</h3>
@@ -203,8 +203,10 @@ const ANCLADOS = [
       {...exPillModal}
     >
       <div class="row">
-        <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta (Center)</button>
-        <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta (Origin)</button>
+          <span>Centerr</span>
+        <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta</button>
+        <span>Origin</span> 
+        <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta</button>
       </div>
 
       <WissPopPill id="pill-center-demo" placement="center" swipeToClose={true}>
@@ -388,7 +390,7 @@ const ANCLADOS = [
       {...exAuthReactivo}
     >
       <div class="row">
-        <button id="btn-auth-full-trigger" class="pill">Abrir Formulario Auth Reactivo</button>
+        <button id="btn-auth-full-trigger" class="pill">Crear cuenta</button>
       </div>
     </DocExampleCard>
   </section>
