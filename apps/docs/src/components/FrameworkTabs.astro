@@ -1,0 +1,114 @@
+---
+import CodeBlock from './CodeBlock.astro';
+
+interface Props {
+  vanilla?: string;
+  vanillaLang?: string;
+  astro?: string;
+  vue?: string;
+  react?: string;
+}
+
+const { vanilla, vanillaLang = 'javascript', astro, vue, react } = Astro.props;
+
+const VARIANTES = [
+  { key: 'vanilla', label: 'Vanilla', code: vanilla, lang: vanillaLang },
+  { key: 'astro', label: 'Astro', code: astro, lang: 'astro' },
+  { key: 'vue', label: 'Vue', code: vue, lang: 'vue' },
+  { key: 'react', label: 'React', code: react, lang: 'jsx' },
+].filter((v) => v.code);
+---
+
+<div class="fw-group">
+  {VARIANTES.length > 1 && (
+    <div class="flex flex-wrap items-center gap-1 mb-3">
+      {VARIANTES.map((v) => (
+        <button type="button" class="fw-btn px-3 py-1 rounded-full text-xs font-semibold transition-colors" data-fw={v.key}>
+          {v.label}
+        </button>
+      ))}
+    </div>
+  )}
+
+  {VARIANTES.map((v) => (
+    <div class="fw-panel" data-fw={v.key}>
+      <CodeBlock code={v.code!} lang={v.lang} />
+    </div>
+  ))}
+</div>
+
+<style>
+  .fw-btn {
+    color: rgb(113 113 122);
+    background-color: rgb(228 228 231);
+  }
+  :global(html.dark) .fw-btn {
+    color: rgb(161 161 170);
+    background-color: rgb(39 39 42);
+  }
+  .fw-btn.is-active {
+    color: rgb(255 255 255);
+    background-color: rgb(24 24 27);
+  }
+  :global(html.dark) .fw-btn.is-active {
+    color: rgb(24 24 27);
+    background-color: rgb(244 244 245);
+  }
+
+  .fw-panel {
+    display: none;
+  }
+  .fw-panel.is-active {
+    display: block;
+  }
+</style>
+
+<script>
+  const CLAVE_FW = 'wisspop-docs-fw';
+
+  /**
+   * La elección de framework es de la PÁGINA, no del bloque: se aplica a
+   * todos los `.fw-group` de una pasada, escribiendo las clases directo. Un
+   * primer intento reenviaba el click de un grupo a los demás y esos se lo
+   * devolvían — recursión infinita.
+   *
+   * Un grupo que no tenga esa variante se queda en la primera que sí tenga,
+   * en vez de esconder su único panel.
+   */
+  function aplicarFramework(key: string) {
+    document.querySelectorAll<HTMLElement>('.fw-group').forEach((grupo) => {
+      const paneles = [...grupo.querySelectorAll<HTMLElement>('.fw-panel')];
+      if (!paneles.length) return;
+      const elegido = paneles.some((p) => p.dataset.fw === key) ? key : paneles[0].dataset.fw;
+      for (const p of paneles) p.classList.toggle('is-active', p.dataset.fw === elegido);
+      for (const b of grupo.querySelectorAll<HTMLElement>('.fw-btn')) {
+        b.classList.toggle('is-active', b.dataset.fw === elegido);
+      }
+    });
+  }
+
+  function setupFrameworkTabs() {
+    for (const b of document.querySelectorAll<HTMLElement>('.fw-btn')) {
+      b.addEventListener('click', () => {
+        const key = b.dataset.fw!;
+        try {
+          localStorage.setItem(CLAVE_FW, key);
+        } catch {
+          // Safari en privado tira en setItem — se pierde la preferencia, nada más.
+        }
+        aplicarFramework(key);
+      });
+    }
+
+    let guardado: string | null = null;
+    try {
+      guardado = localStorage.getItem(CLAVE_FW);
+    } catch {
+      /* sin localStorage se arranca en vanilla */
+    }
+    aplicarFramework(guardado || 'vanilla');
+  }
+
+  setupFrameworkTabs();
+  document.addEventListener('astro:after-swap', setupFrameworkTabs);
+</script>

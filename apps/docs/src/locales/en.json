@@ -22,6 +22,7 @@
   "sidebar.pill_modal": "PillModal",
   "sidebar.flip_modal": "FlipModal",
   "sidebar.dropdown_panel": "DropdownPanel",
+  "sidebar.metodos": "API Methods",
   "sidebar.opciones": "Options & Placement",
   "sidebar.frameworks": "Framework Support",
   "sidebar.accesibilidad": "Accessibility (A11Y)",
@@ -43,6 +44,7 @@
   "docs.opciones_desc": "Configure placement (top, bottom, left, right, origin, center, drawer-left), alignment, gap, scroll locking, and callbacks.",
   "docs.frameworks_title": "Framework Support",
   "docs.frameworks_desc": "Zero-dependency core (Pure JS + GSAP) wrapped with lightweight adapters for Vue and React.",
+  "docs.frameworks_hint": "Pick one here and every code block on this page follows — your choice is remembered.",
   "docs.a11y_title": "Accessibility (A11Y)",
   "docs.a11y_desc": "Includes automatic focus trap, Escape key listener, focus restoration, body scroll locking, reduced motion support, and ARIA roles.",
   "fab.copy_tooltip": "Copy AI agent instructions for "

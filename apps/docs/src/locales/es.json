@@ -22,6 +22,7 @@
   "sidebar.pill_modal": "PillModal",
   "sidebar.flip_modal": "FlipModal",
   "sidebar.dropdown_panel": "DropdownPanel",
+  "sidebar.metodos": "Métodos de la API",
   "sidebar.opciones": "Opciones y Posición",
   "sidebar.frameworks": "Soporte Frameworks",
   "sidebar.accesibilidad": "Accesibilidad (A11Y)",
@@ -43,6 +44,7 @@
   "docs.opciones_desc": "Configura la posición (top, bottom, left, right, origin, center, drawer-left), alineación, gap, bloqueo de scroll y callbacks.",
   "docs.frameworks_title": "Soporte de Frameworks",
   "docs.frameworks_desc": "Core sin dependencias (JS puro + GSAP) con wrappers finos y nativos para Vue y React.",
+  "docs.frameworks_hint": "Elegí uno acá y todos los bloques de código de la página lo siguen — la elección se recuerda.",
   "docs.a11y_title": "Accesibilidad Integrada (A11Y)",
   "docs.a11y_desc": "Trampa de foco, tecla Escape, restauración de foco al cerrar, bloqueo de scroll del body, soporte para reduced-motion y roles ARIA automáticos.",
   "fab.copy_tooltip": "Copiar instrucciones para agente de IA de "

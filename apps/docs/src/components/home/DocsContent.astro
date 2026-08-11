@@ -3,7 +3,22 @@ import type { Lang } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/utils';
 import CodeBlock from '../CodeBlock.astro';
 import DocExampleCard from '../DocExampleCard.astro';
+import FrameworkTabs from '../FrameworkTabs.astro';
 import { WissPopMorph, WissPopPill, WissPopFlip } from 'wisspop/astro';
+
+// Los 4 snippets (vanilla/astro/vue/react) de cada ejemplo viven en su propio
+// archivo — es contenido, no layout, y cada uno ronda las 100 líneas.
+import frameworkIntro from '../../examples/framework-intro';
+import exAnclado from '../../examples/anclado';
+import exBotonCircular from '../../examples/boton-circular';
+import exCrecerEnLugar from '../../examples/crecer-en-lugar';
+import exDrawer from '../../examples/drawer';
+import exPillModal from '../../examples/pill-modal';
+import exFormatosViajero from '../../examples/formatos-viajero';
+import exSwipeToClose from '../../examples/swipe-to-close';
+import exFlipModal from '../../examples/flip-modal';
+import exDropdownPanel from '../../examples/dropdown-panel';
+import exAuthReactivo from '../../examples/auth-reactivo';
 
 interface Props {
   lang: Lang;
@@ -43,6 +58,21 @@ const ANCLADOS = [
     <CodeBlock lang="bash" code="pnpm add wisspop # o npm install wisspop / yarn add wisspop" />
   </section>
 
+  <!-- Soporte de frameworks — antes de los ejemplos: elegir acá deja fijado
+       el framework de TODOS los bloques de código de la página. -->
+  <section id="frameworks" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.frameworks_title')}</h2>
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.frameworks_desc')}</p>
+    <p class="text-sm text-zinc-500 dark:text-zinc-500">{t('docs.frameworks_hint')}</p>
+
+    <FrameworkTabs
+      vanilla={frameworkIntro.vanilla}
+      astro={frameworkIntro.astro}
+      vue={frameworkIntro.vue}
+      react={frameworkIntro.react}
+    />
+  </section>
+
   <!-- Ejemplos e Interacciones Completa -->
   <section id="uso-basico" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
     <div>
@@ -54,17 +84,10 @@ const ANCLADOS = [
 
     <!-- Ejemplo 1: Anclado a un botón -->
     <DocExampleCard
+      id="morph-modal"
       title="1. Anclado a un botón"
       description="El panel nace del botón y se posiciona en cualquiera de sus 6 combinaciones. El parámetro align controla la posición sobre el eje cruzado."
-      code={`import { createModal } from 'wisspop/vanilla';
-
-createModal({
-  content: '<ul class="menu"><li>Opción 1</li><li>Opción 2</li></ul>',
-  placement: 'top', // top | bottom | left | right
-  align: 'center',  // start | center | end
-  modalClass: 'panel',
-}).open(boton);`}
-      lang="javascript"
+      {...exAnclado}
     >
       <div class="row">
         {ANCLADOS.map((item) => (
@@ -99,13 +122,7 @@ createModal({
     <DocExampleCard
       title="2. Desde un botón circular"
       description="El radio del origen se lee dinámicamente del CSS. El glifo del botón '+' viaja hacia el elemento data-wisspop-title."
-      code={`createModal({
-  placement: 'center',
-  ease: 'power3.out',
-  duration: 0.65,
-  labelOffsetX: 20,
-}).open(btnFab, '+');`}
-      lang="javascript"
+      {...exBotonCircular}
     >
       <div class="row">
         <button data-wisspop-trigger="modal-fab-demo" class="round">+</button>
@@ -129,12 +146,7 @@ createModal({
     <DocExampleCard
       title="3. Crecer en el lugar"
       description="placement: 'origin' hace que el panel comparta el centro con el botón y se expanda directamente ahí sin viajar al centro de la ventana."
-      code={`createModal({
-  content: '...',
-  placement: 'origin',
-  closeButton: true,
-}).open(btnInline);`}
-      lang="javascript"
+      {...exCrecerEnLugar}
     >
       <div class="row">
         <button data-wisspop-trigger="modal-inline-demo" class="demo-btn">Renombrar</button>
@@ -156,12 +168,7 @@ createModal({
     <DocExampleCard
       title="4. Drawer (Cajón lateral y vertical)"
       description="drawer-left, drawer-right, drawer-top y drawer-bottom adhieren el panel a los bordes completos de la ventana."
-      code={`createModal({
-  content: '<ul class="menu">...</ul>',
-  placement: 'drawer-left', // drawer-left | drawer-right | drawer-top | drawer-bottom
-  modalClass: 'panel drawer drawer-left',
-});`}
-      lang="javascript"
+      {...exDrawer}
     >
       <div class="row">
         {['left', 'right', 'top', 'bottom'].map((lado) => (
@@ -190,12 +197,10 @@ createModal({
 
     <!-- Ejemplo 5: Texto viajero (PillModal) -->
     <DocExampleCard
+      id="pill-modal"
       title="5. Texto viajero (PillModal)"
       description="El texto del botón despegado viaja e interpola escala y posición hasta aterrizar en el título data-wisspop-title."
-      code={`// Una misma instancia puede abrirse en center u origin según la opción enviada al open
-modal.open(boton, "Crear cuenta");
-modal.open(boton, "Crear cuenta", { placement: "origin" });`}
-      lang="javascript"
+      {...exPillModal}
     >
       <div class="row">
         <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta (Center)</button>
@@ -233,13 +238,7 @@ modal.open(boton, "Crear cuenta", { placement: "origin" });`}
     <DocExampleCard
       title="6. Formatos del elemento viajero"
       description="Se escala automáticamente texto con font-size o imágenes y nodos con width/height. Admite solo texto, texto con icono, solo icono o imágenes completas."
-      code={`// Texto suelto
-modal.open(boton, "Solo texto");
-
-// Nodo interno (icono o imagen)
-modal.open(boton, boton.querySelector("svg"));
-modal.open(boton, boton.querySelector("img"));`}
-      lang="javascript"
+      {...exFormatosViajero}
     >
       <div class="row">
         <button data-wisspop-trigger="fmt-texto-demo" class="pill">Solo texto</button>
@@ -316,12 +315,7 @@ modal.open(boton, boton.querySelector("img"));`}
     <DocExampleCard
       title="7. Cerrar con el gesto (Swipe to Close)"
       description="swipeToClose: true permite descartar el panel arrastrándolo hacia cualquier dirección con el mouse o dedo."
-      code={`createModal({
-  content: '...',
-  swipeToClose: true,
-  swipeThreshold: 90,
-});`}
-      lang="javascript"
+      {...exSwipeToClose}
     >
       <div class="row">
         <button data-wisspop-trigger="swipe-demo-modal" class="demo-btn">Arrastrame para cerrar</button>
@@ -340,14 +334,10 @@ modal.open(boton, boton.querySelector("img"));`}
 
     <!-- Ejemplo 8: FlipModal — Elementos compartidos -->
     <DocExampleCard
+      id="flip-modal"
       title="8. FlipModal — Elementos compartidos"
       description="Elementos individuales con data-flip-id viajan del origen al modal conservando su identidad visual con GSAP Flip."
-      code={`createFlipModal({
-  trigger: document.getElementById('card-trigger'),
-  flipId: 'demo',
-  content: '...'
-});`}
-      lang="javascript"
+      {...exFlipModal}
     >
       <div class="row">
         <div data-wisspop-trigger="flip-card-demo" class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl w-64">
@@ -371,13 +361,10 @@ modal.open(boton, boton.querySelector("img"));`}
 
     <!-- Ejemplo 9: DropdownPanel — Despliegue elástico -->
     <DocExampleCard
+      id="dropdown-panel"
       title="9. DropdownPanel — Despliegue elástico"
       description="Despliegue elástico ligero con enterDropdownAnimation y leaveDropdownAnimation."
-      code={`import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
-
-enterDropdownAnimation(panel, null, { transformOrigin: 'top center' });
-leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
-      lang="javascript"
+      {...exDropdownPanel}
     >
       <div class="row">
         <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn">Desplegar Dropdown</button>
@@ -398,15 +385,7 @@ leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
     <DocExampleCard
       title="10. Alto reactivo y cambio de vista (Auth Demo)"
       description="Demuestra resync() al modificar la altura del contenido dinámicamente y changeView() para alternar entre Login y Signup sin cerrar el panel."
-      code={`// RF-4: resync al cambiar la altura del contenido
-modal.resync();
-
-// RF-5: changeView con mutación de estado síncrona previa a la animación
-modal.changeView(() => {
-  vista = vista === 'signup' ? 'login' : 'signup';
-  render();
-});`}
-      lang="javascript"
+      {...exAuthReactivo}
     >
       <div class="row">
         <button id="btn-auth-full-trigger" class="pill">Abrir Formulario Auth Reactivo</button>
@@ -531,65 +510,6 @@ modal.changeView(() => {
   </section>
 
   <!-- Soporte Frameworks -->
-  <section id="frameworks" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.frameworks_title')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.frameworks_desc')}</p>
-
-    <div class="flex flex-col gap-6">
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-orange-600 dark:text-orange-400">Astro (Nativo)</h4>
-        <CodeBlock lang="astro" code={`---
-import { WissPopMorph } from 'wisspop/astro';
----
-
-<button data-wisspop-trigger="mi-modal">Abrir</button>
-
-<WissPopMorph id="mi-modal" placement="bottom">
-  <p>Contenido Astro...</p>
-  <button data-wisspop-close>Cerrar</button>
-</WissPopMorph>`} />
-      </div>
-
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-emerald-600 dark:text-emerald-400">Vue 3</h4>
-        <CodeBlock lang="vue" code={`<${'script'} setup>
-import { ref } from 'vue';
-import { WissPopMorph } from 'wisspop/vue';
-
-const open = ref(false);
-const btnRef = ref(null);
-</${'script'}>
-
-<template>
-  <button ref="btnRef" @click="open = true">Abrir</button>
-  <WissPopMorph v-model="open" :origin-ref="btnRef">
-    <p>Contenido Vue...</p>
-  </WissPopMorph>
-</template>`} />
-      </div>
-
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-blue-600 dark:text-blue-400">React 18/19</h4>
-        <CodeBlock lang="jsx" code={`import { useRef, useState } from 'react';
-import { WissPopMorph } from 'wisspop/react';
-
-export function Demo() {
-  const btnRef = useRef(null);
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <button ref={btnRef} onClick={() => setOpen(true)}>Abrir</button>
-      <WissPopMorph open={open} onClose={() => setOpen(false)} originRef={btnRef.current}>
-        <p>Contenido React...</p>
-      </WissPopMorph>
-    </>
-  );
-}`} />
-      </div>
-    </div>
-  </section>
-
   <!-- Accesibilidad (A11Y) -->
   <section id="accesibilidad" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
     <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.accesibilidad')}</h2>

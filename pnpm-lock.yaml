@@ -33,8 +33,8 @@ importers:
         specifier: ^3.4.10
         version: 3.4.19(yaml@2.9.0)
       wisspop:
-        specifier: ^0.1.1
-        version: 0.1.1(gsap@3.15.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vue@3.5.41(typescript@5.9.3))
+        specifier: ^0.1.2
+        version: 0.1.2(gsap@3.15.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vue@3.5.41(typescript@5.9.3))
 
   apps/docs-astro:
     dependencies:
@@ -2583,8 +2583,8 @@ packages:
     resolution: {integrity: sha512-c9bZp7b5YtRj2wOe6dlj32MK+Bx/M/d+9VB2SHM1OtsUHR0aV0tdP6DWh/iMt0kWi1t5g1Iudu6hQRNd1A4PVA==}
     engines: {node: '>=18'}
 
-  wisspop@0.1.1:
-    resolution: {integrity: sha512-cUKJ2GIGBIZl62ty5K6HiwCwQaJSId202PsljbuPWnmGfZseaaKxdDayX3AAlv62pNn6LgilTEE6J5HXhNF/Uw==}
+  wisspop@0.1.2:
+    resolution: {integrity: sha512-amtsyNR/dorAvPykTetIUM3qLfXbx9yU+k7SWV2TPAbsTHvyxSvi2fnG3eGX9CnGG3KY1OEmmA0iGI1jqRNzSA==}
     peerDependencies:
       gsap: '>=3.12'
       react: '>=18'
@@ -5319,7 +5319,7 @@ snapshots:
     dependencies:
       string-width: 7.2.0
 
-  wisspop@0.1.1(gsap@3.15.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vue@3.5.41(typescript@5.9.3)):
+  wisspop@0.1.2(gsap@3.15.0)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(vue@3.5.41(typescript@5.9.3)):
     dependencies:
       gsap: 3.15.0
     optionalDependencies:
