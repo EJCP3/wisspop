@@ -69,14 +69,15 @@
   background: var(--surface, #ffffff);
   border: 1px solid var(--border, #e3e6ea);
   border-radius: 16px;
-  box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
+  /* --wisspop-shadow: apagala o cambiala sin tocar esta regla. Ver sección CSS. */
+  box-shadow: var(--wisspop-shadow, 0 24px 60px rgb(15 20 30 / 0.18));
 }
 
 .dark .panel {
   background: #18181b;
   border-color: #27272a;
   color: #f4f4f5;
-  box-shadow: 0 24px 60px rgb(0 0 0 / 0.4);
+  box-shadow: var(--wisspop-shadow, 0 24px 60px rgb(0 0 0 / 0.4));
 }
 
 .panel-body {

@@ -24,9 +24,15 @@ html {
   flex-direction: column;
   /* El core pisa esto con `overflow: hidden` inline mientras anima: el
      contenido todavía no entra en la caja y el navegador dibujaría una barra
-     de scroll que aparece y desaparece (design.md §7). */
-  overflow-x: hidden;
-  overflow-y: auto;
+     de scroll que aparece y desaparece (design.md §7).
+
+     Los dos ejes en el MISMO valor a propósito: `overflow-x` e `-y` distintos
+     (era `hidden`/`auto`) en un elemento con `border-radius` + `box-shadow`
+     —el `modalClass` del consumidor va en esta misma caja— dispara un bug de
+     render en Chromium/WebKit que corta el shadow en una esquina en vez de
+     redondearlo. Con los dos iguales el navegador no tiene que decidir un
+     eje contra el otro y el shadow se pinta entero. */
+  overflow: auto;
   transform-origin: top left;
 }
 

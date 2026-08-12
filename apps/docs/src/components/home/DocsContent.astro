@@ -358,16 +358,15 @@ const ANCLADOS = [
       {...exDropdownPanel}
     >
       <div class="row">
-        <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn">Desplegar Dropdown</button>
-      </div>
-
-      <WissPopMorph id="dropdown-dir-demo" placement="bottom" align="center" gap={8} modalClass="panel p-2 min-w-[14rem]">
+        <button id="abrir-dropdown" class="demo-btn">Desplegar Dropdown</button>
+        <div id="mi-dropdown" class="panel p-2 min-w-[14rem]" hidden style="position: fixed; z-index: 50;">
         <ul class="menu">
-          <li data-wisspop-close>Opción 1</li>
-          <li data-wisspop-close>Opción 2</li>
-          <li data-wisspop-close>Opción 3</li>
+          <li>Opción 1</li>
+          <li>Opción 2</li>
+          <li>Opción 3</li>
         </ul>
-      </WissPopMorph>
+        </div>
+      </div>
     </DocExampleCard>
 
     <!-- Ejemplo 10: Alto reactivo y cambio de vista -->
@@ -548,7 +547,7 @@ const ANCLADOS = [
   background: #fff;
   border: 1px solid #e3e6ea;
   border-radius: 16px;
-  box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
+  box-shadow: var(--wisspop-shadow, 0 24px 60px rgb(15 20 30 / 0.18));
 }
 .panel-body { padding: 1.25rem; }
 
@@ -564,6 +563,20 @@ const ANCLADOS = [
 
 /* El overlay no trae fondo por defecto — este es el tuyo */
 .overlay-dim { background: rgba(0, 0, 0, 0.4); }`} />
+
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      El <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">box-shadow</code> de <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel</code> tampoco lo manda la librería — es la misma regla de ejemplo de arriba. Queda detrás de una custom property para apagarla o cambiarla sin tocar la regla, en vez de repetirla en cada <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> que tengas:
+    </p>
+
+    <CodeBlock lang="css" code={`/* Sin sombra */
+:root { --wisspop-shadow: none; }
+
+/* Sombra más sutil */
+:root { --wisspop-shadow: 0 4px 16px rgb(15 20 30 / 0.08); }`} />
+
+    <p class="text-zinc-500 dark:text-zinc-500 text-sm leading-relaxed">
+      Si le ponés <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">box-shadow</code> a tu <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> va en <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-box</code>, que es el mismo elemento que recorta contenido durante la animación — en versiones antes de la 0.1.6, un <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overflow-x</code>/<code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overflow-y</code> distintos ahí cortaba el shadow en una esquina en vez de redondearlo (bug de render de Chromium/WebKit). Ya está resuelto en el core.
+    </p>
 
     <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
       Y se pasan con <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> / <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overlayClass</code>, nunca hardcodeadas en el core:
@@ -593,7 +606,7 @@ const ANCLADOS = [
 </div>
 
 <script>
-  import { createModal } from 'wisspop/vanilla';
+  import { createModal, enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
 
   function initFullAuthDemo() {
     const btnFull = document.getElementById('btn-auth-full-trigger');
@@ -659,4 +672,33 @@ const ANCLADOS = [
 
   initFullAuthDemo();
   document.addEventListener('astro:after-swap', initFullAuthDemo);
+
+  function initDropdownDemo() {
+    const btn = document.getElementById('abrir-dropdown');
+    const panel = document.getElementById('mi-dropdown');
+    // ViewTransitions re-ejecuta este script en cada navegación cliente; sin este guard
+    // cada swap suma otro listener con su propio `abierto` y el toggle queda inconsistente.
+    if (!btn || !panel || btn.dataset.dropdownBound) return;
+    btn.dataset.dropdownBound = 'true';
+
+    let abierto = false;
+
+    btn.addEventListener('click', () => {
+      if (abierto) {
+        leaveDropdownAnimation(panel, () => (panel.hidden = true), { transformOrigin: 'top center' });
+      } else {
+        // fixed, no absolute: la card del demo tiene overflow-hidden y recortaría un panel
+        // posicionado relativo a ella. getBoundingClientRect da coordenadas de viewport.
+        const rect = btn.getBoundingClientRect();
+        panel.style.top = `${rect.bottom + 8}px`;
+        panel.style.left = `${rect.left}px`;
+        panel.hidden = false;
+        enterDropdownAnimation(panel, null, { transformOrigin: 'top center' });
+      }
+      abierto = !abierto;
+    });
+  }
+
+  initDropdownDemo();
+  document.addEventListener('astro:after-swap', initDropdownDemo);
 </script>

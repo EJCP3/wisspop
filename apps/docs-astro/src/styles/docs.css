@@ -151,7 +151,8 @@ button.round {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
+  /* --wisspop-shadow: apagala o cambiala sin tocar esta regla. */
+  box-shadow: var(--wisspop-shadow, 0 24px 60px rgb(15 20 30 / 0.18));
 }
 
 .panel-body {
