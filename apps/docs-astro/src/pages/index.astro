@@ -310,16 +310,19 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
         <p class="hint">
           Animación elástica ligera con <code>enterDropdownAnimation</code> y <code>leaveDropdownAnimation</code>.
         </p>
-        <div class="row" style="position: relative;">
-          <button data-wisspop-trigger="dropdown-demo">Desplegar Dropdown</button>
+        <div id="dropdown-row" class="row" style="position: relative;">
+          <button data-dir="down">↓ Abajo</button>
+          <button data-dir="up">↑ Arriba</button>
+          <button data-dir="right">→ Derecha</button>
+          <button data-dir="left">← Izquierda</button>
 
-          <WissPopMorph id="dropdown-demo" placement="bottom" align="center" gap={8} modalClass="panel">
-            <ul class="menu">
-              <li data-wisspop-close>Opción 1</li>
-              <li data-wisspop-close>Opción 2</li>
-              <li data-wisspop-close>Opción 3</li>
+          <div id="dropdown-panel" class="panel" style="display: none; position: absolute; padding: 0.75rem 1rem; z-index: 50;">
+            <ul class="menu" style="margin: 0; padding: 0; list-style: none;">
+              <li>Opción 1</li>
+              <li>Opción 2</li>
+              <li>Opción 3</li>
             </ul>
-          </WissPopMorph>
+          </div>
         </div>
       </section>
 
@@ -345,5 +348,52 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
         </p>
       </footer>
     </main>
+
+    <script>
+      import { enterDropdownAnimation, leaveDropdownAnimation } from "wisspop";
+
+      const GAP = 8;
+      const DROPDOWN_DIRS = {
+        down: { origin: "top center", pos: (b) => ({ top: `${b.offsetTop + b.offsetHeight + GAP}px`, left: `${b.offsetLeft}px` }) },
+        up: { origin: "bottom center", pos: (b, row) => ({ bottom: `${row.offsetHeight - b.offsetTop + GAP}px`, left: `${b.offsetLeft}px` }) },
+        right: { origin: "left center", pos: (b) => ({ top: `${b.offsetTop}px`, left: `${b.offsetLeft + b.offsetWidth + GAP}px` }) },
+        left: { origin: "right center", pos: (b, row) => ({ top: `${b.offsetTop}px`, right: `${row.offsetWidth - b.offsetLeft + GAP}px` }) },
+      };
+
+      const row = document.getElementById("dropdown-row");
+      const panel = document.getElementById("dropdown-panel");
+      let dropdownDir = null;
+
+      function closeDropdown() {
+        if (!panel || !dropdownDir) return;
+        const { origin } = DROPDOWN_DIRS[dropdownDir];
+        dropdownDir = null;
+        leaveDropdownAnimation(panel, () => (panel.style.display = "none"), { transformOrigin: origin });
+      }
+
+      function openDropdown(dir, btn) {
+        if (!panel || !row || !btn) return;
+        dropdownDir = dir;
+        const { origin, pos } = DROPDOWN_DIRS[dir];
+        Object.assign(panel.style, { top: "", bottom: "", left: "", right: "", ...pos(btn, row), display: "block" });
+        enterDropdownAnimation(panel, null, { transformOrigin: origin });
+      }
+
+      if (row && panel) {
+        panel.querySelectorAll("li").forEach((li) => li.addEventListener("click", closeDropdown));
+        row.querySelectorAll("[data-dir]").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const dir = btn.dataset.dir;
+            if (dropdownDir === dir) closeDropdown();
+            else openDropdown(dir, btn);
+          });
+        });
+        document.addEventListener("click", (e) => {
+          if (!dropdownDir || panel.contains(e.target)) return;
+          if (e.target.closest("[data-dir]")) return;
+          closeDropdown();
+        });
+      }
+    </script>
   </body>
 </html>
