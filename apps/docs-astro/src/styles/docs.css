@@ -166,6 +166,29 @@ button.round {
   gap: 0.5rem;
 }
 
+/**
+ * Opcionales: partir un .panel en header/body/footer en vez de un único
+ * .panel-body con todo adentro. Ninguno de los demos de esta página los usa
+ * hoy (siguen con .panel-body solo) — están acá para cuando el contenido
+ * pida esa separación, p. ej. un footer con acciones pegado abajo del panel.
+ */
+.panel-header {
+  padding: 1.25rem 1.25rem 0;
+}
+
+.panel-header + .panel-body {
+  padding-top: 0.75rem;
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border);
+}
+
 .menu {
   list-style: none;
   margin: 0;
@@ -325,4 +348,17 @@ input {
   padding: 0;
   margin-top: 0.75rem;
   text-decoration: underline;
+}
+
+/* Estas dos existen solo porque el ejemplo de PillModal (auth-reactivo) usa
+   `class="pill w-full mt-2"` en el botón "Continuar" — nombre calcado de la
+   versión Tailwind de `docs` para que el markup sea idéntico entre ambos
+   sitios. Esta página es "sin Tailwind" a propósito, así que sin estas dos
+   reglas esas clases no hacían nada. */
+.w-full {
+  width: 100%;
+}
+
+.mt-2 {
+  margin-top: 0.5rem;
 }

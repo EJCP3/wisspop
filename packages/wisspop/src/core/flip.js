@@ -304,10 +304,17 @@ export function createFlip(els, options = {}) {
     await opts.mount?.();
     const modal = resolve(els.modal);
     const overlay = resolve(els.overlay);
-    // El cierre la esconde de forma síncrona (ver `finishClose`). Si el
-    // adaptador reusa la caja —vanilla la crea una vez— hay que devolverla a
-    // visible acá, o la segunda apertura no se vería.
-    if (modal) modal.style.visibility = "";
+    // Oculta hasta el paso 9 a propósito. El mount deja la tarjeta ya en su
+    // tamaño y posición FINAL (grande, centrada) — recién en el paso 9
+    // `Flip.from` la invierte de golpe a la posición chica del trigger y
+    // arranca el viaje. Entre medio hay un `await` de un frame real (paso 8,
+    // para que el layout esté calculado), y sin ocultarla ahí el navegador
+    // llega a pintar la tarjeta grande antes de que Flip la esconda de vuelta:
+    // un flash del modal completo seguido de un salto hacia atrás, justo
+    // antes de crecer. Se revela recién cuando `Flip.from` ya la invirtió,
+    // en el mismo tick — el mismo truco que usa `morph.js` con `gsap.set`,
+    // adaptado a que acá quien fija el estado inicial es el propio Flip.
+    if (modal) modal.style.visibility = "hidden";
 
     // Borrar el desplazamiento que dejó un cierre por gesto, ANTES de medir
     // nada. Los adaptadores que recrean el DOM en cada apertura (Vue, React)
@@ -373,6 +380,8 @@ export function createFlip(els, options = {}) {
     };
 
     if (d === 0) {
+      // Sin Flip.from acá abajo (reduced-motion): nadie más va a revelarla.
+      if (modal) modal.style.visibility = "";
       if (modalFadeItems.length) gsap.set(modalFadeItems, { autoAlpha: 1, y: 0 });
       if (closeBtn) gsap.set(closeBtn, { autoAlpha: 1, scale: 1 });
       setState("open");
@@ -430,6 +439,10 @@ export function createFlip(els, options = {}) {
 
     // 9. Run FLIP animation from trigger → modal
     const estiloOriginalModal = capturarEstiloOriginal(modalTargets);
+    // Se revela en el mismo tick que `Flip.from`: la llamada invierte la
+    // tarjeta a la posición del trigger de forma síncrona antes de animar, así
+    // que no hay paint entre "visible" y "ya invertida" — nunca se ve grande.
+    if (modal) modal.style.visibility = "";
     Flip.from(flipState, {
       targets: modalTargets,
       duration: d,

@@ -27,17 +27,27 @@ import 'wisspop/styles.css';
 ---
 
 <${'!--'} Los data-flip-id del trigger y del modal se emparejan por nombre.
-     flipId es el prefijo común; el "-card" marca la tarjeta principal. ${'--'}>
-<div data-wisspop-trigger="tarjeta" class="card">
+     flipId es el prefijo común; el "-card" marca la tarjeta principal.
+
+     El "-card" va en LAS DOS puntas: si el trigger no lo lleva, el contenedor
+     del modal no tiene con qué emparejarse y aparece de golpe a tamaño final
+     mientras la imagen y el título todavía viajan.
+
+     Lo que existe solo de un lado se desvanece en vez de deformarse:
+     trigger-fade-item-<flipId> sale antes del vuelo, modal-fade-item-<flipId>
+     entra durante. ${'--'}>
+<div data-wisspop-trigger="tarjeta" data-flip-id="demo-card" class="card">
   <img data-flip-id="demo-img" src="/gato.jpg" alt="" />
   <h3 data-flip-id="demo-title">Gato Viajero</h3>
+  <p class="trigger-fade-item-demo">Clic para expandir</p>
 </div>
 
 <WissPopFlip id="tarjeta" flipId="demo" swipeToClose={true}>
   <div data-flip-id="demo-card" class="panel">
     <img data-flip-id="demo-img" src="/gato.jpg" alt="" />
     <h3 data-flip-id="demo-title">Gato Viajero</h3>
-    <button data-wisspop-close>Cerrar</button>
+    <p class="modal-fade-item-demo">Viajó con GSAP Flip.</p>
+    <button data-wisspop-close class="modal-fade-item-demo">Cerrar</button>
   </div>
 </WissPopFlip>`,
   codeVue: `<${'script'} setup>

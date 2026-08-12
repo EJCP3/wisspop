@@ -193,6 +193,59 @@ modal.open(boton, boton.querySelector("img"));        // Imagen (modo box)
 
 ---
 
+## Elementos Compartidos (FlipModal)
+
+`data-flip-id` empareja elementos por **nombre exacto** entre el trigger y el modal. `flipId`
+es el prefijo común que pasás a `createFlipModal()` / `<WissPopFlip flipId="...">`.
+
+**La tarjeta contenedora necesita `data-flip-id="{flipId}-card"` en LAS DOS PUNTAS**, no solo
+en el modal. Si el trigger no la lleva, ese contenedor no tiene con qué emparejarse: Flip no
+lo anima, y aparece de golpe a tamaño final mientras el resto (imagen, título) todavía viaja —
+al cerrar pasa lo mismo al revés, y se lee como que "tarda en irse".
+
+```html
+<!-- Trigger: la tarjeta chica -->
+<div data-wisspop-trigger="tarjeta" data-flip-id="demo-card">
+  <img data-flip-id="demo-img" src="/gato.jpg" />
+  <h3 data-flip-id="demo-title">Gato Viajero</h3>
+</div>
+```
+
+```js
+import { createFlipModal } from 'wisspop/vanilla';
+
+const flip = createFlipModal({
+  trigger: document.querySelector('[data-wisspop-trigger="tarjeta"]'),
+  flipId: 'demo', // el prefijo: empareja demo-card, demo-img, demo-title
+  content:
+    '<div data-flip-id="demo-card" class="panel">' +
+      '<img data-flip-id="demo-img" src="/gato.jpg" />' +
+      '<h3 data-flip-id="demo-title">Gato Viajero</h3>' +
+    '</div>',
+});
+```
+
+**Lo que no tiene contraparte en el otro lado se desvanece, no se deforma.** Un botón de
+cerrar o una descripción que solo existe en el modal no puede animarse por Flip — si viaja
+adentro de la tarjeta se superpone con el título mientras esta todavía es chica. Marcalo con
+las clases de fade en vez de dejarlo suelto:
+
+```html
+<div data-flip-id="demo-card" class="panel">
+  <img data-flip-id="demo-img" src="/gato.jpg" />
+  <h3 data-flip-id="demo-title">Gato Viajero</h3>
+  <p class="modal-fade-item-demo">Entra durante el vuelo, escalonado.</p>
+  <button data-wisspop-close class="modal-fade-item-demo">Cerrar</button>
+</div>
+```
+
+| Clase | Dónde va | Cuándo |
+|---|---|---|
+| `trigger-fade-item-{flipId}` | Contenido del trigger sin contraparte en el modal | Se desvanece antes de que arranque el vuelo de apertura. |
+| `modal-fade-item-{flipId}` | Contenido del modal sin contraparte en el trigger | Entra escalonado mientras la tarjeta todavía está creciendo. |
+
+---
+
 ## Métodos de la API
 
 La instancia devuelta por `createModal()`, `createMorph()`, `createFlipModal()` o expuesta en las refs de los wrappers expone los siguientes métodos:

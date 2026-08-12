@@ -91,6 +91,33 @@
   gap: 0.5rem;
 }
 
+/**
+ * Opcionales: partir un .panel en header/body/footer en vez de un único
+ * .panel-body con todo adentro. Ninguno de los demos de esta página los usa
+ * hoy (siguen con .panel-body solo) — están acá para cuando el contenido
+ * pida esa separación, p. ej. un footer con acciones pegado abajo del panel.
+ */
+.panel-header {
+  padding: 1.25rem 1.25rem 0;
+}
+
+.panel-header + .panel-body {
+  padding-top: 0.75rem;
+}
+
+.panel-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  padding: 1rem 1.25rem;
+  border-top: 1px solid var(--border, #e3e6ea);
+}
+
+.dark .panel-footer {
+  border-color: #27272a;
+}
+
 .menu {
   list-style: none;
   margin: 0;
@@ -227,14 +254,16 @@ button.avatar-btn img {
   margin: 0 0 1.5rem;
 }
 
-.pill-body label {
+.pill-body label,
+.panel-body label {
   display: block;
   font-size: 0.85rem;
   color: #71717a;
   margin: 0 0 0.3rem;
 }
 
-.pill-body input {
+.pill-body input,
+.panel-body input {
   font: inherit;
   width: 100%;
   color: inherit;
