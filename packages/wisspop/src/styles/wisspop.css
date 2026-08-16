@@ -15,6 +15,7 @@ html {
   position: fixed;
   inset: 0;
   z-index: var(--wisspop-z-overlay, 40);
+  background-color: var(--wisspop-overlay-bg, transparent);
 }
 
 .wisspop-box {
@@ -34,6 +35,14 @@ html {
      eje contra el otro y el shadow se pinta entero. */
   overflow: auto;
   transform-origin: top left;
+}
+
+/* Prevenir que la caja sea visible si no tiene coordenadas calculadas o durante mediciones */
+.wisspop-box:not(.wisspop-flip-box):not([style*="top"]),
+.wisspop-box[style*="top: -9999px"],
+.wisspop-box[style*="top:-9999px"] {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .wisspop-flip-box {
@@ -209,7 +218,10 @@ html {
   pointer-events: none;
   white-space: nowrap;
   transform-origin: left;
-  will-change: transform, font-size, top, left;
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+  will-change: transform, font-size, width, height, top, left;
   /* El core escribe `line-height` inline en cada punta del viaje para que el
      glifo caiga en el mismo lugar dentro de su caja que en el destino. Esto es
      solo el piso por si alguien lo usa sin pasar por el core. */

@@ -65,12 +65,11 @@ const props = defineProps({
   labelOffsetX: { type: Number, default: 24 },
   mobileBreakpoint: { type: Number, default: 640 },
   /**
-   * Velocidad y curva del viaje. Estaban clavadas en el componente: el
-   * consumidor no tenía forma de ajustar el ritmo sin tocar la librería.
+   * Velocidad y curva del viaje optimizadas para movimientos orgánicos y nítidos.
    */
-  duration: { type: Number, default: 0.3 },
-  ease: { type: String, default: "power3.inOut" },
-  closeDuration: { type: Number, default: 0.42 },
+  duration: { type: Number, default: 0.38 },
+  ease: { type: String, default: "power3.out" },
+  closeDuration: { type: Number, default: 0.32 },
   closeEase: { type: String, default: "power3.inOut" },
   /** Botón × propio, para cuando no querés armar el tuyo con el `close` del slot. */
   closeButton: { type: Boolean, default: false },
@@ -156,7 +155,7 @@ const core = createMorph(
   },
 );
 
-const open = (origin, label, overrides) => core.open(origin, label ?? "", overrides);
+const open = (origin, label, overrides) => core.open(origin, label, overrides);
 const close = () => core.close();
 
 onBeforeUnmount(core.destroy);

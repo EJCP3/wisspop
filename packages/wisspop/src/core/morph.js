@@ -222,6 +222,17 @@ function prepareFlying(flying, payload, override, originCs) {
         clon.style[prop] = cs[prop];
       }
     }
+    // Si el clon es un elemento de botón/origen, limpiar fondos, bordes y padding para
+    // que no se dupliquen sobre la caja que ya anima con el fondo del origen.
+    if (clon instanceof HTMLElement) {
+      clon.style.background = "transparent";
+      clon.style.backgroundColor = "transparent";
+      clon.style.backgroundImage = "none";
+      clon.style.border = "none";
+      clon.style.boxShadow = "none";
+      clon.style.outline = "none";
+      clon.style.padding = "0";
+    }
     flying.append(clon);
   } else {
     flying.textContent = String(payload);
@@ -599,13 +610,24 @@ export function createMorph(els, options = {}) {
     const o = readOrigin(origin, opts.originRadius);
     if (!o) return console.warn("[wisspop] origen no encontrado:", origin);
 
+    // Si no se pasó un label explícito, auto-detectar si el botón disparador tiene icono o contenido
+    let flyingPayload = label;
+    if (flyingPayload == null && o.el instanceof HTMLElement) {
+      const hasIcon = o.el.querySelector("svg, img, [data-wisspop-icon]");
+      if (hasIcon) {
+        flyingPayload = o.el;
+      } else if (o.el.textContent?.trim()) {
+        flyingPayload = o.el.textContent.trim();
+      }
+    }
+
     setState("opening");
     await opts.mount?.();
 
     const box = resolve(els.box);
     const content = resolve(els.content);
     const overlay = resolve(els.overlay);
-    const flying = label != null ? resolve(els.flyingText) : null;
+    const flying = flyingPayload != null ? resolve(els.flyingText) : null;
     const d = reducedMotion() ? 0 : opts.duration;
 
     // El título del destino se esconde SOLO si hay una copia viajando que lo
@@ -679,11 +701,11 @@ export function createMorph(els, options = {}) {
     if (flying) {
       const { from, mode, style } = prepareFlying(
         flying,
-        label,
+        flyingPayload,
         opts.flyingMode,
         o.el ? getComputedStyle(o.el) : null,
       );
-      const fly = { mode, payload: label, rect: from, style };
+      const fly = { mode, payload: flyingPayload, rect: from, style };
       saved.fly = fly;
 
       // El color también viaja. Si arranca con el color de destino, en el
@@ -832,7 +854,12 @@ export function createMorph(els, options = {}) {
 
     // Sin esto el panel cerrado sigue interceptando clics (design.md §8).
     if (flying) gsap.set(flying, { opacity: 0, clearProps: "all" });
-    gsap.set(box, { clearProps: "all" });
+    if (box) {
+      box.style.visibility = "hidden";
+      box.style.opacity = "0";
+      box.style.pointerEvents = "none";
+      gsap.set(box, { clearProps: "transform,width,height,top,left,borderRadius,backgroundColor" });
+    }
     if (content) gsap.set(content, { clearProps: "all" });
     saved = null;
     setState("closed");

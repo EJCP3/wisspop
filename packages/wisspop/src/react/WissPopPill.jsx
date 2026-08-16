@@ -28,12 +28,11 @@ export const WissPopPill = forwardRef(function WissPopPill(
     labelOffsetX = 24,
     mobileBreakpoint = 640,
     /**
-     * Velocidad y curva del viaje. Estaban clavadas en el componente: el
-     * consumidor no tenía forma de ajustar el ritmo sin tocar la librería.
+     * Velocidad y curva del viaje optimizadas para movimientos orgánicos y nítidos.
      */
-    duration = 0.3,
-    ease = "power3.inOut",
-    closeDuration = 0.42,
+    duration = 0.38,
+    ease = "power3.out",
+    closeDuration = 0.32,
     closeEase = "power3.inOut",
     // Botón × propio, para cuando no querés armar el tuyo con el `close` del children-render-prop.
     closeButton = false,
@@ -121,7 +120,7 @@ export const WissPopPill = forwardRef(function WissPopPill(
     );
   }
 
-  const open = (origin, label, overrides) => coreRef.current.open(origin, label ?? "", overrides);
+  const open = (origin, label, overrides) => coreRef.current.open(origin, label, overrides);
   const close = () => coreRef.current.close();
 
   useImperativeHandle(ref, () => ({
