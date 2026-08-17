@@ -24,6 +24,7 @@
   "sidebar.dropdown_panel": "DropdownPanel",
   "sidebar.opciones": "Opciones y Posición",
   "sidebar.frameworks": "Soporte Frameworks",
+  "sidebar.buenas_practicas": "Buenas Prácticas y Errores",
   "sidebar.accesibilidad": "Accesibilidad (A11Y)",
   "docs.intro_title": "Introducción",
   "docs.intro_p1": "Un modal normal aparece con un fade o un scale desde el centro de la pantalla. Funciona, pero rompe la continuidad visual: el usuario hace clic en un botón acá y aparece un panel allá, sin relación espacial entre ambos.",

@@ -24,6 +24,7 @@
   "sidebar.dropdown_panel": "DropdownPanel",
   "sidebar.opciones": "Options & Placement",
   "sidebar.frameworks": "Framework Support",
+  "sidebar.buenas_practicas": "Best Practices & Errors",
   "sidebar.accesibilidad": "Accessibility (A11Y)",
   "docs.intro_title": "Introduction",
   "docs.intro_p1": "Standard modals fade in or scale up from the center of the viewport. While functional, it breaks visual continuity: the user clicks a button on one side of the screen and a dialog appears somewhere else without spatial relation.",

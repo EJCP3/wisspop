@@ -79,7 +79,7 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
           <button data-wisspop-trigger="fab-demo" class="round">+</button>
         </div>
 
-        <WissPopMorph
+        <WissPopPill
           id="fab-demo"
           placement="center"
           ease="power3.out"
@@ -88,7 +88,7 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
           flyingTextClass="flying"
           swipeToClose={true}
         >
-          <div class="panel-body" style="width: 22rem;">
+          <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
             <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
             <label>Concepto</label>
             <input placeholder="Café" />
@@ -96,7 +96,7 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
             <input placeholder="2500" />
             <button data-wisspop-close>Guardar</button>
           </div>
-        </WissPopMorph>
+        </WissPopPill>
       </section>
 
       <!-- 3 · Crecer en el lugar -->
@@ -216,16 +216,16 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
           </button>
         </div>
 
-        <WissPopMorph id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
-          <div class="panel-body" style="width: 21rem;">
+        <WissPopPill id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
             <h3><span data-wisspop-title>Solo texto</span></h3>
             <p class="nota">No hay nodo que medir, así que el punto de partida sale del texto del botón.</p>
             <button data-wisspop-close>Cerrar</button>
           </div>
-        </WissPopMorph>
+        </WissPopPill>
 
-        <WissPopMorph id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
-          <div class="panel-body" style="width: 21rem;">
+        <WissPopPill id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
             <h3>
               <span data-wisspop-title class="con-icono">
                 <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
@@ -235,10 +235,10 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
             <p class="nota">El icono va en <code>em</code>: crece junto con el texto sin ninguna cuenta aparte.</p>
             <button data-wisspop-close>Cerrar</button>
           </div>
-        </WissPopMorph>
+        </WissPopPill>
 
-        <WissPopMorph id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
-          <div class="panel-body" style="width: 21rem;">
+        <WissPopPill id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
             <h3>
               <span data-wisspop-title class="ico-destino">
                 <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
@@ -247,16 +247,16 @@ const DRAWERS = ['left', 'right', 'top', 'bottom'];
             <p class="nota">Sin texto que escalar, el core pasa a <code>box</code>: anima <code>width</code>/<code>height</code>.</p>
             <button data-wisspop-close>Cerrar</button>
           </div>
-        </WissPopMorph>
+        </WissPopPill>
 
-        <WissPopMorph id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
-          <div class="panel-body" style="width: 21rem;">
+        <WissPopPill id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+          <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
             <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
-            <h3>No hace nada, HD</h3>
+            <h3 style="margin-top: 1rem;">No hace nada, HD</h3>
             <p class="nota">Despega desde el rect medido de la miniatura y aterriza en el destino.</p>
             <button data-wisspop-close>Cerrar</button>
           </div>
-        </WissPopMorph>
+        </WissPopPill>
       </section>
 
       <!-- 7 · Cerrar con el gesto -->

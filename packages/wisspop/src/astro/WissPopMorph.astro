@@ -1,25 +1,36 @@
 ---
 /**
- * Panel que nace del botón que lo abrió. Todo lo que no sea `id`/`trigger` se
- * reenvía tal cual a `createModal` — mismas opciones que el adaptador vanilla.
+ * WissPopMorph: Panel que nace físicamente del botón que lo abrió.
+ * Ideal para dropdowns, menús contextuales, drawers y mini-modales.
+ *
+ * NOTA DE BUENAS PRÁCTICAS:
+ * - Aplica los estilos visuales (bg, border, rounded, shadow) en `modalClass`.
+ * - No uses `flyingTextClass` ni `data-wisspop-title` en Morph (usa `WissPopPill`).
+ * - Define un ancho explícito o responsivo (`style="width: min(24rem, calc(100vw - 2rem));"`) en el contenido del slot.
  */
 interface Props {
+  /** ID único del modal. Los disparadores con `data-wisspop-trigger="id"` lo abrirán automáticamente. */
   id: string;
-  /** Selector de los disparadores. Por defecto, los que apuntan a este `id`. */
+  /** Selector personalizado de los disparadores. Por defecto: `[data-wisspop-trigger="${id}"]`. */
   trigger?: string;
+  /** Posición: 'origin' | 'center' | 'top' | 'bottom' | 'left' | 'right' | 'drawer-left' | 'drawer-right' | 'drawer-top' | 'drawer-bottom' */
   placement?: string;
+  /** Alineación en eje cruzado: 'start' | 'center' | 'end' */
   align?: string;
   gap?: number;
   margin?: number;
   duration?: number;
   ease?: string;
+  closeDuration?: number;
+  closeEase?: string;
   swipeToClose?: boolean;
   closeButton?: boolean;
   lockScroll?: boolean;
+  closeOnEscape?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
   modalClass?: string;
   overlayClass?: string;
-  /** Si está, se crea el texto viajero con esta clase (ver `data-wisspop-title`). */
-  flyingTextClass?: string;
   [key: string]: any;
 }
 

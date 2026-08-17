@@ -1,21 +1,37 @@
 ---
 /**
- * Igual que WissPopMorph, con el preset del pill: el label del botón viaja
- * hasta el `[data-wisspop-title]` del panel. Los defaults son los mismos que
- * los del wrapper de React (ver WissPopPill.jsx); cualquiera se puede pisar.
+ * WissPopPill: Modal donde la caja se expande y el label/icono del botón vuela hacia `[data-wisspop-title]`.
+ * Ideal para formularios principales, auth, calculadoras y diálogos con título transformable.
+ *
+ * NOTA DE BUENAS PRÁCTICAS:
+ * - Requiere un elemento con `data-wisspop-title` dentro del modal donde aterrizará el texto del botón.
+ * - Puedes usar `data-wisspop-label` en el botón para especificar un texto/nodo específico de vuelo.
+ * - Pasa los estilos del contenedor (bg, border, rounded, shadow) en `modalClass`.
  */
 interface Props {
+  /** ID único del modal. Disparadores con `data-wisspop-trigger="id"` lo abrirán. */
   id: string;
+  /** Selector personalizado de los disparadores. Por defecto: `[data-wisspop-trigger="${id}"]`. */
   trigger?: string;
   placement?: string;
   width?: number;
   radius?: number;
+  originRadius?: number;
+  fullscreenOnMobile?: boolean;
   duration?: number;
   ease?: string;
+  closeDuration?: number;
+  closeEase?: string;
+  contentBlur?: boolean;
   swipeToClose?: boolean;
   closeButton?: boolean;
+  lockScroll?: boolean;
+  closeOnEscape?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
   modalClass?: string;
   overlayClass?: string;
+  /** Clases CSS para el elemento de texto/icono viajero. */
   flyingTextClass?: string;
   [key: string]: any;
 }

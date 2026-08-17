@@ -82,15 +82,14 @@ createModal({
           id={`anclado-${item.placement}-${item.align}`}
           placement={item.placement}
           align={item.align}
+          modalClass="panel"
           swipeToClose={true}
         >
-          <div class="panel">
-            <ul class="menu">
-              <li>Más recientes</li>
-              <li>Más antiguos</li>
-              <li>Mayor monto</li>
-            </ul>
-          </div>
+          <ul class="menu">
+            <li data-wisspop-close>Más recientes</li>
+            <li data-wisspop-close>Más antiguos</li>
+            <li data-wisspop-close>Mayor monto</li>
+          </ul>
         </WissPopMorph>
       ))}
     </DocExampleCard>
@@ -111,16 +110,14 @@ createModal({
         <button data-wisspop-trigger="modal-fab-demo" class="round">+</button>
       </div>
 
-      <WissPopPill id="modal-fab-demo" placement="center" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 22rem;">
-            <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
-            <label>Concepto</label>
-            <input placeholder="Café" />
-            <label>Monto</label>
-            <input placeholder="2500" />
-            <button data-wisspop-close class="demo-btn">Guardar</button>
-          </div>
+      <WissPopPill id="modal-fab-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Concepto</label>
+          <input placeholder="Café" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Monto</label>
+          <input placeholder="2500" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
+          <button data-wisspop-close class="demo-btn w-full mt-3">Guardar</button>
         </div>
       </WissPopPill>
     </DocExampleCard>
@@ -132,6 +129,7 @@ createModal({
       code={`createModal({
   content: '...',
   placement: 'origin',
+  modalClass: 'panel',
   closeButton: true,
 }).open(btnInline);`}
       lang="javascript"
@@ -140,14 +138,12 @@ createModal({
         <button data-wisspop-trigger="modal-inline-demo" class="demo-btn">Renombrar</button>
       </div>
 
-      <WissPopMorph id="modal-inline-demo" placement="origin" swipeToClose={true} closeButton={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 20rem;">
-            <h3>Renombrar</h3>
-            <label>Nombre</label>
-            <input placeholder="Supermercado" />
-            <button data-wisspop-close class="demo-btn">Listo</button>
-          </div>
+      <WissPopMorph id="modal-inline-demo" placement="origin" modalClass="panel" swipeToClose={true} closeButton={true}>
+        <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
+          <h3>Renombrar</h3>
+          <label class="block text-xs font-semibold text-zinc-500 mb-1">Nombre</label>
+          <input placeholder="Supermercado" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 mb-3" />
+          <button data-wisspop-close class="demo-btn w-full">Listo</button>
         </div>
       </WissPopMorph>
     </DocExampleCard>
@@ -178,11 +174,11 @@ createModal({
           modalClass={`panel drawer drawer-${lado}`}
           swipeToClose={true}
         >
-          <ul class="menu">
-            <li>Inicio</li>
-            <li>Movimientos</li>
-            <li>Presupuestos</li>
-            <li>Ajustes</li>
+          <ul class="menu p-4">
+            <li data-wisspop-close>Inicio</li>
+            <li data-wisspop-close>Movimientos</li>
+            <li data-wisspop-close>Presupuestos</li>
+            <li data-wisspop-close>Ajustes</li>
           </ul>
         </WissPopMorph>
       ))}
@@ -202,29 +198,25 @@ modal.open(boton, "Crear cuenta", { placement: "origin" });`}
         <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta (Origin)</button>
       </div>
 
-      <WissPopPill id="pill-center-demo" placement="center" swipeToClose={true}>
-        <div class="pill-panel">
-          <div class="pill-body" style="width: 22rem;">
-            <h2 data-wisspop-title>Crear cuenta</h2>
-            <label>Email</label>
-            <input placeholder="hola@ejemplo.com" />
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••" />
-            <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
-          </div>
+      <WissPopPill id="pill-center-demo" placement="center" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h2 data-wisspop-title>Crear cuenta</h2>
+          <label>Email</label>
+          <input placeholder="hola@ejemplo.com" />
+          <label>Contraseña</label>
+          <input type="password" placeholder="••••••••" />
+          <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
         </div>
       </WissPopPill>
 
-      <WissPopPill id="pill-origin-demo" placement="origin" swipeToClose={true}>
-        <div class="pill-panel">
-          <div class="pill-body" style="width: 22rem;">
-            <h2 data-wisspop-title>Crear cuenta</h2>
-            <label>Email</label>
-            <input placeholder="hola@ejemplo.com" />
-            <label>Contraseña</label>
-            <input type="password" placeholder="••••••••" />
-            <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
-          </div>
+      <WissPopPill id="pill-origin-demo" placement="origin" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h2 data-wisspop-title>Crear cuenta</h2>
+          <label>Email</label>
+          <input placeholder="hola@ejemplo.com" />
+          <label>Contraseña</label>
+          <input type="password" placeholder="••••••••" />
+          <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
         </div>
       </WissPopPill>
     </DocExampleCard>
@@ -261,55 +253,47 @@ modal.open(boton, boton.querySelector("img"));`}
         </button>
       </div>
 
-      <WissPopMorph id="fmt-texto-demo" placement="center" flyingTextClass="flying" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 21rem;">
-            <h3><span data-wisspop-title>Solo texto</span></h3>
-            <p class="nota">No hay nodo que medir, el punto de partida sale del texto del botón.</p>
-            <button data-wisspop-close class="demo-btn">Cerrar</button>
-          </div>
+      <WissPopPill id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
+          <h3><span data-wisspop-title>Solo texto</span></h3>
+          <p class="nota">No hay nodo que medir, el punto de partida sale del texto del botón.</p>
+          <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-mixto-demo" placement="center" flyingTextClass="flying" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 21rem;">
-            <h3>
-              <span data-wisspop-title class="con-icono">
-                <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
-                <span>Me gusta</span>
-              </span>
-            </h3>
-            <p class="nota">El icono medido en em escala exactamente junto con el texto.</p>
-            <button data-wisspop-close class="demo-btn">Cerrar</button>
-          </div>
+      <WissPopPill id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
+          <h3>
+            <span data-wisspop-title class="con-icono">
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
+              <span>Me gusta</span>
+            </span>
+          </h3>
+          <p class="nota">El icono medido en em escala exactamente junto con el texto.</p>
+          <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-icono-demo" placement="center" flyingTextClass="flying" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 21rem;">
-            <h3>
-              <span data-wisspop-title class="ico-destino">
-                <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
-              </span>
-            </h3>
-            <p class="nota">Sin texto que escalar, el core pasa a modo box animando width/height.</p>
-            <button data-wisspop-close class="demo-btn">Cerrar</button>
-          </div>
+      <WissPopPill id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
+          <h3>
+            <span data-wisspop-title class="ico-destino">
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
+            </span>
+          </h3>
+          <p class="nota">Sin texto que escalar, el core pasa a modo box animando width/height.</p>
+          <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-imagen-demo" placement="center" flyingTextClass="flying" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 21rem;">
-            <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
-            <h3>No hace nada, HD</h3>
-            <p class="nota">Despega desde la miniatura y aterriza en el destino manteniendo proporción.</p>
-            <button data-wisspop-close class="demo-btn">Cerrar</button>
-          </div>
+      <WissPopPill id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
+          <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
+          <h3 class="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-3">No hace nada, HD</h3>
+          <p class="nota">Despega desde la miniatura y aterriza en el destino manteniendo proporción.</p>
+          <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
     </DocExampleCard>
 
     <!-- Ejemplo 7: Cerrar con el gesto -->
@@ -318,6 +302,7 @@ modal.open(boton, boton.querySelector("img"));`}
       description="swipeToClose: true permite descartar el panel arrastrándolo hacia cualquier dirección con el mouse o dedo."
       code={`createModal({
   content: '...',
+  modalClass: 'panel',
   swipeToClose: true,
   swipeThreshold: 90,
 });`}
@@ -327,13 +312,11 @@ modal.open(boton, boton.querySelector("img"));`}
         <button data-wisspop-trigger="swipe-demo-modal" class="demo-btn">Arrastrame para cerrar</button>
       </div>
 
-      <WissPopMorph id="swipe-demo-modal" placement="center" swipeToClose={true}>
-        <div class="panel">
-          <div class="panel-body" style="width: 20rem;">
-            <h3>Arrastrame</h3>
-            <p class="nota">Hacia cualquier lado con el mouse o dedo. Si soltás antes del umbral, vuelve solo.</p>
-            <button data-wisspop-close class="demo-btn">O cerrame así</button>
-          </div>
+      <WissPopMorph id="swipe-demo-modal" placement="center" modalClass="panel" swipeToClose={true}>
+        <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
+          <h3>Arrastrame</h3>
+          <p class="nota">Hacia cualquier lado con el mouse o dedo. Si soltás antes del umbral, vuelve solo.</p>
+          <button data-wisspop-close class="demo-btn">O cerrame así</button>
         </div>
       </WissPopMorph>
     </DocExampleCard>
@@ -345,6 +328,7 @@ modal.open(boton, boton.querySelector("img"));`}
       code={`createFlipModal({
   trigger: document.getElementById('card-trigger'),
   flipId: 'demo',
+  modalClass: 'panel',
   content: '...'
 });`}
       lang="javascript"
@@ -357,8 +341,8 @@ modal.open(boton, boton.querySelector("img"));`}
         </div>
       </div>
 
-      <WissPopFlip id="flip-card-demo" flipId="demo" swipeToClose={true}>
-        <div data-flip-id="demo-card" class="panel p-6 w-96 max-w-[90vw]">
+      <WissPopFlip id="flip-card-demo" flipId="demo" modalClass="panel" swipeToClose={true}>
+        <div data-flip-id="demo-card" class="p-6" style="width: min(24rem, calc(100vw - 2rem));">
           <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-52 object-cover rounded-xl" alt="" />
           <h3 data-flip-id="demo-title" class="mt-4 text-2xl font-bold text-zinc-900 dark:text-zinc-100">Gato Viajero</h3>
           <p class="mt-2 text-sm text-zinc-500 leading-relaxed">
@@ -383,8 +367,8 @@ leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
         <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn">Desplegar Dropdown</button>
       </div>
 
-      <WissPopMorph id="dropdown-dir-demo" placement="bottom" align="center" gap={8}>
-        <div class="panel p-2 min-w-[14rem]">
+      <WissPopMorph id="dropdown-dir-demo" placement="bottom" align="center" gap={8} modalClass="panel">
+        <div class="p-2 min-w-[14rem]">
           <ul class="menu">
             <li data-wisspop-close>Opción 1</li>
             <li data-wisspop-close>Opción 2</li>
@@ -580,13 +564,296 @@ export function Demo() {
   return (
     <>
       <button ref={btnRef} onClick={() => setOpen(true)}>Abrir</button>
-      <WissPopMorph open={open} onClose={() => setOpen(false)} originRef={btnRef.current}>
-        <p>Contenido React...</p>
+      <WissPopMorph open={open} onClose={() => setOpen(false)} originRef={btnRef.current} modalClass="panel">
+        {({ close }) => (
+          <div className="panel-body" style={{ width: 'min(22rem, calc(100vw - 2rem))' }}>
+            <p>Contenido React...</p>
+            <button onClick={close}>Cerrar</button>
+          </div>
+        )}
       </WissPopMorph>
     </>
   );
 }`} />
       </div>
+    </div>
+  </section>
+
+  <!-- Guía de Buenas Prácticas y Errores Comunes -->
+  <section id="buenas-practicas" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+    <div>
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3 border border-indigo-100 dark:border-indigo-900">
+        <span>Guía Técnica</span>
+      </div>
+      <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Guía de Buenas Prácticas y Errores Comunes</h2>
+      <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mt-2 text-sm">
+        Patrones recomendados, advertencias técnicas y soluciones aprendidas para integrar <strong>WissPop</strong> con la máxima fluidez visual.
+      </p>
+    </div>
+
+    <!-- Tipos de Modales y Cuándo Usar Cada Uno -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Tipos de Modales y Cuándo Usar Cada Uno
+      </h3>
+      <div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800">
+            <tr>
+              <th class="p-3 font-semibold">Componente</th>
+              <th class="p-3 font-semibold">Tipo de Animación</th>
+              <th class="p-3 font-semibold">Cuándo Usarlo</th>
+              <th class="p-3 font-semibold">Elementos y Reglas</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopMorph</td>
+              <td class="p-3">La caja física nace del botón y se expande/transforma hacia su destino (<code>placement="origin"</code> o anclado).</td>
+              <td class="p-3">Dropdowns, menús contextuales, drawers laterales, mini-modales de confirmación o aviso.</td>
+              <td class="p-3"><strong class="text-rose-500">NO usa texto volador.</strong> La caja hace todo el morph físico.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopPill</td>
+              <td class="p-3">La caja se expande y el <strong>texto o icono del botón vuela</strong> e interpola su escala hacia el título.</td>
+              <td class="p-3">Modales de formularios principales, login/auth, calculadoras donde la etiqueta del botón se convierte en el título.</td>
+              <td class="p-3">Requiere <code>[data-wisspop-title]</code> en el modal y opcionalmente <code>data-wisspop-label</code> en el botón.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopFlip</td>
+              <td class="p-3">Transición FLIP completa de múltiples elementos compartidos (imágenes, títulos, badges) entre tarjeta y vista de detalle.</td>
+              <td class="p-3">Galerías de productos, cards interactivas que se expanden a pantalla completa.</td>
+              <td class="p-3">Requiere atributos <code>data-flip-id="id-unico"</code> coincidentes en el trigger y en el modal.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Errores Comunes y Cómo Evitarlos -->
+    <div class="space-y-6">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Errores Comunes y Cómo Evitarlos
+      </h3>
+
+      <!-- Doble Contenedor en WissPopMorph -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Crear un Doble Contenedor en WissPopMorph
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> Wisspop anima directamente su propio elemento contenedor <code>.wisspop-box</code> (modifica con GSAP <code>width</code>, <code>height</code>, <code>borderRadius</code>, <code>top</code> y <code>left</code>). Si dentro del slot colocas otro <code>&lt;div&gt;</code> con fondo, borde, redondeo y sombra, habrá dos cajas compitiendo y se producirá un salto o retraso visual ("efecto pop").
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Pasa los estilos del contenedor directamente a la propiedad <code>modalClass</code>.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto (Doble caja con saltos)" 
+              code={`<WissPopMorph id="mi-modal" placement="origin">
+  <!-- Doble contenedor: compite con .wisspop-box -->
+  <div class="bg-white rounded-2xl border border-slate-900 shadow-xl p-5">
+    <h3>Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto (Estilos en modalClass)" 
+              code={`<WissPopMorph 
+  id="mi-modal" 
+  placement="origin" 
+  modalClass="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl"
+  closeButton={true}
+  swipeToClose={true}
+>
+  <!-- Contenido interno limpio con ancho responsivo -->
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 class="font-bold text-base">Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mezclar flyingTextClass o data-wisspop-title -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Mezclar flyingTextClass o data-wisspop-title en WissPopMorph
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> <code>flyingTextClass</code> y <code>data-wisspop-title</code> son exclusivos del sistema de texto viajero de <strong>WissPopPill</strong>. Si los usas en un <code>WissPopMorph</code>, Wisspop ocultará temporalmente el título (<code>visibility: hidden</code>) esperando una animación de vuelo que nunca ocurrirá.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> En <code>WissPopMorph</code>, usa encabezados HTML normales <code>&lt;h3&gt;</code> sin <code>data-wisspop-title</code>. Para títulos con texto viajero, utiliza <code>&lt;WissPopPill&gt;</code>.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto en WissPopMorph" 
+              code={`<!-- Ocultará el título esperando un vuelo que no ocurrirá -->
+<WissPopMorph id="mi-modal" modalClass="panel">
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 data-wisspop-title>Título Oculto</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto en WissPopMorph" 
+              code={`<!-- Encabezado normal sin atributos de vuelo -->
+<WissPopMorph id="mi-modal" modalClass="panel">
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 class="font-bold text-lg">Título Visible</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- No Definir Ancho -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          No Definir Ancho en el Contenido Interno
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> Para que GSAP mida con precisión la geometría final de la caja antes de animar el despegue, el cuerpo del panel debe tener un ancho medible.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Establece un ancho explícito o responsivo en el <code>div</code> interior (ej. <code>style="width: min(24rem, calc(100vw - 2rem));"</code> o clases Tailwind equivalentes como <code>w-80 max-w-[calc(100vw-2rem)]</code>).
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto (Sin ancho medible)" 
+              code={`<WissPopMorph id="mi-modal" modalClass="panel">
+  <!-- Sin ancho: GSAP no puede calcular la geometría exacta -->
+  <div class="p-5">
+    <h3>Contenido sin ancho</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto (Ancho responsivo)" 
+              code={`<WissPopMorph id="mi-modal" modalClass="panel">
+  <!-- Ancho explícito y responsivo para medición fluida -->
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3>Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modales Anidados y Disparadores Dinámicos -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Modales Anidados o Disparadores Dinámicos Dentro de &lt;template&gt;
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> En Astro, los slots se emiten dentro de etiquetas <code>&lt;template data-wisspop="..."&gt;</code>. Si un botón que abre un submodal se encuentra dentro del template de otro modal que aún no se ha abierto, <code>document.querySelectorAll()</code> no lo encontrará en la carga inicial.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> El runtime cliente de <code>wisspop/astro</code> incluye delegación global automática de eventos para <code>[data-wisspop-trigger]</code>, montando bajo demanda cualquier submodal anidado o disparador dinámico.
+        </p>
+        <CodeBlock 
+          lang="astro" 
+          variant="success" 
+          label="Delegación Automática para Submodales" 
+          code={`<!-- Disparador dentro de otro modal o generado dinámicamente -->
+<button data-wisspop-trigger="sub-modal-confirmacion" class="demo-btn">
+  Abrir Confirmación
+</button>
+
+<!-- El runtime monta el template bajo demanda al hacer clic -->
+<WissPopMorph id="sub-modal-confirmacion" placement="center" modalClass="panel">
+  <div class="p-5" style="width: min(20rem, calc(100vw - 2rem));">
+    <h4 class="font-bold mb-3">¿Deseas confirmar la acción?</h4>
+    <button data-wisspop-close class="demo-btn w-full">Aceptar</button>
+  </div>
+</WissPopMorph>`} 
+        />
+      </div>
+
+      <!-- Destellos de Color por Interpolación -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Destellos de Color Inesperados al Abrir/Cerrar (Interpolación de backgroundColor)
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> WissPop lee automáticamente el color de fondo computado del botón disparador (<code>getComputedStyle(ref).backgroundColor</code>) y lo interpola con GSAP hacia el color del modal al abrir, y <strong>de vuelta al color del botón al cerrar</strong>. Si el botón tiene un color muy saturado o semitransparente (ej. <code>bg-amber-500/10</code>), toda la caja del modal se teñirá de ese tono mientras se encoge.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Mantén el fondo del botón disparador en un tono armónico o neutro respecto al modal (ej. <code>bg-white</code>, <code>bg-zinc-100</code> o tonos arena), y aplica los colores de acento/alerta en iconos, bordes o badges internos.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="html" 
+              variant="error" 
+              label="Destello amarillo al encogerse" 
+              code={`<!-- El modal completo se teñirá de amarillo al cerrar -->
+<button class="bg-amber-500/10 border border-amber-500" data-wisspop-trigger="mi-modal">
+  Aviso Importante
+</button>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="html" 
+              variant="success" 
+              label="Transición limpia y armónica" 
+              code={`<!-- Fondo neutro; color de acento en el icono -->
+<button class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center gap-2 p-2 rounded-xl" data-wisspop-trigger="mi-modal">
+  <span class="bg-amber-100 dark:bg-amber-950 text-amber-600 p-1 rounded-lg">!</span>
+  <span>Aviso Importante</span>
+</button>`} 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuración en Astro y View Transitions -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Configuración de Proyecto y View Transitions
+      </h3>
+      <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+        Para asegurar que Astro y Vite procesen correctamente los módulos de WissPop en SSR y durante las transiciones de página de <code>&lt;ClientRouter /&gt;</code>:
+      </p>
+      <CodeBlock lang="js" code={`// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['wisspop']
+    }
+  },
+});`} />
     </div>
   </section>
 

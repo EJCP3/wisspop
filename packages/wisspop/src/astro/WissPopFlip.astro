@@ -1,18 +1,28 @@
 ---
 /**
- * Transición de elementos compartidos. Los `[data-flip-id]` del trigger y los
- * del panel se emparejan por nombre, así que `flipId` es el prefijo común:
- * con `flipId="demo"` viajan `demo-card`, `demo-img`, `demo-title`…
+ * WissPopFlip: Transición de elementos compartidos (GSAP Flip) entre una tarjeta o elemento origen y el modal.
+ * Ideal para galerías de productos, cards interactivas y vistas de detalle expandidas.
+ *
+ * NOTA DE BUENAS PRÁCTICAS:
+ * - Requiere atributos `data-flip-id="id-unico"` coincidentes en los elementos del trigger y del modal.
+ * - Pasa los estilos del contenedor en `modalClass`.
  */
 interface Props {
+  /** ID único del modal. */
   id: string;
   /** Prefijo de los `data-flip-id` que viajan. Obligatorio. */
   flipId: string;
   trigger?: string;
   duration?: number;
   ease?: string;
+  closeDuration?: number;
+  closeEase?: string;
   swipeToClose?: boolean;
   closeButton?: boolean;
+  lockScroll?: boolean;
+  closeOnEscape?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
   modalClass?: string;
   overlayClass?: string;
   [key: string]: any;

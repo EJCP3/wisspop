@@ -2,22 +2,102 @@
 interface Props {
   code: string;
   lang?: string;
+  variant?: 'default' | 'error' | 'success';
+  label?: string;
 }
 
-const { code, lang = 'bash' } = Astro.props;
+const { code, lang = 'bash', variant = 'default', label } = Astro.props;
+
+function highlightCode(raw: string, currentVariant: string) {
+  let html = raw
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+  // 1. Extraer comentarios
+  const comments: string[] = [];
+  html = html.replace(/(&lt;!--[\s\S]*?--&gt;|\/\/[^\n]*)/g, (m) => {
+    comments.push(m);
+    return `___WP_COMMENT_${comments.length - 1}___`;
+  });
+
+  // 2. Extraer strings
+  const strings: string[] = [];
+  html = html.replace(/(["'`])((?:\\.|[^\\])*?)\1/g, (m) => {
+    strings.push(m);
+    return `___WP_STRING_${strings.length - 1}___`;
+  });
+
+  // 3. Resaltar tags HTML / JSX
+  html = html.replace(/(&lt;\/?)([a-zA-Z0-9_-]+)/g, (_, prefix, tagName) => {
+    let tagColor = 'text-indigo-600 dark:text-indigo-400 font-semibold';
+    if (currentVariant === 'error') tagColor = 'text-rose-600 dark:text-rose-400 font-semibold';
+    if (currentVariant === 'success') tagColor = 'text-emerald-600 dark:text-emerald-400 font-semibold';
+    return `${prefix}<span class="${tagColor}">${tagName}</span>`;
+  });
+
+  html = html.replace(/(\/?&gt;)/g, '<span class="text-zinc-400 dark:text-zinc-500">$1</span>');
+
+  // 4. Atributos
+  html = html.replace(/\b([a-zA-Z0-9_-]+)=/g, '<span class="text-sky-600 dark:text-sky-300 font-medium">$1</span>=');
+
+  // 5. Palabras clave JS
+  html = html.replace(/\b(import|from|const|export|function|return|let|as|default|true|false|null|undefined)\b/g, '<span class="text-purple-600 dark:text-purple-400 font-semibold">$1</span>');
+
+  // 6. Restaurar strings
+  html = html.replace(/___WP_STRING_(\d+)___/g, (_, i) => {
+    const str = strings[Number(i)];
+    let strColor = 'text-amber-600 dark:text-amber-300';
+    if (currentVariant === 'error') strColor = 'text-rose-600 dark:text-rose-300';
+    if (currentVariant === 'success') strColor = 'text-emerald-600 dark:text-emerald-300';
+    return `<span class="${strColor}">${str}</span>`;
+  });
+
+  // 7. Restaurar comentarios
+  html = html.replace(/___WP_COMMENT_(\d+)___/g, (_, i) => {
+    const comment = comments[Number(i)];
+    let commentColor = 'text-zinc-400 dark:text-zinc-500';
+    if (currentVariant === 'error') commentColor = 'text-rose-500/80 dark:text-rose-400/80';
+    if (currentVariant === 'success') commentColor = 'text-emerald-600/80 dark:text-emerald-400/80';
+    return `<span class="${commentColor} italic font-normal">${comment}</span>`;
+  });
+
+  return html;
+}
+
+const highlightedHtml = highlightCode(code.trim(), variant);
+
+// Clases según variante
+const wrapperClasses = {
+  default: 'border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 shadow-sm',
+  error: 'border-rose-200 dark:border-rose-900/80 bg-rose-50/40 dark:bg-[#16080d] shadow-sm shadow-rose-100 dark:shadow-none',
+  success: 'border-emerald-200 dark:border-emerald-900/80 bg-emerald-50/40 dark:bg-[#071710] shadow-sm shadow-emerald-100 dark:shadow-none',
+}[variant];
+
+const headerClasses = {
+  default: 'bg-zinc-100/70 dark:bg-zinc-800/50 border-zinc-200 dark:border-zinc-800 text-zinc-500 dark:text-zinc-400',
+  error: 'bg-rose-100/80 dark:bg-rose-950/70 border-rose-200 dark:border-rose-900/80 text-rose-700 dark:text-rose-300 font-medium',
+  success: 'bg-emerald-100/80 dark:bg-emerald-950/70 border-emerald-200 dark:border-emerald-900/80 text-emerald-700 dark:text-emerald-300 font-medium',
+}[variant];
+
+const preClasses = {
+  default: 'text-zinc-800 dark:text-zinc-200',
+  error: 'text-rose-950 dark:text-rose-100 bg-rose-50/20 dark:bg-[#120509]',
+  success: 'text-emerald-950 dark:text-emerald-100 bg-emerald-50/20 dark:bg-[#04110b]',
+}[variant];
 ---
 
-<div class="relative group my-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900/60 overflow-hidden font-mono text-xs shadow-sm">
-  <div class="flex items-center justify-between px-4 py-2 bg-zinc-100/70 dark:bg-zinc-800/50 border-b border-zinc-200 dark:border-zinc-800 text-zinc-400">
-    <span>{lang}</span>
-    <button class="copy-code-btn hover:text-zinc-700 dark:hover:text-zinc-200 transition-colors flex items-center gap-1">
-      <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-      </svg>
+<div class={`relative group my-4 rounded-xl border overflow-hidden font-mono text-xs ${wrapperClasses}`}>
+  <div class={`flex items-center justify-between px-4 py-2 border-b text-xs ${headerClasses}`}>
+    <div class="flex items-center gap-2">
+      <span class="font-semibold">{label || lang}</span>
+      {label && <span class="text-[10px] opacity-70">({lang})</span>}
+    </div>
+    <button class="copy-code-btn hover:opacity-100 opacity-70 transition-opacity flex items-center gap-1">
       <span>Copy</span>
     </button>
   </div>
-  <pre class="p-4 overflow-x-auto text-zinc-800 dark:text-zinc-200 leading-relaxed"><code>{code.trim()}</code></pre>
+  <pre class={`p-4 overflow-x-auto leading-relaxed ${preClasses}`}><code set:html={highlightedHtml} /></pre>
 </div>
 
 <script>
@@ -39,3 +119,4 @@ const { code, lang = 'bash' } = Astro.props;
   setupCodeBlockCopy();
   document.addEventListener('astro:after-swap', setupCodeBlockCopy);
 </script>
+
