@@ -1,23 +1,17 @@
 ---
-import FrameworkTabs from './FrameworkTabs.astro';
+import CodeBlock from './CodeBlock.astro';
 
 interface Props {
-  id?: string;
   title?: string;
   description?: string;
-  /** Vanilla — el único obligatorio: es el que documenta el core. */
   code: string;
-  codeAstro?: string;
-  codeVue?: string;
-  codeReact?: string;
-  /** Lenguaje de la variante vanilla. */
   lang?: string;
 }
 
-const { id, title, description, code, codeAstro, codeVue, codeReact, lang } = Astro.props;
+const { title, description, code, lang = 'javascript' } = Astro.props;
 ---
 
-<div id={id} class="doc-example-card scroll-mt-28 my-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 overflow-hidden shadow-sm">
+<div class="doc-example-card my-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 overflow-hidden shadow-sm">
   {title && (
     <div class="px-6 pt-6 pb-2">
       <h3 class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{title}</h3>
@@ -27,63 +21,55 @@ const { id, title, description, code, codeAstro, codeVue, codeReact, lang } = As
 
   <div class="tab-wrapper">
     <div class="flex items-center gap-6 px-6 border-b border-zinc-200 dark:border-zinc-800 text-sm font-medium bg-zinc-50/50 dark:bg-zinc-900/50">
-      <button type="button" class="tab-btn btn-preview py-3 cursor-pointer border-b-2 transition-colors">Preview</button>
-      <button type="button" class="tab-btn btn-code py-3 cursor-pointer border-b-2 transition-colors">Code</button>
+      <button type="button" class="tab-btn btn-preview active py-3 text-zinc-900 dark:text-zinc-100 border-b-2 border-zinc-900 dark:border-zinc-100 cursor-pointer font-semibold transition-colors">
+        Preview
+      </button>
+      <button type="button" class="tab-btn btn-code py-3 text-zinc-400 hover:text-zinc-700 dark:hover:text-zinc-200 border-b-2 border-transparent cursor-pointer transition-colors">
+        Code
+      </button>
     </div>
 
     <div class="tab-content-preview p-6 flex flex-col justify-center items-center min-h-[160px] bg-white dark:bg-zinc-950">
       <slot />
     </div>
 
-    <div class="tab-content-code hidden p-4">
-      <FrameworkTabs vanilla={code} vanillaLang={lang} astro={codeAstro} vue={codeVue} react={codeReact} />
+    <div class="tab-content-code hidden p-4 bg-zinc-50 dark:bg-zinc-900/80">
+      <CodeBlock code={code} lang={lang} />
     </div>
   </div>
 </div>
 
-<style>
-  /* Estado activo por clase en vez de mover 5 utilidades de Tailwind a mano
-     desde el script: una sola fuente para cómo se ve "seleccionado". */
-  .tab-btn {
-    color: rgb(161 161 170);
-    border-color: transparent;
-  }
-  .tab-btn:hover {
-    color: rgb(63 63 70);
-  }
-  :global(html.dark) .tab-btn:hover {
-    color: rgb(228 228 231);
-  }
-  .tab-btn.is-active {
-    color: rgb(24 24 27);
-    border-color: rgb(24 24 27);
-    font-weight: 600;
-  }
-  :global(html.dark) .tab-btn.is-active {
-    color: rgb(244 244 245);
-    border-color: rgb(244 244 245);
-  }
-</style>
-
 <script>
-  // El cambio de framework vive en FrameworkTabs: acá solo Preview/Code.
   function setupExampleCards() {
-    document.querySelectorAll<HTMLElement>('.doc-example-card').forEach((card) => {
+    document.querySelectorAll('.doc-example-card').forEach((card) => {
       const btnPreview = card.querySelector('.btn-preview');
       const btnCode = card.querySelector('.btn-code');
-      const panelPreview = card.querySelector('.tab-content-preview');
-      const panelCode = card.querySelector('.tab-content-code');
-      if (!btnPreview || !btnCode || !panelPreview || !panelCode) return;
+      const contentPreview = card.querySelector('.tab-content-preview');
+      const contentCode = card.querySelector('.tab-content-code');
 
-      const mostrar = (codigo: boolean) => {
-        btnCode.classList.toggle('is-active', codigo);
-        btnPreview.classList.toggle('is-active', !codigo);
-        panelCode.classList.toggle('hidden', !codigo);
-        panelPreview.classList.toggle('hidden', codigo);
-      };
-      btnPreview.addEventListener('click', () => mostrar(false));
-      btnCode.addEventListener('click', () => mostrar(true));
-      mostrar(false);
+      if (!btnPreview || !btnCode || !contentPreview || !contentCode) return;
+
+      btnPreview.addEventListener('click', () => {
+        btnPreview.classList.add('text-zinc-900', 'dark:text-zinc-100', 'border-zinc-900', 'dark:border-zinc-100', 'font-semibold');
+        btnPreview.classList.remove('text-zinc-400', 'border-transparent');
+
+        btnCode.classList.remove('text-zinc-900', 'dark:text-zinc-100', 'border-zinc-900', 'dark:border-zinc-100', 'font-semibold');
+        btnCode.classList.add('text-zinc-400', 'border-transparent');
+
+        contentPreview.classList.remove('hidden');
+        contentCode.classList.add('hidden');
+      });
+
+      btnCode.addEventListener('click', () => {
+        btnCode.classList.add('text-zinc-900', 'dark:text-zinc-100', 'border-zinc-900', 'dark:border-zinc-100', 'font-semibold');
+        btnCode.classList.remove('text-zinc-400', 'border-transparent');
+
+        btnPreview.classList.remove('text-zinc-900', 'dark:text-zinc-100', 'border-zinc-900', 'dark:border-zinc-100', 'font-semibold');
+        btnPreview.classList.add('text-zinc-400', 'border-transparent');
+
+        contentCode.classList.remove('hidden');
+        contentPreview.classList.add('hidden');
+      });
     });
   }
 

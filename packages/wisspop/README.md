@@ -58,14 +58,23 @@ Los `z-index` predeterminados pueden ajustarse mediante variables CSS:
 
 ---
 
-## Tipos de Modales y Componentes
+## Tipos de Modales y Cuándo Usar Cada Uno
 
-| Componente | Animación | Caso de uso principal |
-|---|---|---|
-| **MorphModal** | La caja crece desde el rect del botón hasta su tamaño final; el contenido entra después con fade | Dropdowns, menús, drawers, paneles anclados a un botón |
-| **PillModal** | La caja se expande y el **texto/icono del botón viaja** hasta el título `data-wisspop-title` | Modales de auth, formularios donde la etiqueta del botón se convierte en el título |
-| **FlipModal** | Transición FLIP real: elementos individuales con `data-flip-id` viajan del origen al modal | Cards expandibles a detalle, galerías de productos |
-| **DropdownPanel** | Despliegue elástico ligero con `scaleY 0→1` | Selects, menús de opciones y filtros contextuales |
+| Componente | Tipo de Animación | Caso de Uso Principal | Qué Elementos Usa |
+|---|---|---|---|
+| **`WissPopMorph`** | La caja crece físicamente desde el rect del botón hasta su destino (`placement="origin"` o anclado). | Dropdowns, menús contextuales, drawers, mini-modales de confirmación o aviso | **NO usa texto volador.** La caja hace todo el morph físico. |
+| **`WissPopPill`** | La caja se expande y el **texto/icono del botón vuela** hacia `[data-wisspop-title]`. | Modales de formularios principales, login/auth, calculadoras donde la etiqueta del botón se convierte en el título | Requiere `[data-wisspop-title]` en el modal y opcionalmente `data-wisspop-label` en el botón. |
+| **`WissPopFlip`** | Transición FLIP real: múltiples elementos compartidos con `data-flip-id` viajan del origen al modal. | Cards expandibles a detalle, galerías de productos | Requiere atributos `data-flip-id="id-unico"` coincidentes. |
+| **`DropdownPanel`** | Despliegue elástico ligero con `scaleY 0→1`. | Selects, menús de opciones y filtros contextuales rápidos | Helpers vanilla `enterDropdownAnimation` / `leaveDropdownAnimation`. |
+
+---
+
+## Buenas Prácticas y Errores Comunes
+
+1. **Aplica estilos en `modalClass`**: Wisspop anima directamente su propio contenedor `.wisspop-box`. Pasa el fondo, bordes, redondeo y sombra a `modalClass` en lugar de crear una segunda caja contenedora en el slot.
+2. **`flyingTextClass` es exclusivo de `WissPopPill`**: En `WissPopMorph`, usa encabezados HTML normales `<h3>` sin `data-wisspop-title`.
+3. **Define un ancho en el contenido**: Para que GSAP calcule la geometría con precisión, dale un ancho explícito o responsivo (ej. `style="width: min(24rem, calc(100vw - 2rem));"`).
+4. **Colores de fondo armónicos en el botón**: WissPop interpola el `backgroundColor` del botón hacia el modal al abrir y de vuelta al cerrar. Mantén el botón en tonos armónicos/neutros y coloca los colores llamativos en iconos o badges.
 
 ---
 
@@ -73,7 +82,7 @@ Los `z-index` predeterminados pueden ajustarse mediante variables CSS:
 
 ### 1. Astro (Nativo)
 
-Se usa de forma 100% declarativa mediante los atributos `data-wisspop-trigger="id"` y `data-wisspop-close`:
+Se usa de forma 100% declarativa mediante `data-wisspop-trigger="id"` y `data-wisspop-close`:
 
 ```astro
 ---
@@ -81,14 +90,54 @@ import { WissPopMorph, WissPopPill } from 'wisspop/astro';
 import 'wisspop/styles.css';
 ---
 
-<button data-wisspop-trigger="mi-modal">Filtros</button>
+<!-- 1. Morph Modal (Menús, Dropdowns, Drawers) -->
+<button data-wisspop-trigger="filtros-modal" class="btn">Filtros</button>
 
-<WissPopMorph id="mi-modal" placement="bottom" align="center">
-  <div class="p-6 border rounded-xl bg-white dark:bg-zinc-900">
-    <h3>Filtros de Búsqueda</h3>
-    <button data-wisspop-close>Cerrar</button>
+<WissPopMorph 
+  id="filtros-modal" 
+  placement="bottom" 
+  align="center"
+  modalClass="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl"
+  swipeToClose={true}
+>
+  <div class="p-6" style="width: min(22rem, calc(100vw - 2rem));">
+    <h3 class="font-bold text-lg text-zinc-900 dark:text-zinc-100">Filtros</h3>
+    <button data-wisspop-close class="btn mt-4 w-full">Aplicar</button>
   </div>
 </WissPopMorph>
+
+<!-- 2. Pill Modal (Auth, Formularios con texto viajero) -->
+<button data-wisspop-trigger="auth-modal" class="btn">Crear cuenta</button>
+
+<WissPopPill
+  id="auth-modal"
+  placement="center"
+  modalClass="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl"
+  flyingTextClass="font-bold text-lg"
+  swipeToClose={true}
+>
+  <div class="p-6" style="width: min(24rem, calc(100vw - 2rem));">
+    <h2 data-wisspop-title class="font-bold text-2xl mb-4">Crear cuenta</h2>
+    <input placeholder="Email" class="input mb-3 w-full" />
+    <button data-wisspop-close class="btn w-full">Continuar</button>
+  </div>
+</WissPopPill>
+```
+
+#### Configuración en Astro (`astro.config.mjs`)
+
+```js
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['wisspop']
+    }
+  },
+});
 ```
 
 ### 2. Vue 3
@@ -96,7 +145,7 @@ import 'wisspop/styles.css';
 ```vue
 <script setup>
 import { ref } from 'vue';
-import { WissPopMorph, WissPopPill } from 'wisspop/vue';
+import { WissPopMorph } from 'wisspop/vue';
 import 'wisspop/styles.css';
 
 const btn = ref(null);
@@ -111,9 +160,10 @@ const abierto = ref(false);
     :origin-ref="btn"
     placement="bottom"
     align="center"
+    modalClass="panel"
   >
     <template #default="{ close }">
-      <div class="panel">
+      <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
         <p>Contenido del modal</p>
         <button @click="close">Cerrar</button>
       </div>
@@ -143,9 +193,10 @@ export function Demo() {
         originRef={btnRef.current}
         placement="bottom"
         align="center"
+        modalClass="panel"
       >
         {({ close }) => (
-          <div class="panel">
+          <div className="panel-body" style={{ width: 'min(22rem, calc(100vw - 2rem))' }}>
             <p>Contenido del modal</p>
             <button onClick={close}>Cerrar</button>
           </div>
@@ -163,9 +214,10 @@ import { createModal } from 'wisspop/vanilla';
 import 'wisspop/styles.css';
 
 const modal = createModal({
-  content: '<div class="p-6">Contenido...</div>',
+  content: '<div class="p-6" style="width: min(22rem, calc(100vw - 2rem));">Contenido...</div>',
   placement: 'bottom',
   align: 'center',
+  modalClass: 'panel',
 });
 
 document.querySelector('#btn').addEventListener('click', (e) => {
@@ -190,59 +242,6 @@ modal.open(boton, boton.querySelector("img"));        // Imagen (modo box)
 |---|---|---|
 | `text` | `font-size`, `line-height`, `font-weight`, `color` | Cuando hay texto. Mantiene la nitidez en cada frame. |
 | `box` | `width`, `height` | Sin texto (iconos sueltos o imágenes). |
-
----
-
-## Elementos Compartidos (FlipModal)
-
-`data-flip-id` empareja elementos por **nombre exacto** entre el trigger y el modal. `flipId`
-es el prefijo común que pasás a `createFlipModal()` / `<WissPopFlip flipId="...">`.
-
-**La tarjeta contenedora necesita `data-flip-id="{flipId}-card"` en LAS DOS PUNTAS**, no solo
-en el modal. Si el trigger no la lleva, ese contenedor no tiene con qué emparejarse: Flip no
-lo anima, y aparece de golpe a tamaño final mientras el resto (imagen, título) todavía viaja —
-al cerrar pasa lo mismo al revés, y se lee como que "tarda en irse".
-
-```html
-<!-- Trigger: la tarjeta chica -->
-<div data-wisspop-trigger="tarjeta" data-flip-id="demo-card">
-  <img data-flip-id="demo-img" src="/gato.jpg" />
-  <h3 data-flip-id="demo-title">Gato Viajero</h3>
-</div>
-```
-
-```js
-import { createFlipModal } from 'wisspop/vanilla';
-
-const flip = createFlipModal({
-  trigger: document.querySelector('[data-wisspop-trigger="tarjeta"]'),
-  flipId: 'demo', // el prefijo: empareja demo-card, demo-img, demo-title
-  content:
-    '<div data-flip-id="demo-card" class="panel">' +
-      '<img data-flip-id="demo-img" src="/gato.jpg" />' +
-      '<h3 data-flip-id="demo-title">Gato Viajero</h3>' +
-    '</div>',
-});
-```
-
-**Lo que no tiene contraparte en el otro lado se desvanece, no se deforma.** Un botón de
-cerrar o una descripción que solo existe en el modal no puede animarse por Flip — si viaja
-adentro de la tarjeta se superpone con el título mientras esta todavía es chica. Marcalo con
-las clases de fade en vez de dejarlo suelto:
-
-```html
-<div data-flip-id="demo-card" class="panel">
-  <img data-flip-id="demo-img" src="/gato.jpg" />
-  <h3 data-flip-id="demo-title">Gato Viajero</h3>
-  <p class="modal-fade-item-demo">Entra durante el vuelo, escalonado.</p>
-  <button data-wisspop-close class="modal-fade-item-demo">Cerrar</button>
-</div>
-```
-
-| Clase | Dónde va | Cuándo |
-|---|---|---|
-| `trigger-fade-item-{flipId}` | Contenido del trigger sin contraparte en el modal | Se desvanece antes de que arranque el vuelo de apertura. |
-| `modal-fade-item-{flipId}` | Contenido del modal sin contraparte en el trigger | Entra escalonado mientras la tarjeta todavía está creciendo. |
 
 ---
 

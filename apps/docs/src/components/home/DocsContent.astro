@@ -3,22 +3,7 @@ import type { Lang } from '../../i18n/utils';
 import { useTranslations } from '../../i18n/utils';
 import CodeBlock from '../CodeBlock.astro';
 import DocExampleCard from '../DocExampleCard.astro';
-import FrameworkTabs from '../FrameworkTabs.astro';
 import { WissPopMorph, WissPopPill, WissPopFlip } from 'wisspop/astro';
-
-// Los 4 snippets (vanilla/astro/vue/react) de cada ejemplo viven en su propio
-// archivo — es contenido, no layout, y cada uno ronda las 100 líneas.
-import frameworkIntro from '../../examples/framework-intro';
-import exAnclado from '../../examples/anclado';
-import exBotonCircular from '../../examples/boton-circular';
-import exCrecerEnLugar from '../../examples/crecer-en-lugar';
-import exDrawer from '../../examples/drawer';
-import exPillModal from '../../examples/pill-modal';
-import exFormatosViajero from '../../examples/formatos-viajero';
-import exSwipeToClose from '../../examples/swipe-to-close';
-import exFlipModal from '../../examples/flip-modal';
-import exDropdownPanel from '../../examples/dropdown-panel';
-import exAuthReactivo from '../../examples/auth-reactivo';
 
 interface Props {
   lang: Lang;
@@ -58,21 +43,6 @@ const ANCLADOS = [
     <CodeBlock lang="bash" code="pnpm add wisspop # o npm install wisspop / yarn add wisspop" />
   </section>
 
-  <!-- Soporte de frameworks — antes de los ejemplos: elegir acá deja fijado
-       el framework de TODOS los bloques de código de la página. -->
-  <section id="frameworks" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.frameworks_title')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.frameworks_desc')}</p>
-    <p class="text-sm text-zinc-500 dark:text-zinc-500">{t('docs.frameworks_hint')}</p>
-
-    <FrameworkTabs
-      vanilla={frameworkIntro.vanilla}
-      astro={frameworkIntro.astro}
-      vue={frameworkIntro.vue}
-      react={frameworkIntro.react}
-    />
-  </section>
-
   <!-- Ejemplos e Interacciones Completa -->
   <section id="uso-basico" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
     <div>
@@ -84,10 +54,17 @@ const ANCLADOS = [
 
     <!-- Ejemplo 1: Anclado a un botón -->
     <DocExampleCard
-      id="morph-modal"
       title="1. Anclado a un botón"
       description="El panel nace del botón y se posiciona en cualquiera de sus 6 combinaciones. El parámetro align controla la posición sobre el eje cruzado."
-      {...exAnclado}
+      code={`import { createModal } from 'wisspop/vanilla';
+
+createModal({
+  content: '<ul class="menu"><li>Opción 1</li><li>Opción 2</li></ul>',
+  placement: 'top', // top | bottom | left | right
+  align: 'center',  // start | center | end
+  modalClass: 'panel',
+}).open(boton);`}
+      lang="javascript"
     >
       <div class="row">
         {ANCLADOS.map((item) => (
@@ -105,13 +82,13 @@ const ANCLADOS = [
           id={`anclado-${item.placement}-${item.align}`}
           placement={item.placement}
           align={item.align}
-          swipeToClose={true}
           modalClass="panel"
+          swipeToClose={true}
         >
           <ul class="menu">
-            <li>Más recientes</li>
-            <li>Más antiguos</li>
-            <li>Mayor monto</li>
+            <li data-wisspop-close>Más recientes</li>
+            <li data-wisspop-close>Más antiguos</li>
+            <li data-wisspop-close>Mayor monto</li>
           </ul>
         </WissPopMorph>
       ))}
@@ -121,20 +98,26 @@ const ANCLADOS = [
     <DocExampleCard
       title="2. Desde un botón circular"
       description="El radio del origen se lee dinámicamente del CSS. El glifo del botón '+' viaja hacia el elemento data-wisspop-title."
-      {...exBotonCircular}
+      code={`createModal({
+  placement: 'center',
+  ease: 'power3.out',
+  duration: 0.65,
+  labelOffsetX: 20,
+}).open(btnFab, '+');`}
+      lang="javascript"
     >
       <div class="row">
         <button data-wisspop-trigger="modal-fab-demo" class="round">+</button>
       </div>
 
-      <WissPopPill id="modal-fab-demo" placement="center" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 22rem;">
+      <WissPopPill id="modal-fab-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
           <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
-          <label>Concepto</label>
-          <input placeholder="Café" />
-          <label>Monto</label>
-          <input placeholder="2500" />
-          <button data-wisspop-close class="demo-btn">Guardar</button>
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Concepto</label>
+          <input placeholder="Café" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Monto</label>
+          <input placeholder="2500" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
+          <button data-wisspop-close class="demo-btn w-full mt-3">Guardar</button>
         </div>
       </WissPopPill>
     </DocExampleCard>
@@ -143,18 +126,24 @@ const ANCLADOS = [
     <DocExampleCard
       title="3. Crecer en el lugar"
       description="placement: 'origin' hace que el panel comparta el centro con el botón y se expanda directamente ahí sin viajar al centro de la ventana."
-      {...exCrecerEnLugar}
+      code={`createModal({
+  content: '...',
+  placement: 'origin',
+  modalClass: 'panel',
+  closeButton: true,
+}).open(btnInline);`}
+      lang="javascript"
     >
       <div class="row">
         <button data-wisspop-trigger="modal-inline-demo" class="demo-btn">Renombrar</button>
       </div>
 
-      <WissPopMorph id="modal-inline-demo" placement="origin" swipeToClose={true} closeButton={false} modalClass="panel">
-        <div class="panel-body" style="width: 20rem;">
+      <WissPopMorph id="modal-inline-demo" placement="origin" modalClass="panel" swipeToClose={true} closeButton={true}>
+        <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
           <h3>Renombrar</h3>
-          <label>Nombre</label>
-          <input placeholder="Supermercado" />
-          <button data-wisspop-close class="demo-btn">Listo</button>
+          <label class="block text-xs font-semibold text-zinc-500 mb-1">Nombre</label>
+          <input placeholder="Supermercado" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 mb-3" />
+          <button data-wisspop-close class="demo-btn w-full">Listo</button>
         </div>
       </WissPopMorph>
     </DocExampleCard>
@@ -163,7 +152,12 @@ const ANCLADOS = [
     <DocExampleCard
       title="4. Drawer (Cajón lateral y vertical)"
       description="drawer-left, drawer-right, drawer-top y drawer-bottom adhieren el panel a los bordes completos de la ventana."
-      {...exDrawer}
+      code={`createModal({
+  content: '<ul class="menu">...</ul>',
+  placement: 'drawer-left', // drawer-left | drawer-right | drawer-top | drawer-bottom
+  modalClass: 'panel drawer drawer-left',
+});`}
+      lang="javascript"
     >
       <div class="row">
         {['left', 'right', 'top', 'bottom'].map((lado) => (
@@ -180,11 +174,11 @@ const ANCLADOS = [
           modalClass={`panel drawer drawer-${lado}`}
           swipeToClose={true}
         >
-          <ul class="menu">
-            <li>Inicio</li>
-            <li>Movimientos</li>
-            <li>Presupuestos</li>
-            <li>Ajustes</li>
+          <ul class="menu p-4">
+            <li data-wisspop-close>Inicio</li>
+            <li data-wisspop-close>Movimientos</li>
+            <li data-wisspop-close>Presupuestos</li>
+            <li data-wisspop-close>Ajustes</li>
           </ul>
         </WissPopMorph>
       ))}
@@ -192,20 +186,20 @@ const ANCLADOS = [
 
     <!-- Ejemplo 5: Texto viajero (PillModal) -->
     <DocExampleCard
-      id="pill-modal"
       title="5. Texto viajero (PillModal)"
       description="El texto del botón despegado viaja e interpola escala y posición hasta aterrizar en el título data-wisspop-title."
-      {...exPillModal}
+      code={`// Una misma instancia puede abrirse en center u origin según la opción enviada al open
+modal.open(boton, "Crear cuenta");
+modal.open(boton, "Crear cuenta", { placement: "origin" });`}
+      lang="javascript"
     >
       <div class="row">
-          <span>Centerr</span>
-        <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta</button>
-        <span>Origin</span> 
-        <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta</button>
+        <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta (Center)</button>
+        <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta (Origin)</button>
       </div>
 
-      <WissPopPill id="pill-center-demo" placement="center" swipeToClose={true} modalClass="pill-panel" flyingTextClass="flying">
-        <div class="pill-body">
+      <WissPopPill id="pill-center-demo" placement="center" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
           <h2 data-wisspop-title>Crear cuenta</h2>
           <label>Email</label>
           <input placeholder="hola@ejemplo.com" />
@@ -215,8 +209,8 @@ const ANCLADOS = [
         </div>
       </WissPopPill>
 
-      <WissPopPill id="pill-origin-demo" placement="origin" swipeToClose={true} modalClass="pill-panel" flyingTextClass="flying">
-        <div class="pill-body">
+      <WissPopPill id="pill-origin-demo" placement="origin" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
           <h2 data-wisspop-title>Crear cuenta</h2>
           <label>Email</label>
           <input placeholder="hola@ejemplo.com" />
@@ -231,7 +225,13 @@ const ANCLADOS = [
     <DocExampleCard
       title="6. Formatos del elemento viajero"
       description="Se escala automáticamente texto con font-size o imágenes y nodos con width/height. Admite solo texto, texto con icono, solo icono o imágenes completas."
-      {...exFormatosViajero}
+      code={`// Texto suelto
+modal.open(boton, "Solo texto");
+
+// Nodo interno (icono o imagen)
+modal.open(boton, boton.querySelector("svg"));
+modal.open(boton, boton.querySelector("img"));`}
+      lang="javascript"
     >
       <div class="row">
         <button data-wisspop-trigger="fmt-texto-demo" class="pill">Solo texto</button>
@@ -253,16 +253,16 @@ const ANCLADOS = [
         </button>
       </div>
 
-      <WissPopMorph id="fmt-texto-demo" placement="center" flyingTextClass="flying" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 21rem;">
+      <WissPopPill id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <h3><span data-wisspop-title>Solo texto</span></h3>
           <p class="nota">No hay nodo que medir, el punto de partida sale del texto del botón.</p>
           <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-mixto-demo" placement="center" flyingTextClass="flying" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 21rem;">
+      <WissPopPill id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <h3>
             <span data-wisspop-title class="con-icono">
               <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
@@ -272,10 +272,10 @@ const ANCLADOS = [
           <p class="nota">El icono medido en em escala exactamente junto con el texto.</p>
           <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-icono-demo" placement="center" flyingTextClass="flying" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 21rem;">
+      <WissPopPill id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <h3>
             <span data-wisspop-title class="ico-destino">
               <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
@@ -284,30 +284,36 @@ const ANCLADOS = [
           <p class="nota">Sin texto que escalar, el core pasa a modo box animando width/height.</p>
           <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
 
-      <WissPopMorph id="fmt-imagen-demo" placement="center" flyingTextClass="flying" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 21rem;">
+      <WissPopPill id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+        <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
-          <h3>No hace nada, HD</h3>
+          <h3 class="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-3">No hace nada, HD</h3>
           <p class="nota">Despega desde la miniatura y aterriza en el destino manteniendo proporción.</p>
           <button data-wisspop-close class="demo-btn">Cerrar</button>
         </div>
-      </WissPopMorph>
+      </WissPopPill>
     </DocExampleCard>
 
     <!-- Ejemplo 7: Cerrar con el gesto -->
     <DocExampleCard
       title="7. Cerrar con el gesto (Swipe to Close)"
       description="swipeToClose: true permite descartar el panel arrastrándolo hacia cualquier dirección con el mouse o dedo."
-      {...exSwipeToClose}
+      code={`createModal({
+  content: '...',
+  modalClass: 'panel',
+  swipeToClose: true,
+  swipeThreshold: 90,
+});`}
+      lang="javascript"
     >
       <div class="row">
         <button data-wisspop-trigger="swipe-demo-modal" class="demo-btn">Arrastrame para cerrar</button>
       </div>
 
-      <WissPopMorph id="swipe-demo-modal" placement="center" swipeToClose={true} modalClass="panel">
-        <div class="panel-body" style="width: 20rem;">
+      <WissPopMorph id="swipe-demo-modal" placement="center" modalClass="panel" swipeToClose={true}>
+        <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
           <h3>Arrastrame</h3>
           <p class="nota">Hacia cualquier lado con el mouse o dedo. Si soltás antes del umbral, vuelve solo.</p>
           <button data-wisspop-close class="demo-btn">O cerrame así</button>
@@ -317,66 +323,77 @@ const ANCLADOS = [
 
     <!-- Ejemplo 8: FlipModal — Elementos compartidos -->
     <DocExampleCard
-      id="flip-modal"
       title="8. FlipModal — Elementos compartidos"
       description="Elementos individuales con data-flip-id viajan del origen al modal conservando su identidad visual con GSAP Flip."
-      {...exFlipModal}
+      code={`createFlipModal({
+  trigger: document.getElementById('card-trigger'),
+  flipId: 'demo',
+  modalClass: 'panel',
+  content: '...'
+});`}
+      lang="javascript"
     >
-      <p class="nota">
-        <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"></path><path d="M12 16v.01"></path><path d="M10.363 3.591l-8.106 13.534a1.914 1.914 0 0 0 1.636 2.871h16.214a1.914 1.914 0 0 0 1.636 -2.87l-8.106 -13.536a1.914 1.914 0 0 0 -3.274 0z"></path></svg>
-        El contenedor principal (<code class="font-mono text-xs px-1 rounded bg-zinc-100 dark:bg-zinc-800">data-flip-id="{'{flipId}'}-card"</code>) tiene que
-        estar en <strong>las dos puntas</strong>, trigger y modal — si falta en el trigger, no tiene con qué emparejarse y aparece de golpe en vez de crecer.
-        Lo que no tiene contraparte en el otro lado (botones, texto secundario) va con <code class="font-mono text-xs px-1 rounded bg-zinc-100 dark:bg-zinc-800">trigger-fade-item-{'{flipId}'}</code> /
-        <code class="font-mono text-xs px-1 rounded bg-zinc-100 dark:bg-zinc-800">modal-fade-item-{'{flipId}'}</code> para que se desvanezca en vez de superponerse.
-      </p>
-
       <div class="row">
-        <div data-wisspop-trigger="flip-card-demo" data-flip-id="demo-card" class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl w-64">
+        <div data-wisspop-trigger="flip-card-demo" class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl w-64">
           <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-28 object-cover rounded-xl" alt="" />
           <h3 data-flip-id="demo-title" class="mt-2 text-base font-bold text-zinc-900 dark:text-zinc-100">Gato Viajero</h3>
-          <p class="trigger-fade-item-demo text-xs text-zinc-400 mt-1">Clic para expandir detalle</p>
+          <p class="text-xs text-zinc-400 mt-1">Clic para expandir detalle</p>
         </div>
       </div>
 
-      <WissPopFlip id="flip-card-demo" flipId="demo" swipeToClose={true}>
-        <div data-flip-id="demo-card" class="panel p-6 w-96 max-w-[90vw]">
+      <WissPopFlip id="flip-card-demo" flipId="demo" modalClass="panel" swipeToClose={true}>
+        <div data-flip-id="demo-card" class="p-6" style="width: min(24rem, calc(100vw - 2rem));">
           <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-52 object-cover rounded-xl" alt="" />
           <h3 data-flip-id="demo-title" class="mt-4 text-2xl font-bold text-zinc-900 dark:text-zinc-100">Gato Viajero</h3>
-          <p class="modal-fade-item-demo mt-2 text-sm text-zinc-500 leading-relaxed">
+          <p class="mt-2 text-sm text-zinc-500 leading-relaxed">
             Esta foto y título viajaron directamente desde la tarjeta usando GSAP Flip.
           </p>
-          <button data-wisspop-close class="modal-fade-item-demo demo-btn mt-4 w-full">Cerrar</button>
+          <button data-wisspop-close class="demo-btn mt-4">Cerrar</button>
         </div>
       </WissPopFlip>
     </DocExampleCard>
 
     <!-- Ejemplo 9: DropdownPanel — Despliegue elástico -->
     <DocExampleCard
-      id="dropdown-panel"
       title="9. DropdownPanel — Despliegue elástico"
       description="Despliegue elástico ligero con enterDropdownAnimation y leaveDropdownAnimation."
-      {...exDropdownPanel}
+      code={`import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
+
+enterDropdownAnimation(panel, null, { transformOrigin: 'top center' });
+leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
+      lang="javascript"
     >
       <div class="row">
-        <button id="abrir-dropdown" class="demo-btn">Desplegar Dropdown</button>
-        <div id="mi-dropdown" class="panel p-2 min-w-[14rem]" hidden style="position: fixed; z-index: 50;">
-        <ul class="menu">
-          <li>Opción 1</li>
-          <li>Opción 2</li>
-          <li>Opción 3</li>
-        </ul>
-        </div>
+        <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn">Desplegar Dropdown</button>
       </div>
+
+      <WissPopMorph id="dropdown-dir-demo" placement="bottom" align="center" gap={8} modalClass="panel">
+        <div class="p-2 min-w-[14rem]">
+          <ul class="menu">
+            <li data-wisspop-close>Opción 1</li>
+            <li data-wisspop-close>Opción 2</li>
+            <li data-wisspop-close>Opción 3</li>
+          </ul>
+        </div>
+      </WissPopMorph>
     </DocExampleCard>
 
     <!-- Ejemplo 10: Alto reactivo y cambio de vista -->
     <DocExampleCard
       title="10. Alto reactivo y cambio de vista (Auth Demo)"
       description="Demuestra resync() al modificar la altura del contenido dinámicamente y changeView() para alternar entre Login y Signup sin cerrar el panel."
-      {...exAuthReactivo}
+      code={`// RF-4: resync al cambiar la altura del contenido
+modal.resync();
+
+// RF-5: changeView con mutación de estado síncrona previa a la animación
+modal.changeView(() => {
+  vista = vista === 'signup' ? 'login' : 'signup';
+  render();
+});`}
+      lang="javascript"
     >
       <div class="row">
-        <button id="btn-auth-full-trigger" class="pill">Crear cuenta</button>
+        <button id="btn-auth-full-trigger" class="pill">Abrir Formulario Auth Reactivo</button>
       </div>
     </DocExampleCard>
   </section>
@@ -489,109 +506,357 @@ const ANCLADOS = [
           <tr>
             <td class="p-3 font-mono font-bold">fullscreenOnMobile</td>
             <td class="p-3 font-mono text-zinc-500">boolean</td>
-            <td class="p-3 font-mono text-zinc-500">true en PillModal · false en MorphModal/FlipModal</td>
-            <td class="p-3">Modales grandes toman la pantalla completa en pantallas menores a mobileBreakpoint. No hay preset para forzarlo en desktop: "chico" o "pantalla completa" ahí es CSS del panel (width, max-width), no una opción de la librería.</td>
-          </tr>
-          <tr>
-            <td class="p-3 font-mono font-bold">mobileBreakpoint</td>
-            <td class="p-3 font-mono text-zinc-500">number (px)</td>
-            <td class="p-3 font-mono text-zinc-500">640</td>
-            <td class="p-3">Ancho de ventana por debajo del cual aplica fullscreenOnMobile.</td>
-          </tr>
-          <tr>
-            <td class="p-3 font-mono font-bold">width</td>
-            <td class="p-3 font-mono text-zinc-500">number (px) | null</td>
-            <td class="p-3 font-mono text-zinc-500">null</td>
-            <td class="p-3">Ancho final fijo del panel. null (default) deja que lo decida el CSS/contenido — así es como el panel se adapta al contenido sin configurar nada.</td>
-          </tr>
-          <tr>
-            <td class="p-3 font-mono font-bold">radius</td>
-            <td class="p-3 font-mono text-zinc-500">number (px) | null</td>
-            <td class="p-3 font-mono text-zinc-500">null</td>
-            <td class="p-3">Radio final fijo del panel. null (default) deja que lo decida el border-radius del CSS del panel.</td>
+            <td class="p-3 font-mono text-zinc-500">true</td>
+            <td class="p-3">Modales grandes toman la pantalla completa en pantallas menores a 640px.</td>
           </tr>
         </tbody>
       </table>
     </div>
-
-    <p class="text-sm text-zinc-500 dark:text-zinc-500 leading-relaxed">
-      wisspop no trae header, body ni footer: el core solo pone <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-box</code>
-      (el contenedor animable) y <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-content</code>. Las clases
-      <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel</code>, <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel-body</code> y
-      <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.pill-body</code> que ves en los demos de esta página son CSS de ejemplo,
-      no algo que la librería mande — el layout interno del panel (con o sin header/footer) queda enteramente en tu HTML/CSS.
-    </p>
-  </section>
-
-  <!-- CSS y Estilos -->
-  <section id="css" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.css_title')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.css_desc')}</p>
-
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      Lo único estructural que trae el core, sin nada visual:
-    </p>
-    <ul class="list-disc list-inside space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-      <li><code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-box</code> — el contenedor animable (posición, recorte, apilado).</li>
-      <li><code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-overlay</code> — el fondo fijo detrás del panel, <strong>sin color</strong>: si querés un backdrop oscurecido tenés que ponerle vos el <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">background</code> vía <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overlayClass</code> — sin eso, el modal abre con un fondo 100% transparente.</li>
-      <li><code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-content</code> — el wrapper interno del contenido.</li>
-      <li><code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-close</code> — el botón de cerrar opcional (<code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">closeButton</code>): trae tamaño y posición ya resueltos, el color sale de <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">currentColor</code>.</li>
-      <li><code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">--wisspop-z-overlay</code>, <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">--wisspop-z-box</code>, <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">--wisspop-z-close</code> — custom properties para pisar el apilado si tu página ya usa esos z-index.</li>
-    </ul>
-
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      Las clases <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel</code>, <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel-body</code>, <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.pill-panel</code> y <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.pill-body</code> que ves en todos los demos de esta página <strong>no las manda la librería</strong> — son el CSS de ejemplo de esta docs, pensado para copiar y adaptar. Punto de partida mínimo:
-    </p>
-
-    <CodeBlock lang="css" code={`.panel {
-  background: #fff;
-  border: 1px solid #e3e6ea;
-  border-radius: 16px;
-  box-shadow: var(--wisspop-shadow, 0 24px 60px rgb(15 20 30 / 0.18));
-}
-.panel-body { padding: 1.25rem; }
-
-/* Opcionales: separar header/footer del body en vez de todo junto */
-.panel-header { padding: 1.25rem 1.25rem 0; }
-.panel-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.5rem;
-  padding: 1rem 1.25rem;
-  border-top: 1px solid #e3e6ea;
-}
-
-/* El overlay no trae fondo por defecto — este es el tuyo */
-.overlay-dim { background: rgba(0, 0, 0, 0.4); }`} />
-
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      El <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">box-shadow</code> de <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.panel</code> tampoco lo manda la librería — es la misma regla de ejemplo de arriba. Queda detrás de una custom property para apagarla o cambiarla sin tocar la regla, en vez de repetirla en cada <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> que tengas:
-    </p>
-
-    <CodeBlock lang="css" code={`/* Sin sombra */
-:root { --wisspop-shadow: none; }
-
-/* Sombra más sutil */
-:root { --wisspop-shadow: 0 4px 16px rgb(15 20 30 / 0.08); }`} />
-
-    <p class="text-zinc-500 dark:text-zinc-500 text-sm leading-relaxed">
-      Si le ponés <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">box-shadow</code> a tu <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> va en <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">.wisspop-box</code>, que es el mismo elemento que recorta contenido durante la animación — en versiones antes de la 0.1.6, un <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overflow-x</code>/<code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overflow-y</code> distintos ahí cortaba el shadow en una esquina en vez de redondearlo (bug de render de Chromium/WebKit). Ya está resuelto en el core.
-    </p>
-
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      Y se pasan con <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">modalClass</code> / <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">overlayClass</code>, nunca hardcodeadas en el core:
-    </p>
-
-    <CodeBlock lang="astro" code={`<WissPopMorph
-  id="mi-modal"
-  modalClass="panel"
-  overlayClass="overlay-dim"
->
-  <div class="panel-body">...</div>
-</WissPopMorph>`} />
   </section>
 
   <!-- Soporte Frameworks -->
+  <section id="frameworks" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.frameworks_title')}</h2>
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.frameworks_desc')}</p>
+
+    <div class="flex flex-col gap-6">
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h4 class="font-bold text-sm mb-2 text-orange-600 dark:text-orange-400">Astro (Nativo)</h4>
+        <CodeBlock lang="astro" code={`---
+import { WissPopMorph } from 'wisspop/astro';
+---
+
+<button data-wisspop-trigger="mi-modal">Abrir</button>
+
+<WissPopMorph id="mi-modal" placement="bottom">
+  <p>Contenido Astro...</p>
+  <button data-wisspop-close>Cerrar</button>
+</WissPopMorph>`} />
+      </div>
+
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h4 class="font-bold text-sm mb-2 text-emerald-600 dark:text-emerald-400">Vue 3</h4>
+        <CodeBlock lang="vue" code={`<${'script'} setup>
+import { ref } from 'vue';
+import { WissPopMorph } from 'wisspop/vue';
+
+const open = ref(false);
+const btnRef = ref(null);
+</${'script'}>
+
+<template>
+  <button ref="btnRef" @click="open = true">Abrir</button>
+  <WissPopMorph v-model="open" :origin-ref="btnRef">
+    <p>Contenido Vue...</p>
+  </WissPopMorph>
+</template>`} />
+      </div>
+
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <h4 class="font-bold text-sm mb-2 text-blue-600 dark:text-blue-400">React 18/19</h4>
+        <CodeBlock lang="jsx" code={`import { useRef, useState } from 'react';
+import { WissPopMorph } from 'wisspop/react';
+
+export function Demo() {
+  const btnRef = useRef(null);
+  const [open, setOpen] = useState(false);
+
+  return (
+    <>
+      <button ref={btnRef} onClick={() => setOpen(true)}>Abrir</button>
+      <WissPopMorph open={open} onClose={() => setOpen(false)} originRef={btnRef.current} modalClass="panel">
+        {({ close }) => (
+          <div className="panel-body" style={{ width: 'min(22rem, calc(100vw - 2rem))' }}>
+            <p>Contenido React...</p>
+            <button onClick={close}>Cerrar</button>
+          </div>
+        )}
+      </WissPopMorph>
+    </>
+  );
+}`} />
+      </div>
+    </div>
+  </section>
+
+  <!-- Guía de Buenas Prácticas y Errores Comunes -->
+  <section id="buenas-practicas" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+    <div>
+      <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3 border border-indigo-100 dark:border-indigo-900">
+        <span>Guía Técnica</span>
+      </div>
+      <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Guía de Buenas Prácticas y Errores Comunes</h2>
+      <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mt-2 text-sm">
+        Patrones recomendados, advertencias técnicas y soluciones aprendidas para integrar <strong>WissPop</strong> con la máxima fluidez visual.
+      </p>
+    </div>
+
+    <!-- Tipos de Modales y Cuándo Usar Cada Uno -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Tipos de Modales y Cuándo Usar Cada Uno
+      </h3>
+      <div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <table class="w-full text-left text-xs">
+          <thead class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800">
+            <tr>
+              <th class="p-3 font-semibold">Componente</th>
+              <th class="p-3 font-semibold">Tipo de Animación</th>
+              <th class="p-3 font-semibold">Cuándo Usarlo</th>
+              <th class="p-3 font-semibold">Elementos y Reglas</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopMorph</td>
+              <td class="p-3">La caja física nace del botón y se expande/transforma hacia su destino (<code>placement="origin"</code> o anclado).</td>
+              <td class="p-3">Dropdowns, menús contextuales, drawers laterales, mini-modales de confirmación o aviso.</td>
+              <td class="p-3"><strong class="text-rose-500">NO usa texto volador.</strong> La caja hace todo el morph físico.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopPill</td>
+              <td class="p-3">La caja se expande y el <strong>texto o icono del botón vuela</strong> e interpola su escala hacia el título.</td>
+              <td class="p-3">Modales de formularios principales, login/auth, calculadoras donde la etiqueta del botón se convierte en el título.</td>
+              <td class="p-3">Requiere <code>[data-wisspop-title]</code> en el modal y opcionalmente <code>data-wisspop-label</code> en el botón.</td>
+            </tr>
+            <tr>
+              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopFlip</td>
+              <td class="p-3">Transición FLIP completa de múltiples elementos compartidos (imágenes, títulos, badges) entre tarjeta y vista de detalle.</td>
+              <td class="p-3">Galerías de productos, cards interactivas que se expanden a pantalla completa.</td>
+              <td class="p-3">Requiere atributos <code>data-flip-id="id-unico"</code> coincidentes en el trigger y en el modal.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Errores Comunes y Cómo Evitarlos -->
+    <div class="space-y-6">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Errores Comunes y Cómo Evitarlos
+      </h3>
+
+      <!-- Doble Contenedor en WissPopMorph -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Crear un Doble Contenedor en WissPopMorph
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> Wisspop anima directamente su propio elemento contenedor <code>.wisspop-box</code> (modifica con GSAP <code>width</code>, <code>height</code>, <code>borderRadius</code>, <code>top</code> y <code>left</code>). Si dentro del slot colocas otro <code>&lt;div&gt;</code> con fondo, borde, redondeo y sombra, habrá dos cajas compitiendo y se producirá un salto o retraso visual ("efecto pop").
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Pasa los estilos del contenedor directamente a la propiedad <code>modalClass</code>.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto (Doble caja con saltos)" 
+              code={`<WissPopMorph id="mi-modal" placement="origin">
+  <!-- Doble contenedor: compite con .wisspop-box -->
+  <div class="bg-white rounded-2xl border border-slate-900 shadow-xl p-5">
+    <h3>Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto (Estilos en modalClass)" 
+              code={`<WissPopMorph 
+  id="mi-modal" 
+  placement="origin" 
+  modalClass="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl"
+  closeButton={true}
+  swipeToClose={true}
+>
+  <!-- Contenido interno limpio con ancho responsivo -->
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 class="font-bold text-base">Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Mezclar flyingTextClass o data-wisspop-title -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Mezclar flyingTextClass o data-wisspop-title en WissPopMorph
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> <code>flyingTextClass</code> y <code>data-wisspop-title</code> son exclusivos del sistema de texto viajero de <strong>WissPopPill</strong>. Si los usas en un <code>WissPopMorph</code>, Wisspop ocultará temporalmente el título (<code>visibility: hidden</code>) esperando una animación de vuelo que nunca ocurrirá.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> En <code>WissPopMorph</code>, usa encabezados HTML normales <code>&lt;h3&gt;</code> sin <code>data-wisspop-title</code>. Para títulos con texto viajero, utiliza <code>&lt;WissPopPill&gt;</code>.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto en WissPopMorph" 
+              code={`<!-- Ocultará el título esperando un vuelo que no ocurrirá -->
+<WissPopMorph id="mi-modal" modalClass="panel">
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 data-wisspop-title>Título Oculto</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto en WissPopMorph" 
+              code={`<!-- Encabezado normal sin atributos de vuelo -->
+<WissPopMorph id="mi-modal" modalClass="panel">
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3 class="font-bold text-lg">Título Visible</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- No Definir Ancho -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          No Definir Ancho en el Contenido Interno
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> Para que GSAP mida con precisión la geometría final de la caja antes de animar el despegue, el cuerpo del panel debe tener un ancho medible.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Establece un ancho explícito o responsivo en el <code>div</code> interior (ej. <code>style="width: min(24rem, calc(100vw - 2rem));"</code> o clases Tailwind equivalentes como <code>w-80 max-w-[calc(100vw-2rem)]</code>).
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="error" 
+              label="Incorrecto (Sin ancho medible)" 
+              code={`<WissPopMorph id="mi-modal" modalClass="panel">
+  <!-- Sin ancho: GSAP no puede calcular la geometría exacta -->
+  <div class="p-5">
+    <h3>Contenido sin ancho</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="astro" 
+              variant="success" 
+              label="Correcto (Ancho responsivo)" 
+              code={`<WissPopMorph id="mi-modal" modalClass="panel">
+  <!-- Ancho explícito y responsivo para medición fluida -->
+  <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
+    <h3>Contenido</h3>
+  </div>
+</WissPopMorph>`} 
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Modales Anidados y Disparadores Dinámicos -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Modales Anidados o Disparadores Dinámicos Dentro de &lt;template&gt;
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> En Astro, los slots se emiten dentro de etiquetas <code>&lt;template data-wisspop="..."&gt;</code>. Si un botón que abre un submodal se encuentra dentro del template de otro modal que aún no se ha abierto, <code>document.querySelectorAll()</code> no lo encontrará en la carga inicial.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> El runtime cliente de <code>wisspop/astro</code> incluye delegación global automática de eventos para <code>[data-wisspop-trigger]</code>, montando bajo demanda cualquier submodal anidado o disparador dinámico.
+        </p>
+        <CodeBlock 
+          lang="astro" 
+          variant="success" 
+          label="Delegación Automática para Submodales" 
+          code={`<!-- Disparador dentro de otro modal o generado dinámicamente -->
+<button data-wisspop-trigger="sub-modal-confirmacion" class="demo-btn">
+  Abrir Confirmación
+</button>
+
+<!-- El runtime monta el template bajo demanda al hacer clic -->
+<WissPopMorph id="sub-modal-confirmacion" placement="center" modalClass="panel">
+  <div class="p-5" style="width: min(20rem, calc(100vw - 2rem));">
+    <h4 class="font-bold mb-3">¿Deseas confirmar la acción?</h4>
+    <button data-wisspop-close class="demo-btn w-full">Aceptar</button>
+  </div>
+</WissPopMorph>`} 
+        />
+      </div>
+
+      <!-- Destellos de Color por Interpolación -->
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+        <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+          Destellos de Color Inesperados al Abrir/Cerrar (Interpolación de backgroundColor)
+        </h4>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>El Problema:</strong> WissPop lee automáticamente el color de fondo computado del botón disparador (<code>getComputedStyle(ref).backgroundColor</code>) y lo interpola con GSAP hacia el color del modal al abrir, y <strong>de vuelta al color del botón al cerrar</strong>. Si el botón tiene un color muy saturado o semitransparente (ej. <code>bg-amber-500/10</code>), toda la caja del modal se teñirá de ese tono mientras se encoge.
+        </p>
+        <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+          <strong>La Solución:</strong> Mantén el fondo del botón disparador en un tono armónico o neutro respecto al modal (ej. <code>bg-white</code>, <code>bg-zinc-100</code> o tonos arena), y aplica los colores de acento/alerta en iconos, bordes o badges internos.
+        </p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+          <div>
+            <CodeBlock 
+              lang="html" 
+              variant="error" 
+              label="Destello amarillo al encogerse" 
+              code={`<!-- El modal completo se teñirá de amarillo al cerrar -->
+<button class="bg-amber-500/10 border border-amber-500" data-wisspop-trigger="mi-modal">
+  Aviso Importante
+</button>`} 
+            />
+          </div>
+          <div>
+            <CodeBlock 
+              lang="html" 
+              variant="success" 
+              label="Transición limpia y armónica" 
+              code={`<!-- Fondo neutro; color de acento en el icono -->
+<button class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center gap-2 p-2 rounded-xl" data-wisspop-trigger="mi-modal">
+  <span class="bg-amber-100 dark:bg-amber-950 text-amber-600 p-1 rounded-lg">!</span>
+  <span>Aviso Importante</span>
+</button>`} 
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Configuración en Astro y View Transitions -->
+    <div class="space-y-4">
+      <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
+        Configuración de Proyecto y View Transitions
+      </h3>
+      <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+        Para asegurar que Astro y Vite procesen correctamente los módulos de WissPop en SSR y durante las transiciones de página de <code>&lt;ClientRouter /&gt;</code>:
+      </p>
+      <CodeBlock lang="js" code={`// astro.config.mjs
+import { defineConfig } from 'astro/config';
+import tailwindcss from '@tailwindcss/vite';
+
+export default defineConfig({
+  vite: {
+    plugins: [tailwindcss()],
+    ssr: {
+      noExternal: ['wisspop']
+    }
+  },
+});`} />
+    </div>
+  </section>
+
   <!-- Accesibilidad (A11Y) -->
   <section id="accesibilidad" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
     <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.accesibilidad')}</h2>
@@ -606,7 +871,7 @@ const ANCLADOS = [
 </div>
 
 <script>
-  import { createModal, enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
+  import { createModal } from 'wisspop/vanilla';
 
   function initFullAuthDemo() {
     const btnFull = document.getElementById('btn-auth-full-trigger');
@@ -672,33 +937,4 @@ const ANCLADOS = [
 
   initFullAuthDemo();
   document.addEventListener('astro:after-swap', initFullAuthDemo);
-
-  function initDropdownDemo() {
-    const btn = document.getElementById('abrir-dropdown');
-    const panel = document.getElementById('mi-dropdown');
-    // ViewTransitions re-ejecuta este script en cada navegación cliente; sin este guard
-    // cada swap suma otro listener con su propio `abierto` y el toggle queda inconsistente.
-    if (!btn || !panel || btn.dataset.dropdownBound) return;
-    btn.dataset.dropdownBound = 'true';
-
-    let abierto = false;
-
-    btn.addEventListener('click', () => {
-      if (abierto) {
-        leaveDropdownAnimation(panel, () => (panel.hidden = true), { transformOrigin: 'top center' });
-      } else {
-        // fixed, no absolute: la card del demo tiene overflow-hidden y recortaría un panel
-        // posicionado relativo a ella. getBoundingClientRect da coordenadas de viewport.
-        const rect = btn.getBoundingClientRect();
-        panel.style.top = `${rect.bottom + 8}px`;
-        panel.style.left = `${rect.left}px`;
-        panel.hidden = false;
-        enterDropdownAnimation(panel, null, { transformOrigin: 'top center' });
-      }
-      abierto = !abierto;
-    });
-  }
-
-  initDropdownDemo();
-  document.addEventListener('astro:after-swap', initDropdownDemo);
 </script>
