@@ -742,9 +742,9 @@ if (btnPcFullscreen) {
     modalClass: "fullscreen-modal",
     content: `
       <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
-        <header class="fs-nav">
+        <header class="fs-nav" style="padding-right: 4rem;">
           <h2>🖥️ Panel de Control — 100% Pantalla Completa</h2>
-          <button data-close style="font-weight: 600;">✕ Salir de pantalla completa</button>
+          <span class="tag-pill">100vw × 100vh</span>
         </header>
 
         <main class="fs-container">
@@ -806,9 +806,9 @@ if (btnPcFsPill) {
     modalClass: "fullscreen-modal",
     content: `
       <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
-        <header class="fs-nav">
+        <header class="fs-nav" style="padding-right: 4rem;">
           <h2>🚀 <span data-wisspop-title>Experiencia Inmersiva</span></h2>
-          <button data-close style="font-weight: 600;">✕ Salir</button>
+          <span class="tag-pill">GSAP Flying + Fullscreen</span>
         </header>
 
         <main class="fs-container">
