@@ -367,13 +367,16 @@ export function createMorph(els, options = {}) {
       top: "-9999px",
       left: "-9999px",
     });
-    const w = box.getBoundingClientRect().width;
+    const rect = box.getBoundingClientRect();
+    const w = Math.ceil(rect.width);
     box.style.width = `${w}px`;
     box.style.height = "auto";
     // Rect y no `scrollHeight`: scrollHeight NO incluye los bordes, y el alto
     // se aplica como border-box. Con un borde de 1px la caja quedaba 2px corta
     // y mostraba una barra de scroll permanente en un panel que entraba justo.
-    const h = box.getBoundingClientRect().height;
+    // Usamos Math.ceil para evitar desbordes por redondeo subpixel en pantallas HiDPI.
+    const rectH = box.getBoundingClientRect();
+    const h = Math.ceil(rectH.height);
     const cs = getComputedStyle(box);
     const radius = opts.radius ?? (parseFloat(cs.borderTopLeftRadius) || 0);
     const bgColor = cs.backgroundColor;

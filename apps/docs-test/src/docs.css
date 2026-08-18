@@ -158,6 +158,7 @@ button.round {
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
+  box-sizing: border-box;
 }
 
 /* El overlay va transparente: sigue capturando el clic para cerrar, pero sin
@@ -165,6 +166,8 @@ button.round {
 
 .panel-body {
   padding: 1.25rem;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .panel-body h3 {
