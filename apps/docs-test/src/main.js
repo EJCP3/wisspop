@@ -702,7 +702,10 @@ if (searchBox && searchInput) {
       </div>`,
   });
 
+  let isClosing = false;
+
   const openSearch = () => {
+    if (isClosing) return;
     modalSearch.open(searchBox, searchBox);
     const modalInput = modalSearch.content.querySelector(".cmd-input");
     if (modalInput) {
@@ -711,9 +714,9 @@ if (searchBox && searchInput) {
     }
   };
 
-  searchInput.addEventListener("focus", openSearch);
-  searchBox.addEventListener("click", (e) => {
-    if (e.target !== searchInput) openSearch();
+  searchBox.addEventListener("click", openSearch);
+  searchInput.addEventListener("keydown", (e) => {
+    if (e.key !== "Tab" && e.key !== "Shift") openSearch();
   });
 
   modalSearch.content.addEventListener("click", (e) => {
