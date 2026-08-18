@@ -480,6 +480,7 @@ export function createMorph(els, options = {}) {
     saved.target = placeBox(o.rect, saved.target, opts, innerWidth, innerHeight);
     Object.assign(geom, saved.target);
     applyGeom();
+    updateScrollability();
   }
 
   /**
@@ -530,9 +531,24 @@ export function createMorph(els, options = {}) {
       ease: "power3.inOut",
       onUpdate: applyGeom,
       onComplete: () => {
-        if (box) box.style.willChange = "auto";
+        if (box) {
+          box.style.willChange = "auto";
+          updateScrollability();
+        }
       },
     });
+  }
+
+  function updateScrollability() {
+    const box = resolve(els.box);
+    if (!box || state !== "open") return;
+    // Solo habilitar scroll vertical si el contenido realmente excede la altura de la caja por más de 1.5px (evitar ruido subpixel)
+    if (box.scrollHeight > box.clientHeight + 1.5) {
+      box.style.overflowX = "hidden";
+      box.style.overflowY = "auto";
+    } else {
+      box.style.overflow = "hidden";
+    }
   }
 
   let isScrollLocked = false;
@@ -781,7 +797,6 @@ export function createMorph(els, options = {}) {
     });
 
     box.style.willChange = "auto";
-    box.style.overflow = "";
     box.style.pointerEvents = "";
     setState("open");
 
@@ -799,6 +814,13 @@ export function createMorph(els, options = {}) {
     addEventListener("scroll", reposicionar, { capture: true, passive: true });
     addEventListener("resize", reposicionar, { passive: true });
     soltarGesto = activarGesto(box, overlay);
+
+    // Esperar a que concluyan las micro-animaciones o transforms CSS de entrada
+    // antes de activar scroll condicional SOLO si el contenido realmente lo necesita.
+    const animDelay = opts.contentStagger ? 350 : (opts.contentAnimation && opts.contentAnimation !== "none" ? 220 : 50);
+    setTimeout(() => {
+      updateScrollability();
+    }, animDelay);
   }
 
   /** @param {{x:number,y:number}} [fling] dirección del gesto que lo descartó */
