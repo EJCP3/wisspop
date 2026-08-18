@@ -659,8 +659,10 @@ if (btnInvite) {
 }
 
 // 3. Command Palette / Búsqueda (Flying Text + Slide Down + Trap Focus)
-const btnSearch = $("#btn-demo-search");
-if (btnSearch) {
+const searchBox = $("#btn-demo-search");
+const searchInput = $("#input-demo-search");
+
+if (searchBox && searchInput) {
   const modalSearch = createModal({
     swipeToClose: true,
     placement: "center",
@@ -700,9 +702,20 @@ if (btnSearch) {
       </div>`,
   });
 
-  btnSearch.addEventListener("click", () =>
-    modalSearch.open(btnSearch, btnSearch.querySelector(".con-icono")),
-  );
+  const openSearch = () => {
+    modalSearch.open(searchBox, searchBox);
+    const modalInput = modalSearch.content.querySelector(".cmd-input");
+    if (modalInput) {
+      if (searchInput.value) modalInput.value = searchInput.value;
+      setTimeout(() => modalInput.focus(), 60);
+    }
+  };
+
+  searchInput.addEventListener("focus", openSearch);
+  searchBox.addEventListener("click", (e) => {
+    if (e.target !== searchInput) openSearch();
+  });
+
   modalSearch.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalSearch.close();
   });
