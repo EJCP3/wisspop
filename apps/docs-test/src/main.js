@@ -1,4 +1,5 @@
 import { createModal, createFlipModal, enterDropdownAnimation, leaveDropdownAnimation } from "wisspop/vanilla";
+import "wisspop/styles/wisspop.css";
 
 const $ = (sel) => document.querySelector(sel);
 const menu = (items) => `<ul class="menu">${items.map((i) => `<li>${i}</li>`).join("")}</ul>`;
@@ -393,4 +394,165 @@ for (const placement of ["center", "origin"]) {
 auth.content.addEventListener("click", (e) => {
   if (e.target.closest("[data-close]")) auth.close();
 });
+
+// --- Tipos de animación de contenido (contentAnimation) -------------------
+
+const filaContentAnim = $("#fila-content-anim");
+if (filaContentAnim) {
+  const animDescriptions = {
+    "slide-up": "Entrada suave desplazándose hacia arriba (+12px translateY con cubic-bezier).",
+    "slide-down": "Entrada suave desplazándose hacia abajo (-12px translateY con cubic-bezier).",
+    "scale": "Efecto de escala suave (scale 0.95 → 1.0) con transición de opacidad.",
+    "fade": "Transición pura de opacidad progresiva (opacity 0 → 1).",
+    "none": "El contenido se renderiza inmediatamente sin animación CSS interna.",
+  };
+
+  filaContentAnim.querySelectorAll("button[data-anim]").forEach((btn) => {
+    const animType = btn.dataset.anim;
+    const modal = createModal({
+      swipeToClose: true,
+      closeButton: true,
+      placement: "center",
+      contentAnimation: animType,
+      modalClass: "panel",
+      content: `
+        <div class="panel-body" style="width: 22rem">
+          <h3>Animación: <span class="tag-pill">${animType}</span></h3>
+          <p class="nota">${INFO}<span>${animDescriptions[animType]}</span></p>
+          <div style="padding: 0.75rem; background: var(--sunken); border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+            <code>contentAnimation: "${animType}"</code>
+          </div>
+          <button data-close>Cerrar modal</button>
+        </div>`,
+    });
+
+    btn.addEventListener("click", () => modal.open(btn));
+    modal.content.addEventListener("click", (e) => {
+      if (e.target.closest("[data-close]")) modal.close();
+    });
+  });
+}
+
+// --- Cascada de elementos (contentStagger) ---------------------------------
+
+const btnStagger = $("#btn-stagger-demo");
+if (btnStagger) {
+  const modalStagger = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    contentStagger: true,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 24rem">
+        <h3>Efecto Cascada (Stagger)</h3>
+        <p class="nota">${INFO}<span>Cada hijo entra con un delay escalonado de 30ms.</span></p>
+        <div class="stagger-demo-list">
+          <div class="stagger-item">
+            <span>✨ Notificación del sistema</span>
+            <span class="badge">Nuevo</span>
+          </div>
+          <div class="stagger-item">
+            <span>📦 Paquete v0.1.9 publicado</span>
+            <span class="badge">NPM</span>
+          </div>
+          <div class="stagger-item">
+            <span>🚀 Optimización GPU 120 FPS</span>
+            <span class="badge">Core</span>
+          </div>
+          <div class="stagger-item">
+            <span>📱 Soporte móvil y táctil</span>
+            <span class="badge">Móvil</span>
+          </div>
+          <div class="stagger-item">
+            <span>⚡ Animación CSS desacoplada</span>
+            <span class="badge">CSS</span>
+          </div>
+        </div>
+        <div style="margin-top: 1rem;">
+          <button data-close>Entendido</button>
+        </div>
+      </div>`,
+  });
+
+  btnStagger.addEventListener("click", () => modalStagger.open(btnStagger));
+  modalStagger.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalStagger.close();
+  });
+}
+
+// --- Curvas y Easing Personalizados (ease / closeEase) ---------------------
+
+const filaEases = $("#fila-eases");
+if (filaEases) {
+  const easeDetails = {
+    "back.out(1.7)": { desc: "Rebote con overshoot elástico al expandirse.", closeEase: "power3.in", dur: 0.65, closeDur: 0.35 },
+    "power3.out": { desc: "Desaceleración suave, profesional y fluida.", closeEase: "power2.in", dur: 0.5, closeDur: 0.3 },
+    "elastic.out(1, 0.75)": { desc: "Efecto resorte gomoso pronunciado.", closeEase: "power2.inOut", dur: 0.85, closeDur: 0.4 },
+    "expo.out": { desc: "Aceleración inicial instantánea con frenada suave.", closeEase: "expo.in", dur: 0.55, closeDur: 0.3 },
+  };
+
+  filaEases.querySelectorAll("button[data-ease]").forEach((btn) => {
+    const easeType = btn.dataset.ease;
+    const config = easeDetails[easeType];
+
+    const modal = createModal({
+      swipeToClose: true,
+      closeButton: true,
+      placement: "center",
+      ease: easeType,
+      closeEase: config.closeEase,
+      duration: config.dur,
+      closeDuration: config.closeDur,
+      modalClass: "panel",
+      content: `
+        <div class="panel-body" style="width: 23rem">
+          <h3>Curva: <span class="tag-pill">${easeType}</span></h3>
+          <p class="nota">${INFO}<span>${config.desc}</span></p>
+          <div style="padding: 0.75rem; background: var(--sunken); border-radius: 8px; font-size: 0.85rem; margin-bottom: 1rem;">
+            <div><code>ease: "${easeType}"</code></div>
+            <div style="margin-top: 0.3rem;"><code>closeEase: "${config.closeEase}"</code></div>
+          </div>
+          <button data-close>Cerrar y ver closeEase</button>
+        </div>`,
+    });
+
+    btn.addEventListener("click", () => modal.open(btn));
+    modal.content.addEventListener("click", (e) => {
+      if (e.target.closest("[data-close]")) modal.close();
+    });
+  });
+}
+
+// --- Rendimiento Móvil y Pantalla Completa (fullscreenOnMobile) ------------
+
+const btnMobilePerf = $("#btn-mobile-perf");
+if (btnMobilePerf) {
+  const modalMobile = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    fullscreenOnMobile: true,
+    contentBlur: false,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 24rem; max-width: 100%;">
+        <h3>Optimización Móvil (120 FPS)</h3>
+        <p class="nota">${INFO}<span>En pantallas menores a 640px, este modal se abre a pantalla completa con aceleración por capa GPU nativa.</span></p>
+        <ul style="font-size: 0.85rem; color: var(--muted); padding-left: 1.2rem; margin: 0.75rem 0 1.25rem;">
+          <li><strong>GPU Layer Promotion:</strong> <code>transform: translateZ(0)</code></li>
+          <li><strong>Layout Containment:</strong> <code>contain: layout paint</code></li>
+          <li><strong>Dynamic VRAM:</strong> will-change liberado tras la animación</li>
+          <li><strong>Gesture swipe:</strong> arrastre táctil para descartar</li>
+        </ul>
+        <button data-close>Cerrar modal</button>
+      </div>`,
+  });
+
+  btnMobilePerf.addEventListener("click", () => modalMobile.open(btnMobilePerf));
+  modalMobile.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalMobile.close();
+  });
+}
+
 

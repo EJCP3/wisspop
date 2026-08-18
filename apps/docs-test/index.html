@@ -224,6 +224,80 @@ modal.open(boton, boton.querySelector("svg"));</code></pre>
       </section>
 
       <section>
+        <h2>Tipos de animación de contenido (`contentAnimation`)</h2>
+        <p class="hint">
+          El contenedor morph se expande físicamente mientras el contenido interior (<code>.wisspop-content</code>) entra con la transición CSS seleccionada: <code>slide-up</code> (por defecto), <code>slide-down</code>, <code>scale</code>, <code>fade</code> o <code>none</code>.
+        </p>
+        <div class="row" id="fila-content-anim">
+          <button data-anim="slide-up">slide-up (Default)</button>
+          <button data-anim="slide-down">slide-down</button>
+          <button data-anim="scale">scale (Zoom in)</button>
+          <button data-anim="fade">fade (Opacidad)</button>
+          <button data-anim="none">none (Inmediato)</button>
+        </div>
+        <pre><code>createModal({
+  content: "…",
+  contentAnimation: "scale", // 'slide-up' | 'slide-down' | 'scale' | 'fade' | 'none'
+  placement: "center"
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>Cascada de elementos (`contentStagger`)</h2>
+        <p class="hint">
+          <code>contentStagger: true</code> aplica automáticamente una cascada fluida con retardos progresivos (30ms) en cada uno de los elementos hijos, creando un efecto escalonado al desplegar listas o menús.
+        </p>
+        <div class="row">
+          <button id="btn-stagger-demo" class="pill">Abrir lista con Stagger</button>
+        </div>
+        <pre><code>createModal({
+  content: `&lt;div class="stagger-demo-list"&gt;
+    &lt;div class="stagger-item"&gt;Elemento 1&lt;/div&gt;
+    &lt;div class="stagger-item"&gt;Elemento 2&lt;/div&gt;
+    &lt;div class="stagger-item"&gt;Elemento 3&lt;/div&gt;
+  &lt;/div&gt;`,
+  contentStagger: true,
+  placement: "center"
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>Curvas y Física de Aceleración (`ease` / `closeEase`)</h2>
+        <p class="hint">
+          Control completo sobre la física del morph usando curvas GSAP en apertura (<code>ease</code>) y cierre (<code>closeEase</code>).
+        </p>
+        <div class="row" id="fila-eases">
+          <button data-ease="back.out(1.7)">back.out(1.7) (Rebote)</button>
+          <button data-ease="power3.out">power3.out (Suave)</button>
+          <button data-ease="elastic.out(1, 0.75)">elastic.out (Resorte)</button>
+          <button data-ease="expo.out">expo.out (Snap rápido)</button>
+        </div>
+        <pre><code>createModal({
+  content: "…",
+  ease: "elastic.out(1, 0.75)",
+  closeEase: "power3.in",
+  duration: 0.7,
+  closeDuration: 0.4
+});</code></pre>
+      </section>
+
+      <section>
+        <h2>Rendimiento Móvil y Pantalla Completa (`fullscreenOnMobile`)</h2>
+        <p class="hint">
+          <code>fullscreenOnMobile: true</code> adapta automáticamente el modal a pantalla completa en dispositivos móviles, desactiva blur gaussiano pesado (<code>contentBlur: false</code>), conmuta curvas con overshoot por desaceleración limpia y libera memoria VRAM gráfica tras la transición.
+        </p>
+        <div class="row">
+          <button id="btn-mobile-perf" class="pill">Modal Optimizado Móvil</button>
+        </div>
+        <pre><code>createModal({
+  content: "…",
+  fullscreenOnMobile: true,
+  contentBlur: false,
+  swipeToClose: true
+});</code></pre>
+      </section>
+
+      <section>
         <h2>Scroll con el panel abierto</h2>
         <p class="hint">
           Depende de si la posición del panel depende del origen. Los anclados
