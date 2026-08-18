@@ -155,6 +155,22 @@ const ESTRELLA = ico(
   "M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245",
 );
 const INFO = `<svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0"/><path d="M12 9h.01"/><path d="M11 12h1v4h1"/></svg>`;
+const BAG_ICO = ico("M6 2l.01.002L6 2a2 2 0 0 1 2 2v2h8V4a2 2 0 0 1 2-2h.01M3 6h18a1 1 0 0 1 1 1v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a1 1 0 0 1 1-1zm6 4v2a3 3 0 0 0 6 0v-2");
+const USERS_ICO = ico("M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0 -3 -3.85");
+const SEARCH_ICO = ico("M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6");
+const TRASH_ICO = ico("M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12M9 7V4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3");
+const DESKTOP_ICO = ico("M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12zM7 20h10M9 16v4M15 16v4");
+const ROCKET_ICO = ico("M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0");
+const CARD_ICO = ico("M3 5m0 3a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3zM3 10h18M7 15h.01M11 15h2");
+const BOLT_ICO = ico("M13 3l-2 9h5l-4 9l2 -9h-5z");
+const SPARKLES_ICO = ico("M5 3v4M3 5h4M6 17v4M4 19h4M13 3l2 4l4 2l-4 2l-2 4l-2 -4l-4 -2l4 -2z");
+const BOX_ICO = ico("M12 3l8 4.5l0 9l-8 4.5l-8 -4.5l0 -9l8 -4.5M12 12l8 -4.5M12 12l0 9M12 12l-8 -4.5");
+const MOBILE_ICO = ico("M6 5a2 2 0 0 1 2 -2h8a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2zM11 4h2M12 17v.01");
+const FILE_ICO = ico("M14 3v4a1 1 0 0 0 1 1h4M17 21h-10a2 2 0 0 1 -2 -2v-14a2 2 0 0 1 2 -2h7l5 5v11a2 2 0 0 1 -2 2z");
+const PALETTE_ICO = ico("M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 2.078 -1.318 2.828c-.844 .75 -1.989 1.172 -3.182 1.172h-2.5a2 2 0 0 0 -1 3.75a1.3 1.3 0 0 1 -.8 2.25zM7.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0M12 7.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0M16.5 10.5m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0");
+const GLOBE_ICO = ico("M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18");
+const SHIELD_ICO = ico("M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3");
+const CHECK_ICO = ico("M5 12l5 5l10 -10");
 
 const panelFormato = (titulo, cuerpo) => `
   <div class="panel-body" style="width: 21rem">
@@ -449,23 +465,23 @@ if (btnStagger) {
         <p class="nota">${INFO}<span>Cada hijo entra con un delay escalonado de 30ms.</span></p>
         <div class="stagger-demo-list">
           <div class="stagger-item">
-            <span>✨ Notificación del sistema</span>
+            <span>${SPARKLES_ICO} Notificación del sistema</span>
             <span class="badge">Nuevo</span>
           </div>
           <div class="stagger-item">
-            <span>📦 Paquete v0.1.9 publicado</span>
+            <span>${BOX_ICO} Paquete v0.1.9 publicado</span>
             <span class="badge">NPM</span>
           </div>
           <div class="stagger-item">
-            <span>🚀 Optimización GPU 120 FPS</span>
+            <span>${ROCKET_ICO} Optimización GPU 120 FPS</span>
             <span class="badge">Core</span>
           </div>
           <div class="stagger-item">
-            <span>📱 Soporte móvil y táctil</span>
+            <span>${MOBILE_ICO} Soporte móvil y táctil</span>
             <span class="badge">Móvil</span>
           </div>
           <div class="stagger-item">
-            <span>⚡ Animación CSS desacoplada</span>
+            <span>${BOLT_ICO} Animación CSS desacoplada</span>
             <span class="badge">CSS</span>
           </div>
         </div>
@@ -572,15 +588,15 @@ if (btnCheckout) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 25rem">
-        <h3 style="margin-bottom: 0.25rem;">🛍️ <span data-wisspop-title>Plan Pro — $29/mes</span></h3>
+        <h3 style="margin-bottom: 0.25rem;">${BAG_ICO} <span data-wisspop-title>Plan Pro — $29/mes</span></h3>
         <p class="nota" style="margin-bottom: 0.75rem;">${INFO}<span>Acceso ilimitado a todas las herramientas de animación.</span></p>
         
         <label>Método de pago preferido</label>
         <div class="payment-options">
-          <div class="payment-card">💳 Tarjeta Crédito</div>
-          <div class="payment-card">🍏 Apple Pay</div>
-          <div class="payment-card">🅿️ PayPal</div>
-          <div class="payment-card">⚡ Google Pay</div>
+          <div class="payment-card">${CARD_ICO} Tarjeta Crédito</div>
+          <div class="payment-card">${CARD_ICO} Apple Pay</div>
+          <div class="payment-card">${CARD_ICO} PayPal</div>
+          <div class="payment-card">${CARD_ICO} Google Pay</div>
         </div>
 
         <label>Correo de facturación</label>
@@ -614,7 +630,7 @@ if (btnInvite) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 23rem">
-        <h3>👥 <span data-wisspop-title>Invitar colaboradores</span></h3>
+        <h3>${USERS_ICO} <span data-wisspop-title>Invitar colaboradores</span></h3>
         <p class="nota">${INFO}<span>Comparte acceso a tus componentes con tu equipo.</span></p>
         
         <label>Correo electrónico</label>
@@ -656,29 +672,29 @@ if (btnSearch) {
     content: `
       <div class="panel-body" style="width: 26rem">
         <h3 style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.5rem;">
-          🔍 <span data-wisspop-title>Buscar comandos...</span>
+          ${SEARCH_ICO} <span data-wisspop-title>Buscar comandos...</span>
         </h3>
         
         <input type="text" placeholder="Escribe un comando o archivo..." autofocus style="font-size: 1rem; padding: 0.75rem; border-radius: 10px;" />
         
         <div class="cmd-list">
           <div class="cmd-item" data-close>
-            <span>📄</span>
+            <span>${FILE_ICO}</span>
             <span>Abrir <code>WissPopMorph.astro</code></span>
             <span class="tag-pill" style="margin-left: auto;">Reciente</span>
           </div>
           <div class="cmd-item" data-close>
-            <span>✨</span>
+            <span>${SPARKLES_ICO}</span>
             <span>Probar animación <code>contentStagger</code></span>
             <span class="tag-pill" style="margin-left: auto;">Acción</span>
           </div>
           <div class="cmd-item" data-close>
-            <span>🎨</span>
+            <span>${PALETTE_ICO}</span>
             <span>Alternar modo oscuro del visor</span>
             <span class="tag-pill" style="margin-left: auto;">Tema</span>
           </div>
           <div class="cmd-item" data-close>
-            <span>🚀</span>
+            <span>${ROCKET_ICO}</span>
             <span>Desplegar monorepo a producción</span>
             <span class="tag-pill" style="margin-left: auto;">Deploy</span>
           </div>
@@ -708,7 +724,7 @@ if (btnDelete) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 22rem">
-        <h3 style="color: #dc2626;">🗑️ <span data-wisspop-title>Eliminar Proyecto</span></h3>
+        <h3 style="color: #dc2626;">${TRASH_ICO} <span data-wisspop-title>Eliminar Proyecto</span></h3>
         <p style="font-size: 0.9rem; color: var(--muted); margin: 0.75rem 0 1.25rem; line-height: 1.4;">
           ¿Estás seguro de que deseas eliminar este proyecto? Esta acción destruirá todas las vistas y no se puede deshacer.
         </p>
@@ -743,7 +759,7 @@ if (btnPcFullscreen) {
     content: `
       <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
         <header class="fs-nav" style="padding-right: 4rem;">
-          <h2>🖥️ Panel de Control — 100% Pantalla Completa</h2>
+          <h2>${DESKTOP_ICO} Panel de Control — 100% Pantalla Completa</h2>
           <span class="tag-pill">100vw × 100vh</span>
         </header>
 
@@ -761,7 +777,7 @@ if (btnPcFullscreen) {
             <div class="fs-card">
               <div style="font-size: 0.85rem; color: var(--muted);">FPS de Render</div>
               <div class="stat">120 FPS</div>
-              <div style="font-size: 0.8rem; color: #16a34a;">⚡ GPU Acelerada</div>
+              <div style="font-size: 0.8rem; color: #16a34a;">${BOLT_ICO} GPU Acelerada</div>
             </div>
             <div class="fs-card">
               <div style="font-size: 0.85rem; color: var(--muted);">Memoria VRAM</div>
@@ -807,26 +823,26 @@ if (btnPcFsPill) {
     content: `
       <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
         <header class="fs-nav" style="padding-right: 4rem;">
-          <h2>🚀 <span data-wisspop-title>Experiencia Inmersiva</span></h2>
+          <h2>${ROCKET_ICO} <span data-wisspop-title>Experiencia Inmersiva</span></h2>
           <span class="tag-pill">GSAP Flying + Fullscreen</span>
         </header>
 
         <main class="fs-container">
           <div class="stagger-demo-list" style="margin-top: 1rem;">
             <div class="stagger-item" style="padding: 1.25rem;">
-              <span>🌐 1. El botón de origen se expandió al 100% de la pantalla del monitor.</span>
+              <span>${GLOBE_ICO} 1. El botón de origen se expandió al 100% de la pantalla del monitor.</span>
               <span class="badge">Viewport 100vw</span>
             </div>
             <div class="stagger-item" style="padding: 1.25rem;">
-              <span>✨ 2. El título voló desde el botón hasta el encabezado superior.</span>
+              <span>${SPARKLES_ICO} 2. El título voló desde el botón hasta el encabezado superior.</span>
               <span class="badge">GSAP Flying</span>
             </div>
             <div class="stagger-item" style="padding: 1.25rem;">
-              <span>⚡ 3. Todas las tarjetas hijas entraron en cascada progresiva de 30ms.</span>
+              <span>${BOLT_ICO} 3. Todas las tarjetas hijas entraron en cascada progresiva de 30ms.</span>
               <span class="badge">Stagger CSS</span>
             </div>
             <div class="stagger-item" style="padding: 1.25rem;">
-              <span>🛡️ 4. Al cerrar, regresa limpiamente al botón original sin distorsiones.</span>
+              <span>${SHIELD_ICO} 4. Al cerrar, regresa limpiamente al botón original sin distorsiones.</span>
               <span class="badge">Morph Core</span>
             </div>
           </div>
