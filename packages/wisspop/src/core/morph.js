@@ -908,18 +908,9 @@ export function createMorph(els, options = {}) {
     // vería debajo del panel que todavía está volviendo.
     if (overlay) gsap.to(overlay, { autoAlpha: 0, duration: d * 0.75, ease: "power2.in" });
     if (content) {
-      const animType = opts.contentAnimation || "slide-up";
-      let closeVars = {
-        autoAlpha: 0,
-        filter: opts.contentBlur ? "blur(4px)" : "none",
-        duration: Math.min(0.2, d * 0.3),
-        ease: "power2.in",
-      };
-      if (animType === "slide-up") closeVars.y = 16;
-      else if (animType === "slide-down") closeVars.y = -16;
-      else if (animType === "scale") closeVars.scale = 0.88;
-
-      gsap.to(content, closeVars);
+      // Ocultar el contenido inmediatamente en el cierre para que la caja quede limpia
+      // y el texto viajero sea 100% visible volando por encima hacia el botón
+      gsap.set(content, { autoAlpha: 0 });
     }
     if (fling) {
       // Descartado con el gesto: no vuelve al origen. El gesto ya dijo a dónde
