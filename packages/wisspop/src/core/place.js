@@ -15,7 +15,10 @@ export const clamp = (v, lo, hi) => Math.max(lo, Math.min(v, hi));
  * seguir visible.
  */
 export const coversOrigin = (placement) =>
-  placement === "center" || placement === "origin" || placement.startsWith("drawer-");
+  placement === "center" ||
+  placement === "origin" ||
+  placement === "fullscreen" ||
+  placement.startsWith("drawer-");
 
 /**
  * Si la posición del panel depende de dónde está el origen, tiene que seguirlo
@@ -24,7 +27,7 @@ export const coversOrigin = (placement) =>
  * a nada, así que moverlos con el scroll sería lo raro.
  */
 export const followsOrigin = (placement) =>
-  placement !== "center" && !placement.startsWith("drawer-");
+  placement !== "center" && placement !== "fullscreen" && !placement.startsWith("drawer-");
 
 /**
  * `align` es la posición sobre el **eje cruzado**, no una dirección absoluta:
@@ -54,8 +57,9 @@ const enEjeCruzado = (align, inicioOrigen, tamOrigen, tamPanel) =>
 export function placeBox(origin, size, opts, vw, vh) {
   const { placement, align, gap, margin } = opts;
 
-  if (opts.fullscreenOnMobile && vw < opts.mobileBreakpoint) {
-    return { top: 0, left: 0, w: vw, h: vh, radius: 0 };
+  // Fullscreen (PC o Móvil)
+  if (placement === "fullscreen" || (opts.fullscreenOnMobile && vw < opts.mobileBreakpoint)) {
+    return { top: 0, left: 0, w: vw, h: vh, radius: opts.radius ?? 0 };
   }
   // Drawer: pegado a un borde, ocupando todo el eje largo de ese borde. Ignora
   // `margin` a propósito — un cajón despegado del borde no es un cajón.

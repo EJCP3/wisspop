@@ -681,12 +681,13 @@ export function createMorph(els, options = {}) {
       box.classList.add("wisspop-stagger");
     }
 
-    const isMobileFullscreen =
-      opts.fullscreenOnMobile &&
-      typeof window !== "undefined" &&
-      window.innerWidth < opts.mobileBreakpoint;
+    const isFullscreen =
+      opts.placement === "fullscreen" ||
+      (opts.fullscreenOnMobile &&
+        typeof window !== "undefined" &&
+        window.innerWidth < opts.mobileBreakpoint);
     const activeEase =
-      isMobileFullscreen && typeof opts.ease === "string" && opts.ease.includes("back")
+      isFullscreen && typeof opts.ease === "string" && opts.ease.includes("back")
         ? "power3.out"
         : opts.ease;
 

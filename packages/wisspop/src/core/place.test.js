@@ -5,15 +5,18 @@ import { placeBox, followsOrigin, coversOrigin } from "./place.js";
 // Los anclados siguen al origen cuando la página scrollea; los que no dependen
 // de dónde está el botón se quedan quietos.
 for (const p of ["top", "bottom", "left", "right", "origin"]) assert.ok(followsOrigin(p), p);
-for (const p of ["center", "drawer-left", "drawer-top"]) assert.ok(!followsOrigin(p), p);
+for (const p of ["center", "fullscreen", "drawer-left", "drawer-top"]) assert.ok(!followsOrigin(p), p);
 // Y el panel oculta al origen solo cuando lo tapa.
-for (const p of ["center", "origin", "drawer-left"]) assert.ok(coversOrigin(p), p);
+for (const p of ["center", "origin", "fullscreen", "drawer-left"]) assert.ok(coversOrigin(p), p);
 for (const p of ["top", "bottom", "left", "right"]) assert.ok(!coversOrigin(p), p);
 
 const O = { placement: "bottom", align: "left", gap: 16, margin: 16, mobileBreakpoint: 640, fullscreenOnMobile: false };
 const btn = { top: 100, left: 200, width: 120, height: 40 };
 const size = { w: 300, h: 400, radius: 12 };
 const at = (o, vw = 1000, vh = 800) => placeBox(btn, size, { ...O, ...o }, vw, vh);
+
+// fullscreen: ocupa exactamente 100% de la ventana en PC y móvil
+assert.deepEqual(at({ placement: "fullscreen" }), { w: 1000, h: 800, radius: 0, top: 0, left: 0 });
 
 // center: centrado exacto en ambos ejes
 assert.deepEqual(at({ placement: "center" }), { w: 300, h: 400, radius: 12, top: 200, left: 350 });

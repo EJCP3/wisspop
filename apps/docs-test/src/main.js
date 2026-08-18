@@ -727,5 +727,127 @@ if (btnDelete) {
   });
 }
 
+// --- Modales a Pantalla Completa (100vw × 100vh) en PC y Móvil ------------
+
+// 1. Dashboard Fullscreen estándar
+const btnPcFullscreen = $("#btn-pc-fullscreen");
+if (btnPcFullscreen) {
+  const modalPcFs = createModal({
+    placement: "fullscreen",
+    contentAnimation: "scale",
+    ease: "power3.out",
+    duration: 0.5,
+    closeButton: true,
+    swipeToClose: true,
+    modalClass: "fullscreen-modal",
+    content: `
+      <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
+        <header class="fs-nav">
+          <h2>🖥️ Panel de Control — 100% Pantalla Completa</h2>
+          <button data-close style="font-weight: 600;">✕ Salir de pantalla completa</button>
+        </header>
+
+        <main class="fs-container">
+          <p class="lead">
+            Este modal ocupa el 100% del ancho y alto de la pantalla (100vw × 100vh) en PC de escritorio y monitores de cualquier resolución.
+          </p>
+
+          <div class="fs-grid">
+            <div class="fs-card">
+              <div style="font-size: 0.85rem; color: var(--muted);">Peticiones / Seg</div>
+              <div class="stat">14.2k</div>
+              <div style="font-size: 0.8rem; color: #16a34a;">↑ +18.4% vs ayer</div>
+            </div>
+            <div class="fs-card">
+              <div style="font-size: 0.85rem; color: var(--muted);">FPS de Render</div>
+              <div class="stat">120 FPS</div>
+              <div style="font-size: 0.8rem; color: #16a34a;">⚡ GPU Acelerada</div>
+            </div>
+            <div class="fs-card">
+              <div style="font-size: 0.85rem; color: var(--muted);">Memoria VRAM</div>
+              <div class="stat">0 MB</div>
+              <div style="font-size: 0.8rem; color: var(--muted);">Liberada a "auto"</div>
+            </div>
+          </div>
+
+          <div style="background: var(--sunken); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;">
+            <h3>Detalles de la configuración</h3>
+            <pre><code>createModal({
+  placement: "fullscreen",  // 100% viewport en PC y móvil
+  contentAnimation: "scale",
+  closeButton: true
+}).open(boton);</code></pre>
+          </div>
+
+          <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+            <button data-close class="pill">Cerrar vista completa</button>
+          </div>
+        </main>
+      </div>`,
+  });
+
+  btnPcFullscreen.addEventListener("click", () => modalPcFs.open(btnPcFullscreen));
+  modalPcFs.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalPcFs.close();
+  });
+}
+
+// 2. Experiencia Inmersiva Fullscreen con Texto Viajero (Pill)
+const btnPcFsPill = $("#btn-pc-fullscreen-pill");
+if (btnPcFsPill) {
+  const modalPcFsPill = createModal({
+    placement: "fullscreen",
+    flyingTextClass: "flying",
+    contentStagger: true,
+    ease: "power3.out",
+    duration: 0.6,
+    closeButton: true,
+    swipeToClose: true,
+    modalClass: "fullscreen-modal",
+    content: `
+      <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
+        <header class="fs-nav">
+          <h2>🚀 <span data-wisspop-title>Experiencia Inmersiva</span></h2>
+          <button data-close style="font-weight: 600;">✕ Salir</button>
+        </header>
+
+        <main class="fs-container">
+          <div class="stagger-demo-list" style="margin-top: 1rem;">
+            <div class="stagger-item" style="padding: 1.25rem;">
+              <span>🌐 1. El botón de origen se expandió al 100% de la pantalla del monitor.</span>
+              <span class="badge">Viewport 100vw</span>
+            </div>
+            <div class="stagger-item" style="padding: 1.25rem;">
+              <span>✨ 2. El título voló desde el botón hasta el encabezado superior.</span>
+              <span class="badge">GSAP Flying</span>
+            </div>
+            <div class="stagger-item" style="padding: 1.25rem;">
+              <span>⚡ 3. Todas las tarjetas hijas entraron en cascada progresiva de 30ms.</span>
+              <span class="badge">Stagger CSS</span>
+            </div>
+            <div class="stagger-item" style="padding: 1.25rem;">
+              <span>🛡️ 4. Al cerrar, regresa limpiamente al botón original sin distorsiones.</span>
+              <span class="badge">Morph Core</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 2.5rem; text-align: center;">
+            <button data-close class="pill" style="font-size: 1.1rem; padding: 0.8rem 2rem;">
+              Regresar al sitio
+            </button>
+          </div>
+        </main>
+      </div>`,
+  });
+
+  btnPcFsPill.addEventListener("click", () =>
+    modalPcFsPill.open(btnPcFsPill, "Experiencia Inmersiva"),
+  );
+  modalPcFsPill.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalPcFsPill.close();
+  });
+}
+
+
 
 

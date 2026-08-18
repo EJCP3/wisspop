@@ -337,6 +337,38 @@ deleteModal.open(btn, "Eliminar Proyecto");</code></pre>
       </section>
 
       <section>
+        <h2>Pantalla completa en PC y Móvil (`placement: "fullscreen"`)</h2>
+        <p class="hint">
+          <code>placement: "fullscreen"</code> expande el modal al <strong>100% exacto del viewport (100vw × 100vh)</strong> tanto en PC de escritorio como en cualquier dispositivo. Nace con animación física fluida desde el botón disparador hasta cubrir toda la pantalla, eliminando bordes y sombras superfluas.
+        </p>
+        <div class="row">
+          <button id="btn-pc-fullscreen" class="pill">
+            <span>🖥️</span>
+            <span>Dashboard Pantalla Completa (PC)</span>
+          </button>
+          <button id="btn-pc-fullscreen-pill" class="btn-plan">
+            <span>🚀</span>
+            <span>Experiencia Inmersiva (con Texto Viajero)</span>
+          </button>
+        </div>
+        <pre><code>// 1. Pantalla completa estándar en PC y Móvil
+createModal({
+  content: "…",
+  placement: "fullscreen",
+  contentAnimation: "scale",
+  closeButton: true
+}).open(boton);
+
+// 2. Pantalla completa con texto viajero hacia el encabezado
+createModal({
+  content: "…",
+  placement: "fullscreen",
+  flyingTextClass: "flying",
+  contentStagger: true
+}).open(boton, "Experiencia Inmersiva");</code></pre>
+      </section>
+
+      <section>
         <h2>Scroll con el panel abierto</h2>
         <p class="hint">
           Depende de si la posición del panel depende del origen. Los anclados

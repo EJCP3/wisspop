@@ -502,4 +502,63 @@ input {
   background: var(--sunken);
 }
 
+/* --- Estilos para modal a pantalla completa (100% viewport) --- */
+
+.fullscreen-modal {
+  background: var(--bg);
+  border: none;
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  box-shadow: none;
+  color: var(--text);
+}
+
+.fs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.fs-nav h2,
+.fs-nav h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fs-container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+}
+
+.fs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.fs-card {
+  padding: 1.5rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.fs-card .stat {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 0.5rem 0 0.2rem;
+}
+
+
 
