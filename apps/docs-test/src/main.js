@@ -670,12 +670,12 @@ if (btnSearch) {
     trapFocus: true,
     modalClass: "panel",
     content: `
-      <div class="panel-body" style="width: 26rem">
-        <h3 class="con-icono" data-wisspop-title style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.5rem;">
-          ${SEARCH_ICO}<span>Buscar comandos...</span>
-        </h3>
-        
-        <input type="text" placeholder="Escribe un comando o archivo..." autofocus style="font-size: 1rem; padding: 0.75rem; border-radius: 10px;" />
+      <div class="panel-body" style="width: 28rem; padding: 1.25rem;">
+        <div class="cmd-search-header con-icono" data-wisspop-title style="margin-bottom: 0.5rem;">
+          ${SEARCH_ICO}
+          <input type="text" class="cmd-input" placeholder="Escribe un comando o archivo..." autofocus />
+          <span class="kbd" style="font-size: 0.75rem; padding: 0.15rem 0.4rem;">ESC</span>
+        </div>
         
         <div class="cmd-list">
           <div class="cmd-item" data-close>
