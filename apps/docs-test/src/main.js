@@ -588,7 +588,7 @@ if (btnCheckout) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 25rem">
-        <h3 style="margin-bottom: 0.25rem;">${BAG_ICO} <span data-wisspop-title>Plan Pro — $29/mes</span></h3>
+        <h3 class="con-icono" data-wisspop-title style="margin-bottom: 0.25rem;">${BAG_ICO}<span>Plan Pro — $29/mes</span></h3>
         <p class="nota" style="margin-bottom: 0.75rem;">${INFO}<span>Acceso ilimitado a todas las herramientas de animación.</span></p>
         
         <label>Método de pago preferido</label>
@@ -609,7 +609,7 @@ if (btnCheckout) {
   });
 
   btnCheckout.addEventListener("click", () =>
-    modalCheckout.open(btnCheckout, "Plan Pro — $29/mes"),
+    modalCheckout.open(btnCheckout, btnCheckout.querySelector(".con-icono")),
   );
   modalCheckout.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalCheckout.close();
@@ -630,7 +630,7 @@ if (btnInvite) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 23rem">
-        <h3>${USERS_ICO} <span data-wisspop-title>Invitar colaboradores</span></h3>
+        <h3 class="con-icono" data-wisspop-title>${USERS_ICO}<span>Invitar colaboradores</span></h3>
         <p class="nota">${INFO}<span>Comparte acceso a tus componentes con tu equipo.</span></p>
         
         <label>Correo electrónico</label>
@@ -651,7 +651,7 @@ if (btnInvite) {
   });
 
   btnInvite.addEventListener("click", () =>
-    modalInvite.open(btnInvite, "Invitar colaboradores"),
+    modalInvite.open(btnInvite, btnInvite.querySelector(".con-icono")),
   );
   modalInvite.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalInvite.close();
@@ -671,8 +671,8 @@ if (btnSearch) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 26rem">
-        <h3 style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.5rem;">
-          ${SEARCH_ICO} <span data-wisspop-title>Buscar comandos...</span>
+        <h3 class="con-icono" data-wisspop-title style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.5rem;">
+          ${SEARCH_ICO}<span>Buscar comandos...</span>
         </h3>
         
         <input type="text" placeholder="Escribe un comando o archivo..." autofocus style="font-size: 1rem; padding: 0.75rem; border-radius: 10px;" />
@@ -703,7 +703,7 @@ if (btnSearch) {
   });
 
   btnSearch.addEventListener("click", () =>
-    modalSearch.open(btnSearch, "Buscar comandos..."),
+    modalSearch.open(btnSearch, btnSearch.querySelector(".con-icono")),
   );
   modalSearch.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalSearch.close();
@@ -724,7 +724,7 @@ if (btnDelete) {
     modalClass: "panel",
     content: `
       <div class="panel-body" style="width: 22rem">
-        <h3 style="color: #dc2626;">${TRASH_ICO} <span data-wisspop-title>Eliminar Proyecto</span></h3>
+        <h3 class="con-icono" data-wisspop-title style="color: #dc2626;">${TRASH_ICO}<span>Eliminar Proyecto</span></h3>
         <p style="font-size: 0.9rem; color: var(--muted); margin: 0.75rem 0 1.25rem; line-height: 1.4;">
           ¿Estás seguro de que deseas eliminar este proyecto? Esta acción destruirá todas las vistas y no se puede deshacer.
         </p>
@@ -736,7 +736,7 @@ if (btnDelete) {
   });
 
   btnDelete.addEventListener("click", () =>
-    modalDelete.open(btnDelete, "Eliminar Proyecto"),
+    modalDelete.open(btnDelete, btnDelete.querySelector(".con-icono")),
   );
   modalDelete.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalDelete.close();
@@ -823,7 +823,10 @@ if (btnPcFsPill) {
     content: `
       <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
         <header class="fs-nav" style="padding-right: 4rem;">
-          <h2>${ROCKET_ICO} <span data-wisspop-title>Experiencia Inmersiva</span></h2>
+          <h2 class="con-icono" data-wisspop-title style="margin: 0; font-size: 1.25rem; font-weight: 700;">
+            ${ROCKET_ICO}
+            <span>Experiencia Inmersiva</span>
+          </h2>
           <span class="tag-pill">GSAP Flying + Fullscreen</span>
         </header>
 
@@ -857,7 +860,7 @@ if (btnPcFsPill) {
   });
 
   btnPcFsPill.addEventListener("click", () =>
-    modalPcFsPill.open(btnPcFsPill, "Experiencia Inmersiva"),
+    modalPcFsPill.open(btnPcFsPill, btnPcFsPill.querySelector(".con-icono")),
   );
   modalPcFsPill.content.addEventListener("click", (e) => {
     if (e.target.closest("[data-close]")) modalPcFsPill.close();
