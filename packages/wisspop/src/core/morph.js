@@ -893,7 +893,7 @@ export function createMorph(els, options = {}) {
     const content = resolve(els.content);
     const overlay = resolve(els.overlay);
     const flying = resolve(els.flyingText);
-    const d = reducedMotion() ? 0 : opts.closeDuration;
+    const d = reducedMotion() ? 0 : (opts.closeDuration ?? (opts.duration ? opts.duration * 0.9 : 0.5));
     const prevActive = saved?.previousActiveElement;
 
     // El origen pudo moverse mientras el panel estaba abierto (scroll, hover,
@@ -912,7 +912,7 @@ export function createMorph(els, options = {}) {
       let closeVars = {
         autoAlpha: 0,
         filter: opts.contentBlur ? "blur(4px)" : "none",
-        duration: d * 0.36,
+        duration: Math.min(0.2, d * 0.3),
         ease: "power2.in",
       };
       if (animType === "slide-up") closeVars.y = 16;
