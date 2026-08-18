@@ -933,18 +933,29 @@ export function createMorph(els, options = {}) {
         ease: "power2.in",
       });
     } else {
-      if (flying && saved.fly) {
+      if (flying && saved?.fly) {
         const { mode, payload, style } = saved.fly;
-        // El nodo original pudo moverse con el panel abierto (scroll, relayout),
-        // igual que el origen: se vuelve a medir en vez de usar el rect guardado.
-        const rect =
-          payload instanceof Node && payload.isConnected ? payload.getBoundingClientRect() : null;
+        // Re-medir el elemento del origen en caso de que la página se haya desplazado
+        const liveOriginNode = (o.el && o.el.querySelector(".con-icono, [data-wisspop-icon]")) || (payload instanceof Node && payload.isConnected ? payload : null);
+        const rect = liveOriginNode ? liveOriginNode.getBoundingClientRect() : null;
 
-        gsap.set(flying, { ...varsEnDestino(saved.title, saved.target, mode), opacity: 1 });
+        // Re-medir el título en el destino actual
+        const liveTitle = box?.querySelector("[data-wisspop-title]");
+        const currentTitle = liveTitle
+          ? {
+              top: liveTitle.getBoundingClientRect().top,
+              left: liveTitle.getBoundingClientRect().left,
+              w: liveTitle.getBoundingClientRect().width,
+              h: liveTitle.getBoundingClientRect().height,
+              ...textMetrics(getComputedStyle(liveTitle), 30),
+            }
+          : saved.title;
+
+        gsap.set(flying, { ...varsEnDestino(currentTitle, saved.target, mode), opacity: 1 });
         gsap.to(flying, {
           ...varsEnOrigen(o, { rect, style }, mode),
           duration: d,
-          ease: opts.closeEase,
+          ease: opts.closeEase || "power2.inOut",
         });
       }
 
