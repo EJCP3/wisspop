@@ -665,11 +665,12 @@ if (btnInvite) {
   });
 }
 
-// 3. Panel de Filtros y Búsqueda (Flying Text + Stagger + Real Input Morph)
+// 3. Panel de Filtros y Búsqueda (Flying Text + Morph al hacer clic en "Filtros")
 const searchBox = $("#btn-demo-search");
+const btnFilters = $("#btn-trigger-filters");
 const searchInput = $("#input-demo-search");
 
-if (searchBox && searchInput) {
+if (searchBox && btnFilters) {
   const modalSearch = createModal({
     swipeToClose: true,
     placement: "center",
@@ -688,107 +689,40 @@ if (searchBox && searchInput) {
         </button>
       </div>
 
-      <div class="filter-grid-body">
-        <!-- Columna 1 -->
-        <div class="filter-col">
-          <div class="filter-group">
-            <label class="filter-label">RANGO DE FECHA</label>
-            <button type="button" class="filter-select-btn">
-              ${CALENDAR_ICO}
-              <span>Cualquier Fecha</span>
-              ${CHEVRON_DOWN}
-            </button>
-          </div>
-
-          <div class="filter-group">
-            <div class="filter-monto-row">
-              <div class="filter-monto-card">
-                <label class="filter-monto-label">MONTO MÍNIMO</label>
-                <input type="number" class="filter-monto-input" value="0" min="0" />
-              </div>
-              <div class="filter-monto-card">
-                <label class="filter-monto-label">MONTO MÁXIMO</label>
-                <input type="number" class="filter-monto-input" value="0" min="0" />
-              </div>
-            </div>
-          </div>
+      <div class="filter-col" style="gap: 1.15rem;">
+        <div class="filter-group">
+          <label class="filter-label">RANGO DE FECHA</label>
+          <button type="button" class="filter-select-btn">
+            ${CALENDAR_ICO}
+            <span>Cualquier Fecha</span>
+            ${CHEVRON_DOWN}
+          </button>
         </div>
 
-        <!-- Columna 2 -->
-        <div class="filter-col">
-          <div class="filter-group">
-            <label class="filter-label">TIPO DE MOVIMIENTOS</label>
-            <button type="button" class="filter-select-btn">
-              ${FUNNEL_ICO}
-              <span>Todos los Tipos</span>
-              ${CHEVRON_DOWN}
-            </button>
-          </div>
+        <div class="filter-group">
+          <label class="filter-label">TIPO DE MOVIMIENTOS</label>
+          <button type="button" class="filter-select-btn">
+            ${FUNNEL_ICO}
+            <span>Todos los Tipos</span>
+            ${CHEVRON_DOWN}
+          </button>
+        </div>
 
-          <div class="filter-group">
-            <label class="filter-label">CATEGORÍA</label>
-            <button type="button" class="filter-select-btn">
-              ${TAG_ICO}
-              <span>Cualquier Categoría</span>
-              ${CHEVRON_DOWN}
-            </button>
-          </div>
-
-          <div class="filter-group">
-            <div class="filter-inline-field">
-              <label class="filter-label" style="margin: 0; min-width: 4.5rem;">ORIGEN</label>
-              <button type="button" class="filter-select-btn" style="flex: 1;">
-                ${STORE_ICO}
-                <span>Cualquier Origen</span>
-                ${CHEVRON_DOWN}
-              </button>
-            </div>
-          </div>
-
-          <div class="filter-group">
-            <label class="filter-label">COLECCIÓN</label>
-            <button type="button" class="filter-select-btn">
-              ${FOLDER_ICO}
-              <span>Cualquier Colección</span>
-              ${CHEVRON_DOWN}
-            </button>
-          </div>
-
-          <!-- Switches -->
-          <div class="filter-toggle-card">
-            <span>Agrupar Categorías</span>
-            <label class="filter-switch">
-              <input type="checkbox" />
-              <span class="switch-slider"></span>
-            </label>
-          </div>
-
-          <div class="filter-toggle-card">
-            <span>Agrupar Colecciones</span>
-            <label class="filter-switch">
-              <input type="checkbox" />
-              <span class="switch-slider"></span>
-            </label>
-          </div>
+        <div style="margin-top: 0.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+          <button style="padding: 0.45rem 0.9rem; border-radius: 8px;" data-close>Cancelar</button>
+          <button style="padding: 0.45rem 1.1rem; border-radius: 8px; background: var(--accent); color: #fff; font-weight: 600;" data-close>Aplicar Filtros</button>
         </div>
       </div>`,
   });
 
-  let isClosing = false;
-
-  const openSearch = () => {
-    if (isClosing) return;
-    modalSearch.open(searchBox, searchBox);
+  btnFilters.addEventListener("click", (e) => {
+    e.stopPropagation();
+    modalSearch.open(searchBox, searchBox.querySelector(".search-filter-input-wrap"));
     const modalInput = modalSearch.content.querySelector(".filter-modal-input");
-    if (modalInput) {
-      if (searchInput.value) modalInput.value = searchInput.value;
+    if (modalInput && searchInput) {
+      modalInput.value = searchInput.value;
       setTimeout(() => modalInput.focus(), 60);
     }
-  };
-
-  searchBox.addEventListener("click", openSearch);
-  searchInput.addEventListener("keydown", (e) => {
-    if (e.key !== "Tab" && e.key !== "Shift") openSearch();
   });
 
   modalSearch.content.addEventListener("click", (e) => {

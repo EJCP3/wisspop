@@ -537,14 +537,23 @@ input {
 }
 
 .search-filter-btn {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   font-size: 0.92rem;
   font-weight: 700;
   color: var(--text);
   cursor: pointer;
-  padding: 0.2rem 0.4rem;
+  padding: 0.25rem 0.6rem;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+}
+
+.search-filter-btn:hover {
+  background: var(--sunken);
+  color: var(--accent);
 }
 
 .search-filter-btn .ico {
@@ -555,12 +564,12 @@ input {
 
 /* --- Panel de Modal de Filtros --- */
 .filter-modal-panel {
-  width: 36rem;
+  width: 25rem;
   max-width: 92vw;
   background: var(--surface);
-  border-radius: 1.5rem;
+  border-radius: 1.25rem;
   box-sizing: border-box;
-  padding: 1.5rem;
+  padding: 1.25rem;
 }
 
 .filter-modal-header {
