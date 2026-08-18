@@ -186,13 +186,14 @@ function textMetrics(cs, fallbackSize) {
  * la transición tiene que ser invisible.
  */
 function visualMetrics(cs) {
-  if (!cs) return { color: null, radius: 0, letterSpacing: null, fontFamily: null, fontStyle: null };
+  if (!cs) return { color: null, radius: 0, letterSpacing: null, fontFamily: null, fontStyle: null, fontWeight: null };
   return {
     color: cs.color,
     radius: parseFloat(cs.borderTopLeftRadius) || 0,
     letterSpacing: cs.letterSpacing === "normal" ? "0px" : cs.letterSpacing,
     fontFamily: cs.fontFamily,
     fontStyle: cs.fontStyle,
+    fontWeight: cs.fontWeight,
   };
 }
 
@@ -226,6 +227,17 @@ function prepareFlying(flying, payload, override, originCs) {
         clon.style[prop] = cs[prop];
       }
     }
+    // Preservar valores de campos de formulario dentro del clon
+    if (payload instanceof HTMLElement && clon instanceof HTMLElement) {
+      const origInputs = payload.querySelectorAll("input, textarea, select");
+      const clonInputs = clon.querySelectorAll("input, textarea, select");
+      origInputs.forEach((inp, idx) => {
+        if (clonInputs[idx]) clonInputs[idx].value = inp.value;
+      });
+      if (payload.matches("input, textarea, select") && clon.matches("input, textarea, select")) {
+        clon.value = payload.value;
+      }
+    }
     // Si el clon es un elemento de botón/origen, limpiar fondos, bordes y padding para
     // que no se dupliquen sobre la caja que ya anima con el fondo del origen.
     if (clon instanceof HTMLElement) {
@@ -247,6 +259,7 @@ function prepareFlying(flying, payload, override, originCs) {
   gsap.set(flying, {
     ...(style.fontFamily ? { fontFamily: style.fontFamily } : {}),
     ...(style.fontStyle ? { fontStyle: style.fontStyle } : {}),
+    ...(style.fontWeight ? { fontWeight: style.fontWeight } : {}),
     ...(style.letterSpacing ? { letterSpacing: style.letterSpacing } : {}),
   });
 
