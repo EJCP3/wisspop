@@ -937,6 +937,9 @@ export function createMorph(els, options = {}) {
         ease: "power2.in",
       });
     } else {
+      const tweens = [];
+      const closeEase = opts.closeEase || "power2.inOut";
+
       if (flying && saved?.fly) {
         const { mode, payload, style } = saved.fly;
         // Re-medir el elemento del origen en caso de que la página se haya desplazado
@@ -956,29 +959,57 @@ export function createMorph(els, options = {}) {
           : saved.title;
 
         gsap.set(flying, { ...varsEnDestino(currentTitle, saved.target, mode), opacity: 1 });
-        gsap.to(flying, {
-          ...varsEnOrigen(o, { rect, style }, mode),
-          duration: d,
-          ease: opts.closeEase || "power2.inOut",
-        });
+        tweens.push(
+          gsap.to(flying, {
+            ...varsEnOrigen(o, { rect, style }, mode),
+            duration: d,
+            ease: closeEase,
+          }),
+        );
       }
 
       // La caja se mantiene opaca todo el viaje y vuelve al fondo del origen. No
       // se desvanece: tiene que llegar a tapar al botón, igual que a la ida.
       if (o.bgColor && saved.bgColor) {
-        gsap.to(box, { backgroundColor: o.bgColor, duration: d, ease: opts.closeEase });
+        tweens.push(gsap.to(box, { backgroundColor: o.bgColor, duration: d, ease: closeEase }));
       }
 
-      await gsap.to(geom, {
-        w: o.rect.width,
-        h: o.rect.height,
-        top: o.rect.top,
-        left: o.rect.left,
-        radius: o.radius,
-        duration: d,
-        ease: opts.closeEase,
-        onUpdate: applyGeom,
-      });
+      // Desvanecer suavemente sombras del modal al llegar al origen
+      tweens.push(
+        gsap.to(box, {
+          boxShadow: "none",
+          duration: d * 0.4,
+          delay: d * 0.6,
+          ease: "power2.out",
+        }),
+      );
+
+      // Reaparecer el elemento de origen suavemente en los últimos frames para evitar saltos o pop-in
+      if (o.el) {
+        tweens.push(
+          gsap.to(o.el, {
+            opacity: 1,
+            duration: d * 0.35,
+            delay: d * 0.65,
+            ease: "power2.out",
+          }),
+        );
+      }
+
+      tweens.push(
+        gsap.to(geom, {
+          w: o.rect.width,
+          h: o.rect.height,
+          top: o.rect.top,
+          left: o.rect.left,
+          radius: o.radius,
+          duration: d,
+          ease: closeEase,
+          onUpdate: applyGeom,
+        }),
+      );
+
+      await Promise.all(tweens);
     }
 
     // Sin esto el panel cerrado sigue interceptando clics (design.md §8).
