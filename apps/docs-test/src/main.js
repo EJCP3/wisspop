@@ -555,4 +555,177 @@ if (btnMobilePerf) {
   });
 }
 
+// --- Casos de uso avanzados con elemento viajero ---------------------------
+
+// 1. Checkout y Suscripción (Flying Text + Stagger)
+const btnCheckout = $("#btn-demo-checkout");
+if (btnCheckout) {
+  const modalCheckout = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    flyingTextClass: "flying",
+    contentStagger: true,
+    contentAnimation: "slide-up",
+    ease: "power3.out",
+    duration: 0.6,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 25rem">
+        <h3 style="margin-bottom: 0.25rem;">🛍️ <span data-wisspop-title>Plan Pro — $29/mes</span></h3>
+        <p class="nota" style="margin-bottom: 0.75rem;">${INFO}<span>Acceso ilimitado a todas las herramientas de animación.</span></p>
+        
+        <label>Método de pago preferido</label>
+        <div class="payment-options">
+          <div class="payment-card">💳 Tarjeta Crédito</div>
+          <div class="payment-card">🍏 Apple Pay</div>
+          <div class="payment-card">🅿️ PayPal</div>
+          <div class="payment-card">⚡ Google Pay</div>
+        </div>
+
+        <label>Correo de facturación</label>
+        <input type="email" value="alex@acme-design.studio" />
+
+        <button style="width: 100%; background: var(--accent); color: #fff; font-weight: 700; padding: 0.75rem; border: none; border-radius: 10px; margin-top: 0.5rem;" data-close>
+          Confirmar Suscripción ($29)
+        </button>
+      </div>`,
+  });
+
+  btnCheckout.addEventListener("click", () =>
+    modalCheckout.open(btnCheckout, "Plan Pro — $29/mes"),
+  );
+  modalCheckout.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalCheckout.close();
+  });
+}
+
+// 2. Invitar colaboradores (Flying Text + Scale + Elastic Ease)
+const btnInvite = $("#btn-demo-invite");
+if (btnInvite) {
+  const modalInvite = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    flyingTextClass: "flying",
+    contentAnimation: "scale",
+    ease: "back.out(1.5)",
+    duration: 0.55,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 23rem">
+        <h3>👥 <span data-wisspop-title>Invitar colaboradores</span></h3>
+        <p class="nota">${INFO}<span>Comparte acceso a tus componentes con tu equipo.</span></p>
+        
+        <label>Correo electrónico</label>
+        <input type="email" placeholder="companero@empresa.com" />
+        
+        <label>Rol asignado</label>
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+          <button style="flex: 1; padding: 0.4rem; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">Editor</button>
+          <button style="flex: 1; padding: 0.4rem; font-size: 0.85rem;">Admin</button>
+          <button style="flex: 1; padding: 0.4rem; font-size: 0.85rem;">Lector</button>
+        </div>
+
+        <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+          <button data-close>Cancelar</button>
+          <button style="background: var(--accent); color: #fff; font-weight: 600;" data-close>Enviar invitación</button>
+        </div>
+      </div>`,
+  });
+
+  btnInvite.addEventListener("click", () =>
+    modalInvite.open(btnInvite, "Invitar colaboradores"),
+  );
+  modalInvite.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalInvite.close();
+  });
+}
+
+// 3. Command Palette / Búsqueda (Flying Text + Slide Down + Trap Focus)
+const btnSearch = $("#btn-demo-search");
+if (btnSearch) {
+  const modalSearch = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    flyingTextClass: "flying",
+    contentAnimation: "slide-down",
+    trapFocus: true,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 26rem">
+        <h3 style="font-size: 0.95rem; color: var(--muted); margin-bottom: 0.5rem;">
+          🔍 <span data-wisspop-title>Buscar comandos...</span>
+        </h3>
+        
+        <input type="text" placeholder="Escribe un comando o archivo..." autofocus style="font-size: 1rem; padding: 0.75rem; border-radius: 10px;" />
+        
+        <div class="cmd-list">
+          <div class="cmd-item" data-close>
+            <span>📄</span>
+            <span>Abrir <code>WissPopMorph.astro</code></span>
+            <span class="tag-pill" style="margin-left: auto;">Reciente</span>
+          </div>
+          <div class="cmd-item" data-close>
+            <span>✨</span>
+            <span>Probar animación <code>contentStagger</code></span>
+            <span class="tag-pill" style="margin-left: auto;">Acción</span>
+          </div>
+          <div class="cmd-item" data-close>
+            <span>🎨</span>
+            <span>Alternar modo oscuro del visor</span>
+            <span class="tag-pill" style="margin-left: auto;">Tema</span>
+          </div>
+          <div class="cmd-item" data-close>
+            <span>🚀</span>
+            <span>Desplegar monorepo a producción</span>
+            <span class="tag-pill" style="margin-left: auto;">Deploy</span>
+          </div>
+        </div>
+      </div>`,
+  });
+
+  btnSearch.addEventListener("click", () =>
+    modalSearch.open(btnSearch, "Buscar comandos..."),
+  );
+  modalSearch.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalSearch.close();
+  });
+}
+
+// 4. Confirmación destructiva (Flying Text + Fade)
+const btnDelete = $("#btn-demo-delete");
+if (btnDelete) {
+  const modalDelete = createModal({
+    swipeToClose: true,
+    closeButton: true,
+    placement: "center",
+    flyingTextClass: "flying",
+    contentAnimation: "fade",
+    ease: "power3.out",
+    duration: 0.45,
+    modalClass: "panel",
+    content: `
+      <div class="panel-body" style="width: 22rem">
+        <h3 style="color: #dc2626;">🗑️ <span data-wisspop-title>Eliminar Proyecto</span></h3>
+        <p style="font-size: 0.9rem; color: var(--muted); margin: 0.75rem 0 1.25rem; line-height: 1.4;">
+          ¿Estás seguro de que deseas eliminar este proyecto? Esta acción destruirá todas las vistas y no se puede deshacer.
+        </p>
+        <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+          <button data-close>Cancelar</button>
+          <button class="btn-danger" data-close>Sí, eliminar</button>
+        </div>
+      </div>`,
+  });
+
+  btnDelete.addEventListener("click", () =>
+    modalDelete.open(btnDelete, "Eliminar Proyecto"),
+  );
+  modalDelete.content.addEventListener("click", (e) => {
+    if (e.target.closest("[data-close]")) modalDelete.close();
+  });
+}
+
+
 

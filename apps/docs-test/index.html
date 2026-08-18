@@ -164,6 +164,45 @@ modal.open(boton, boton.querySelector("svg"));</code></pre>
       </section>
 
       <section>
+        <h2>Casos de uso avanzados con elemento viajero</h2>
+        <p class="hint">
+          El elemento viajero convierte acciones comunes en experiencias conectadas y fluidas. El texto del botón o icono viaja de forma continua mientras el cuerpo del modal entra con <code>contentAnimation</code> o <code>contentStagger</code>.
+        </p>
+        <div class="row">
+          <button id="btn-demo-checkout" class="btn-plan">
+            <span>🛍️</span>
+            <span>Plan Pro — $29/mes</span>
+          </button>
+
+          <button id="btn-demo-invite" class="pill">
+            <span>👥</span>
+            <span>Invitar colaboradores</span>
+          </button>
+
+          <button id="btn-demo-search" class="btn-search-trigger">
+            <span>🔍 Buscar comandos...</span>
+            <span class="kbd">⌘K</span>
+          </button>
+
+          <button id="btn-demo-delete" class="btn-danger">
+            <span>🗑️</span>
+            <span>Eliminar Proyecto</span>
+          </button>
+        </div>
+        <pre><code>// 1. Checkout con Stagger en cascada
+checkoutModal.open(btn, "Plan Pro — $29/mes");
+
+// 2. Invitar con animación de escala
+inviteModal.open(btn, "Invitar colaboradores");
+
+// 3. Command Palette / Búsqueda
+searchModal.open(btn, "Buscar comandos...");
+
+// 4. Modal destructivo de confirmación
+deleteModal.open(btn, "Eliminar Proyecto");</code></pre>
+      </section>
+
+      <section>
         <h2>Cerrar con el gesto</h2>
         <p class="hint">
           <code>swipeToClose: true</code> — arrastrá el panel con el mouse o el dedo hacia
