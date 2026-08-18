@@ -733,12 +733,53 @@ export function createMorph(els, options = {}) {
       gsap.to(box, { backgroundColor: medido.bgColor, duration: d * 0.6, ease: "power2.out" });
     }
 
+    const animType = opts.contentAnimation || "slide-up";
+    let contentFrom = {
+      autoAlpha: 0,
+      filter: opts.contentBlur ? "blur(4px)" : "none",
+    };
+    let contentTo = {
+      autoAlpha: 1,
+      filter: opts.contentBlur ? "blur(0px)" : "none",
+      duration: d * 0.65,
+      delay: d * 0.35,
+      ease: "power2.out",
+    };
+
+    if (animType === "slide-up") {
+      contentFrom.y = 24;
+      contentFrom.scale = 1;
+      contentTo.y = 0;
+      contentTo.scale = 1;
+      contentTo.ease = "power3.out";
+    } else if (animType === "slide-down") {
+      contentFrom.y = -24;
+      contentFrom.scale = 1;
+      contentTo.y = 0;
+      contentTo.scale = 1;
+      contentTo.ease = "power3.out";
+    } else if (animType === "scale") {
+      contentFrom.y = 0;
+      contentFrom.scale = 0.85;
+      contentFrom.transformOrigin = "center center";
+      contentTo.y = 0;
+      contentTo.scale = 1;
+      contentTo.ease = "back.out(1.7)";
+    } else if (animType === "fade") {
+      contentFrom.y = 0;
+      contentFrom.scale = 1;
+      contentTo.y = 0;
+      contentTo.scale = 1;
+      contentTo.ease = "power2.out";
+    } else if (animType === "none") {
+      contentFrom.autoAlpha = 1;
+      contentFrom.y = 0;
+      contentFrom.scale = 1;
+      contentTo = null;
+    }
+
     if (content) {
-      gsap.set(content, {
-        autoAlpha: 0,
-        y: 10,
-        filter: opts.contentBlur ? "blur(4px)" : "none",
-      });
+      gsap.set(content, contentFrom);
     }
     if (overlay) {
       gsap.set(overlay, { autoAlpha: 0 });
@@ -775,18 +816,31 @@ export function createMorph(els, options = {}) {
       });
     }
 
-    // El contenido entra con proporciones relativas a la caja (delay 37.5% /
-    // duración 62.5%), así termina de revelarse justo cuando la caja termina de
-    // crecer, sea cual sea `duration`.
-    if (content) {
-      gsap.to(content, {
-        autoAlpha: 1,
-        y: 0,
-        filter: opts.contentBlur ? "blur(0px)" : "none",
-        duration: d * 0.625,
-        delay: d * 0.375,
-        ease: "power2.out",
-      });
+    // El contenido entra según la animación elegida (slide-up, slide-down, scale, fade)
+    if (content && contentTo) {
+      gsap.to(content, contentTo);
+    }
+
+    // Cascada de elementos hijos (`contentStagger`)
+    if (opts.contentStagger && content) {
+      const items = content.querySelectorAll(".stagger-item, .cmd-item, .payment-card, [data-stagger]");
+      const targets = items.length > 0
+        ? items
+        : (content.firstElementChild?.children?.length > 1
+            ? content.firstElementChild.children
+            : content.children);
+
+      if (targets && targets.length > 0) {
+        gsap.set(targets, { autoAlpha: 0, y: 20 });
+        gsap.to(targets, {
+          autoAlpha: 1,
+          y: 0,
+          stagger: 0.05,
+          duration: 0.45,
+          delay: d * 0.35,
+          ease: "power3.out",
+        });
+      }
     }
 
     await gsap.to(geom, {
@@ -854,13 +908,18 @@ export function createMorph(els, options = {}) {
     // vería debajo del panel que todavía está volviendo.
     if (overlay) gsap.to(overlay, { autoAlpha: 0, duration: d * 0.75, ease: "power2.in" });
     if (content) {
-      gsap.to(content, {
+      const animType = opts.contentAnimation || "slide-up";
+      let closeVars = {
         autoAlpha: 0,
-        y: 10,
         filter: opts.contentBlur ? "blur(4px)" : "none",
         duration: d * 0.36,
         ease: "power2.in",
-      });
+      };
+      if (animType === "slide-up") closeVars.y = 16;
+      else if (animType === "slide-down") closeVars.y = -16;
+      else if (animType === "scale") closeVars.scale = 0.88;
+
+      gsap.to(content, closeVars);
     }
     if (fling) {
       // Descartado con el gesto: no vuelve al origen. El gesto ya dijo a dónde

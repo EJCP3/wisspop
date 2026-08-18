@@ -33,7 +33,7 @@ html {
 }
 
 /* Prevenir que la caja sea visible si no tiene coordenadas calculadas o durante mediciones */
-.wisspop-box:not(.wisspop-flip-box):not([style*="top"]),
+.wisspop-box:not(.wisspop-flip-box):not(.wisspop-flip-box *):not([style*="top"]),
 .wisspop-box[style*="top: -9999px"],
 .wisspop-box[style*="top:-9999px"] {
   opacity: 0 !important;
@@ -141,89 +141,8 @@ html {
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
-   Animaciones Nativas por CSS para el Contenido (.wisspop-content)
+   Animaciones para el Contenido (.wisspop-content) gestionadas por GSAP Core
    ────────────────────────────────────────────────────────────────────────── */
-
-/* 1. Slide Up (Default) */
-.wisspop-anim-slide-up .wisspop-content {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.16s ease-in, transform 0.16s ease-in;
-}
-
-.wisspop-box.wisspop-open.wisspop-anim-slide-up .wisspop-content,
-.wisspop-box.wisspop-open .wisspop-anim-slide-up .wisspop-content {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 2. Slide Down */
-.wisspop-anim-slide-down .wisspop-content {
-  opacity: 0;
-  transform: translateY(-12px);
-  transition: opacity 0.16s ease-in, transform 0.16s ease-in;
-}
-
-.wisspop-box.wisspop-open.wisspop-anim-slide-down .wisspop-content,
-.wisspop-box.wisspop-open .wisspop-anim-slide-down .wisspop-content {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 3. Scale */
-.wisspop-anim-scale .wisspop-content {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: opacity 0.16s ease-in, transform 0.16s ease-in;
-}
-
-.wisspop-box.wisspop-open.wisspop-anim-scale .wisspop-content,
-.wisspop-box.wisspop-open .wisspop-anim-scale .wisspop-content {
-  opacity: 1;
-  transform: scale(1);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* 4. Fade */
-.wisspop-anim-fade .wisspop-content {
-  opacity: 0;
-  transition: opacity 0.16s ease-in;
-}
-
-.wisspop-box.wisspop-open.wisspop-anim-fade .wisspop-content,
-.wisspop-box.wisspop-open .wisspop-anim-fade .wisspop-content {
-  opacity: 1;
-  transition: opacity 0.3s ease-out;
-}
-
-/* 5. Stagger / Cascada Automática de Elementos Hijos */
-.wisspop-stagger .wisspop-content > * {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.14s ease-in, transform 0.14s ease-in;
-}
-
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *,
-.wisspop-box.wisspop-open .wisspop-stagger .wisspop-content > * {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-              transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(1) { transition-delay: 30ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(2) { transition-delay: 60ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(3) { transition-delay: 90ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(4) { transition-delay: 120ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(5) { transition-delay: 150ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(6) { transition-delay: 180ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(7) { transition-delay: 210ms; }
-.wisspop-box.wisspop-open.wisspop-stagger .wisspop-content > *:nth-child(8) { transition-delay: 240ms; }
 
 /* Respeto a accesibilidad y movimiento reducido */
 @media (prefers-reduced-motion: reduce) {
