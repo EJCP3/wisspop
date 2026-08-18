@@ -171,6 +171,13 @@ const PALETTE_ICO = ico("M12 21a9 9 0 0 1 0 -18c4.97 0 9 3.582 9 8c0 1.06 -.474 
 const GLOBE_ICO = ico("M3 12a9 9 0 1 0 18 0a9 9 0 0 0 -18 0M3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 0 0 0 18M12.5 3a17 17 0 0 1 0 18");
 const SHIELD_ICO = ico("M12 3a12 12 0 0 0 8.5 3a12 12 0 0 1 -8.5 15a12 12 0 0 1 -8.5 -15a12 12 0 0 0 8.5 -3");
 const CHECK_ICO = ico("M5 12l5 5l10 -10");
+const SLIDERS_ICO = ico("M4 6h16M4 12h16M4 18h16M8 4v4M16 10v4M10 16v4");
+const CALENDAR_ICO = ico("M4 5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5zM16 3v4M8 3v4M4 11h16");
+const FUNNEL_ICO = ico("M3 4h18l-7 8v6l-4 2v-8z");
+const TAG_ICO = ico("M7.5 7.5h.01M3 6a3 3 0 0 1 3-3h6.59a3 3 0 0 1 2.12.88l6.41 6.41a3 3 0 0 1 0 4.24l-6.59 6.59a3 3 0 0 1-4.24 0L3.88 14.71A3 3 0 0 1 3 12.59V6z");
+const STORE_ICO = ico("M3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6M3 6l2-3h14l2 3M3 6h18M9 10a3 3 0 1 0 6 0");
+const FOLDER_ICO = ico("M5 4h4l3 3h7a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z");
+const CHEVRON_DOWN = ico("M6 9l6 6 6-6");
 
 const panelFormato = (titulo, cuerpo) => `
   <div class="panel-body" style="width: 21rem">
@@ -658,7 +665,7 @@ if (btnInvite) {
   });
 }
 
-// 3. Command Palette / Búsqueda (Flying Text + Slide Down + Trap Focus)
+// 3. Panel de Filtros y Búsqueda (Flying Text + Stagger + Real Input Morph)
 const searchBox = $("#btn-demo-search");
 const searchInput = $("#input-demo-search");
 
@@ -669,34 +676,99 @@ if (searchBox && searchInput) {
     flyingTextClass: "flying",
     contentAnimation: "slide-down",
     trapFocus: true,
-    modalClass: "panel",
+    modalClass: "panel filter-modal-panel",
     content: `
-      <div class="panel-body" style="width: 28rem; padding: 1.25rem;">
-        <div class="cmd-search-header con-icono" data-wisspop-title style="margin-bottom: 0.5rem;">
+      <div class="filter-modal-header">
+        <div class="filter-modal-search-wrap con-icono" data-wisspop-title>
           ${SEARCH_ICO}
-          <input type="text" class="cmd-input" placeholder="Buscar comandos..." autofocus />
+          <input type="text" class="filter-modal-input" placeholder="Buscar comercio..." autofocus />
         </div>
-        
-        <div class="cmd-list">
-          <div class="cmd-item" data-close>
-            <span>${FILE_ICO}</span>
-            <span>Abrir <code>WissPopMorph.astro</code></span>
-            <span class="tag-pill" style="margin-left: auto;">Reciente</span>
+        <button type="button" class="filter-close-btn" data-close aria-label="Cerrar">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="filter-grid-body">
+        <!-- Columna 1 -->
+        <div class="filter-col">
+          <div class="filter-group">
+            <label class="filter-label">RANGO DE FECHA</label>
+            <button type="button" class="filter-select-btn">
+              ${CALENDAR_ICO}
+              <span>Cualquier Fecha</span>
+              ${CHEVRON_DOWN}
+            </button>
           </div>
-          <div class="cmd-item" data-close>
-            <span>${SPARKLES_ICO}</span>
-            <span>Probar animación <code>contentStagger</code></span>
-            <span class="tag-pill" style="margin-left: auto;">Acción</span>
+
+          <div class="filter-group">
+            <div class="filter-monto-row">
+              <div class="filter-monto-card">
+                <label class="filter-monto-label">MONTO MÍNIMO</label>
+                <input type="number" class="filter-monto-input" value="0" min="0" />
+              </div>
+              <div class="filter-monto-card">
+                <label class="filter-monto-label">MONTO MÁXIMO</label>
+                <input type="number" class="filter-monto-input" value="0" min="0" />
+              </div>
+            </div>
           </div>
-          <div class="cmd-item" data-close>
-            <span>${PALETTE_ICO}</span>
-            <span>Alternar modo oscuro del visor</span>
-            <span class="tag-pill" style="margin-left: auto;">Tema</span>
+        </div>
+
+        <!-- Columna 2 -->
+        <div class="filter-col">
+          <div class="filter-group">
+            <label class="filter-label">TIPO DE MOVIMIENTOS</label>
+            <button type="button" class="filter-select-btn">
+              ${FUNNEL_ICO}
+              <span>Todos los Tipos</span>
+              ${CHEVRON_DOWN}
+            </button>
           </div>
-          <div class="cmd-item" data-close>
-            <span>${ROCKET_ICO}</span>
-            <span>Desplegar monorepo a producción</span>
-            <span class="tag-pill" style="margin-left: auto;">Deploy</span>
+
+          <div class="filter-group">
+            <label class="filter-label">CATEGORÍA</label>
+            <button type="button" class="filter-select-btn">
+              ${TAG_ICO}
+              <span>Cualquier Categoría</span>
+              ${CHEVRON_DOWN}
+            </button>
+          </div>
+
+          <div class="filter-group">
+            <div class="filter-inline-field">
+              <label class="filter-label" style="margin: 0; min-width: 4.5rem;">ORIGEN</label>
+              <button type="button" class="filter-select-btn" style="flex: 1;">
+                ${STORE_ICO}
+                <span>Cualquier Origen</span>
+                ${CHEVRON_DOWN}
+              </button>
+            </div>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label">COLECCIÓN</label>
+            <button type="button" class="filter-select-btn">
+              ${FOLDER_ICO}
+              <span>Cualquier Colección</span>
+              ${CHEVRON_DOWN}
+            </button>
+          </div>
+
+          <!-- Switches -->
+          <div class="filter-toggle-card">
+            <span>Agrupar Categorías</span>
+            <label class="filter-switch">
+              <input type="checkbox" />
+              <span class="switch-slider"></span>
+            </label>
+          </div>
+
+          <div class="filter-toggle-card">
+            <span>Agrupar Colecciones</span>
+            <label class="filter-switch">
+              <input type="checkbox" />
+              <span class="switch-slider"></span>
+            </label>
           </div>
         </div>
       </div>`,
@@ -707,7 +779,7 @@ if (searchBox && searchInput) {
   const openSearch = () => {
     if (isClosing) return;
     modalSearch.open(searchBox, searchBox);
-    const modalInput = modalSearch.content.querySelector(".cmd-input");
+    const modalInput = modalSearch.content.querySelector(".filter-modal-input");
     if (modalInput) {
       if (searchInput.value) modalInput.value = searchInput.value;
       setTimeout(() => modalInput.focus(), 60);

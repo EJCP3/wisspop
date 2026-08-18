@@ -183,9 +183,16 @@ modal.open(boton, boton.querySelector("svg"));</code></pre>
             </span>
           </button>
 
-          <div id="btn-demo-search" class="search-real-box con-icono">
-            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6"/></svg>
-            <input type="text" id="input-demo-search" placeholder="Buscar comandos..." class="search-real-field" autocomplete="off" />
+          <div id="btn-demo-search" class="search-filter-pill">
+            <div class="search-filter-input-wrap con-icono">
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6"/></svg>
+              <input type="text" id="input-demo-search" placeholder="Buscar comercio..." class="search-filter-input" autocomplete="off" />
+            </div>
+            <div class="search-filter-divider"></div>
+            <div class="search-filter-btn">
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16M8 4v4M16 10v4M10 16v4"/></svg>
+              <span>Filtros</span>
+            </div>
           </div>
 
           <button id="btn-demo-delete" class="btn-danger">
