@@ -659,6 +659,7 @@ export function createMorph(els, options = {}) {
     // dibujaría una barra de scroll que aparece y desaparece (design.md §7).
     box.style.overflow = "hidden";
     box.style.pointerEvents = "none";
+    box.style.visibility = "";
 
     Object.assign(geom, {
       w: o.rect.width,
@@ -681,7 +682,7 @@ export function createMorph(els, options = {}) {
     // Opaca desde el frame 1, con el fondo del origen. Si la caja hiciera
     // fade-in, para cuando se ve ya estaría a media distancia y la animación se
     // leería como que el panel apareció, no como que el botón se transformó.
-    gsap.set(box, { opacity: 1, ...(o.bgColor ? { backgroundColor: o.bgColor } : {}) });
+    gsap.set(box, { autoAlpha: 1, ...(o.bgColor ? { backgroundColor: o.bgColor } : {}) });
     if (o.bgColor && medido.bgColor) {
       gsap.to(box, { backgroundColor: medido.bgColor, duration: d * 0.6, ease: "power2.out" });
     }

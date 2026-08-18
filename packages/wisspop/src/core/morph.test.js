@@ -233,3 +233,37 @@ test("onState avisa 'closed' aunque el cierre lo inicie el CORE, no el consumido
   assert.equal(morph.state, "closed");
   assert.ok(estados.includes("closed"), `onState nunca avisó el cierre (recibió: ${estados.join(" → ")})`);
 });
+
+test("reapertura (open → close → open): el box restaura visibility y no queda invisible", async () => {
+  const esc = armarEscenario();
+  const disparador = document.createElement("button");
+  document.body.append(disparador);
+  hacerloVisible(disparador);
+
+  const morph = createMorph(esc, {
+    duration: 0,
+    closeDuration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  // 1ª Apertura
+  await morph.open(disparador);
+  assert.equal(morph.state, "open");
+  assert.notEqual(esc.box.style.visibility, "hidden");
+
+  // 1º Cierre
+  await morph.close();
+  assert.equal(morph.state, "closed");
+  assert.equal(esc.box.style.visibility, "hidden", "al cerrar queda hidden para no interceptar clics");
+
+  // 2ª Apertura (reutilizando el mismo nodo DOM del escenario)
+  await morph.open(disparador);
+  assert.equal(morph.state, "open");
+  assert.notEqual(esc.box.style.visibility, "hidden", "al reabrir visibility debe restaurarse");
+
+  // 2º Cierre
+  await morph.close();
+  assert.equal(morph.state, "closed");
+});
+
