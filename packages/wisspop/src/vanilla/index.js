@@ -35,8 +35,8 @@ const CLOSE_ICON =
  * @param {string} [opts.closeButtonClass]
  * @param {boolean} [opts.closeOnEscape=true] Cerrar al presionar la tecla Escape
  * @param {boolean} [opts.trapFocus=true] Atrapado de foco dentro del modal
- * @param {boolean} [opts.restoreFocus=true] Devolver foco al origen al cerrar
- * @param {boolean} [opts.lockScroll=false] Bloquear scroll del body mientras está abierto (desactivado por defecto)
+ * @param {"slide-up"|"slide-down"|"scale"|"fade"|"none"} [opts.contentAnimation="slide-up"] Animación CSS nativa de entrada y salida para el contenido
+ * @param {boolean} [opts.contentStagger=false] Efecto de cascada escalonada automática en elementos hijos
  * @param {string} [opts.ariaLabel]
  * @param {string} [opts.ariaLabelledby]
  */

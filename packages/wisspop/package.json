@@ -1,10 +1,17 @@
 {
   "name": "wisspop",
-  "version": "0.1.0",
+  "version": "0.1.9",
   "type": "module",
   "description": "Modales y dropdowns con animaciones ancladas al origen: el panel nace del elemento que lo abrió",
   "license": "MIT",
-  "author": "euddy.javier@gmail.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EJCP3/wisspop.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EJCP3/wisspop/issues"
+  },
+  "homepage": "https://github.com/EJCP3/wisspop#readme",
   "keywords": [
     "modal",
     "dropdown",
@@ -15,6 +22,9 @@
     "flip",
     "transition"
   ],
+  "main": "./dist/core.cjs",
+  "module": "./dist/core.js",
+  "types": "./dist/core/index.d.ts",
   "files": [
     "dist",
     "src"
@@ -46,6 +56,7 @@
   },
   "scripts": {
     "build": "vite build",
+    "prepublishOnly": "vite build",
     "test": "node --test"
   },
   "peerDependencies": {

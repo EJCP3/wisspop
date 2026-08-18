@@ -1,4 +1,5 @@
 node_modules/
+apps/docs-astro
 dist/
 *.log
 .DS_Store
@@ -7,3 +8,5 @@ dist/
 design.md
 requerimientos.md
 wisspop.md
+WISPOP_IMPROVEMENTS.md
+bash.exe.stackdump

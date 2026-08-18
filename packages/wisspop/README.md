@@ -69,12 +69,25 @@ Los `z-index` predeterminados pueden ajustarse mediante variables CSS:
 
 ---
 
-## Buenas Prácticas y Errores Comunes
+## Buenas Prácticas y Rendimiento Móvil (60-120 FPS) ⚡📱
 
 1. **Aplica estilos en `modalClass`**: Wisspop anima directamente su propio contenedor `.wisspop-box`. Pasa el fondo, bordes, redondeo y sombra a `modalClass` en lugar de crear una segunda caja contenedora en el slot.
 2. **`flyingTextClass` es exclusivo de `WissPopPill`**: En `WissPopMorph`, usa encabezados HTML normales `<h3>` sin `data-wisspop-title`.
 3. **Define un ancho en el contenido**: Para que GSAP calcule la geometría con precisión, dale un ancho explícito o responsivo (ej. `style="width: min(24rem, calc(100vw - 2rem));"`).
 4. **Colores de fondo armónicos en el botón**: WissPop interpola el `backgroundColor` del botón hacia el modal al abrir y de vuelta al cerrar. Mantén el botón en tonos armónicos/neutros y coloca los colores llamativos en iconos o badges.
+5. **Evita sombras difusas (`box-shadow`) en pantalla completa**: Clases como `shadow-2xl` fuerzan el cálculo de 50px de blur perimetral que no es visible en `100vw`. Usa sombras responsivas: `class="shadow-none sm:shadow-2xl"`.
+6. **Usa `h-full` en lugar de `min-h-[100dvh]` dentro del slot**: WissPop ya calcula y ajusta la altura exacta de la caja; usar `100dvh` fuerza consultas redundantes al viewport dinámico móvil. Usa `class="h-full sm:h-auto flex flex-col justify-between"`.
+
+---
+
+## 🚀 Arquitectura de Alto Rendimiento (GPU / CPU / VRAM)
+
+WissPop incluye optimizaciones de bajo nivel para garantizar fluidez nativa a 60-120 FPS en dispositivos móviles:
+* **Aceleración por Capa GPU**: `.wisspop-box` opera con `transform: translateZ(0)` y `backface-visibility: hidden` para que el navegador cree un contexto de composición independiente.
+* **Contención de Layout (`contain: layout paint`)**: Aísla el reflow durante la animación para que las mutaciones de geometría no invaliden el árbol DOM exterior (fondos, gradientes, textos).
+* **Gestión Dinámica de VRAM (`will-change`)**: La propiedad `will-change` se activa exclusivamente durante la interpolación activa y se libera a `"auto"` al completarse, garantizando cero consumo residual de memoria gráfica.
+* **Suavizado Inteligente de Curvas en Viewport Móvil**: Al expandir a pantalla completa (`fullscreenOnMobile`), las curvas elásticas con *overshoot* (`back.out`) conmutan automáticamente a desaceleraciones suaves (`power3.out`) para evitar vibraciones del motor de scroll.
+* **`contentBlur: false` por Defecto**: Elimina filtros de convolución gaussiana en tiempo real durante la expansión de la caja, liberando el *fill-rate* de la GPU móvil.
 
 ---
 
@@ -279,6 +292,7 @@ La instancia devuelta por `createModal()`, `createMorph()`, `createFlipModal()` 
 | `lockScroll` | `boolean` | `true` | Bloquea el scroll del body agregando compensación de scrollbar. |
 | `fullscreenOnMobile` | `boolean` | `true` | En pantallas menores a 640px los modales grandes ocupan el ancho completo. |
 | `mobileBreakpoint` | `number` | `640` | Breakpoint en píxeles para el comportamiento móvil responsive. |
+| `contentBlur` | `boolean` | `false` | Aplica un filtro suave `blur(4px)→0` en el contenido durante la apertura. |
 
 ---
 

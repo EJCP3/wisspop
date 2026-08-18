@@ -233,3 +233,98 @@ test("onState avisa 'closed' aunque el cierre lo inicie el CORE, no el consumido
   assert.equal(morph.state, "closed");
   assert.ok(estados.includes("closed"), `onState nunca avisó el cierre (recibió: ${estados.join(" → ")})`);
 });
+
+test("reapertura (open → close → open): el box restaura visibility y no queda invisible", async () => {
+  const esc = armarEscenario();
+  const disparador = document.createElement("button");
+  document.body.append(disparador);
+  hacerloVisible(disparador);
+
+  const morph = createMorph(esc, {
+    duration: 0,
+    closeDuration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  // 1ª Apertura
+  await morph.open(disparador);
+  assert.equal(morph.state, "open");
+  assert.notEqual(esc.box.style.visibility, "hidden");
+
+  // 1º Cierre
+  await morph.close();
+  assert.equal(morph.state, "closed");
+  assert.equal(esc.box.style.visibility, "hidden", "al cerrar queda hidden para no interceptar clics");
+
+  // 2ª Apertura (reutilizando el mismo nodo DOM del escenario)
+  await morph.open(disparador);
+  assert.equal(morph.state, "open");
+  assert.notEqual(esc.box.style.visibility, "hidden", "al reabrir visibility debe restaurarse");
+
+  // 2º Cierre
+  await morph.close();
+  assert.equal(morph.state, "closed");
+});
+
+// ── Optimización Móvil (GPU / VRAM / Blur) ──────────────────────────────
+
+test("móvil: contentBlur es false por defecto para evitar blur en tiempo real", async () => {
+  const esc = armarEscenario();
+  const morph = createMorph(esc, {
+    duration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  await morph.open({ top: 0, left: 0, width: 10, height: 10 });
+  assert.equal(esc.content.style.filter, "none", "sin contentBlur no debe aplicar blur()");
+  await morph.close();
+});
+
+test("móvil: willChange se gestiona dinámicamente y se libera a 'auto' tras abrir", async () => {
+  const esc = armarEscenario();
+  const morph = createMorph(esc, {
+    duration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  await morph.open({ top: 0, left: 0, width: 10, height: 10 });
+  assert.equal(esc.box.style.willChange, "auto", "willChange debe liberarse a auto al terminar la animación");
+  await morph.close();
+});
+
+// ── Animaciones Nativas de Contenido y Cascada (CSS) ────────────────────
+
+test("contentAnimation: aplica la clase wisspop-anim-[tipo] correspondiente", async () => {
+  const esc = armarEscenario();
+  const morph = createMorph(esc, {
+    duration: 0,
+    contentAnimation: "scale",
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  await morph.open({ top: 0, left: 0, width: 10, height: 10 });
+  assert.ok(esc.box.classList.contains("wisspop-anim-scale"), "debe incluir wisspop-anim-scale");
+  await morph.close();
+  assert.ok(!esc.box.classList.contains("wisspop-anim-scale"), "debe limpiar la clase al cerrar");
+});
+
+test("contentStagger: aplica la clase wisspop-stagger para cascada de elementos hijos", async () => {
+  const esc = armarEscenario();
+  const morph = createMorph(esc, {
+    duration: 0,
+    contentStagger: true,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  await morph.open({ top: 0, left: 0, width: 10, height: 10 });
+  assert.ok(esc.box.classList.contains("wisspop-stagger"), "debe incluir wisspop-stagger");
+  await morph.close();
+  assert.ok(!esc.box.classList.contains("wisspop-stagger"), "debe limpiar wisspop-stagger al cerrar");
+});
+
+

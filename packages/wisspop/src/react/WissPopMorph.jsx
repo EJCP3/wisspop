@@ -38,7 +38,7 @@ export const WissPopMorph = forwardRef(function WissPopMorph(
     ease,
     closeDuration,
     closeEase,
-    contentBlur = true,
+    contentBlur = false,
     /**
      * Texto viajero. `null` (default) no monta nada; con cualquier string
      * —incluso vacío— se crea el elemento que viaja, misma condición que usa
