@@ -673,7 +673,6 @@ if (btnSearch) {
         <div class="cmd-search-header con-icono" data-wisspop-title style="margin-bottom: 0.5rem;">
           ${SEARCH_ICO}
           <input type="text" class="cmd-input" placeholder="Buscar comandos..." autofocus />
-          <span class="kbd" style="font-size: 0.75rem; padding: 0.15rem 0.4rem;">ESC</span>
         </div>
         
         <div class="cmd-list">
