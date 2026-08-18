@@ -96,6 +96,23 @@ Para que GSAP mida con precisión la geometría final de la caja antes de animar
 ### 4. Fondos armónicos en el botón disparador (`backgroundColor`)
 WissPop interpola automáticamente el `backgroundColor` computado del disparador hacia el modal al abrir y de regreso al cerrar. Si el botón tiene un color muy saturado o translúcido (ej. `bg-amber-500/10`), todo el modal se teñirá de amarillo al encogerse. Mantén el fondo del botón en un tono armónico/neutro y usa el color llamativo en iconos o insignias internas.
 
+### 5. Sombras responsivas en pantalla completa móvil
+Clases como `shadow-2xl` fuerzan el cálculo de 50px de desenfoque rasterizado que no es visible en bordes de `100vw`. Usa sombras responsivas: `class="shadow-none sm:shadow-2xl"`.
+
+### 6. Usa `h-full` en lugar de `min-h-[100dvh]` dentro del slot
+WissPop ya calcula y ajusta la altura exacta de la caja; usar `100dvh` fuerza consultas redundantes al viewport dinámico móvil. Usa `class="h-full sm:h-auto flex flex-col justify-between"`.
+
+---
+
+## ⚡ Rendimiento Móvil (60-120 FPS) y Aislamiento de Capa
+
+WissPop está diseñado para garantizar animaciones a 60-120 FPS sin saturar la CPU o GPU de dispositivos móviles:
+* **GPU Layer Promotion**: `.wisspop-box` se promociona a su propia capa de composición (`transform: translateZ(0)` y `backface-visibility: hidden`).
+* **Contención de Layout (`contain: layout paint`)**: El reflow de la interpolación queda encapsulado y no recalcula las capas DOM exteriores.
+* **Gestión Dinámica de VRAM (`will-change`)**: Activación de `will-change` únicamente durante las transiciones activas y reseteo inmediato a `"auto"` al completarse.
+* **Suavizado Automático de Curvas en Viewport Móvil**: Sustitución dinámica de curvas elásticas (`back.out`) por `power3.out` cuando se abre en pantalla completa móvil (`fullscreenOnMobile`), evitando desbordamientos y parpadeos en el viewport.
+* **`contentBlur: false` por Defecto**: Máxima fluidez eliminando filtros pesados de convolución en tiempo real durante la interpolación de dimensiones.
+
 ---
 
 ## Ejemplos de Uso

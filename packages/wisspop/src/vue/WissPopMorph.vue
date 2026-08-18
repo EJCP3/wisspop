@@ -72,7 +72,7 @@ const props = defineProps({
   ease: { type: String, default: undefined },
   closeDuration: { type: Number, default: undefined },
   closeEase: { type: String, default: undefined },
-  contentBlur: { type: Boolean, default: true },
+  contentBlur: { type: Boolean, default: false },
   /**
    * Texto viajero. Si es `null` (default) no se monta nada y el modal se
    * comporta como antes; con cualquier string —incluso vacío— se crea el

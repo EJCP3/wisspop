@@ -35,8 +35,12 @@ const DEFAULTS = {
   closeDuration: 0.7,
   ease: "back.out(1.1)",
   closeEase: "power3.inOut",
-  /** el contenido entra con blur(4px)→0 además de opacity/y */
-  contentBlur: true,
+  /** el contenido entra con blur(4px)→0 además de opacity/y (false por defecto para fluidez móvil) */
+  contentBlur: false,
+  /** @type {"slide-up"|"slide-down"|"scale"|"fade"|"none"} animación CSS nativa del contenido */
+  contentAnimation: "slide-up",
+  /** si true, añade efecto de cascada escalonada nativa a los hijos directos del contenido */
+  contentStagger: false,
   /** debajo de este ancho el panel ocupa toda la pantalla (RF-7) */
   mobileBreakpoint: 640,
   fullscreenOnMobile: false,
@@ -503,6 +507,7 @@ export function createMorph(els, options = {}) {
 
   /** RF-4: el contenido cambió de alto con el panel abierto. */
   function syncHeight(duration = 0.25) {
+    const box = resolve(els.box);
     const content = resolve(els.content);
     if (state !== "open" || !saved || !content) return;
     if (opts.fullscreenOnMobile && innerWidth < opts.mobileBreakpoint) return;
@@ -514,12 +519,16 @@ export function createMorph(els, options = {}) {
     if (Math.abs(next.h - saved.target.h) < 1) return;
 
     saved.target = next;
+    if (box) box.style.willChange = "height, top";
     gsap.to(geom, {
       h: next.h,
       top: next.top,
       duration: reducedMotion() ? 0 : duration,
       ease: "power3.inOut",
       onUpdate: applyGeom,
+      onComplete: () => {
+        if (box) box.style.willChange = "auto";
+      },
     });
   }
 
@@ -660,6 +669,23 @@ export function createMorph(els, options = {}) {
     box.style.overflow = "hidden";
     box.style.pointerEvents = "none";
     box.style.visibility = "";
+    box.style.willChange = "width, height, top, left, border-radius";
+
+    if (opts.contentAnimation && opts.contentAnimation !== "none") {
+      box.classList.add(`wisspop-anim-${opts.contentAnimation}`);
+    }
+    if (opts.contentStagger) {
+      box.classList.add("wisspop-stagger");
+    }
+
+    const isMobileFullscreen =
+      opts.fullscreenOnMobile &&
+      typeof window !== "undefined" &&
+      window.innerWidth < opts.mobileBreakpoint;
+    const activeEase =
+      isMobileFullscreen && typeof opts.ease === "string" && opts.ease.includes("back")
+        ? "power3.out"
+        : opts.ease;
 
     Object.assign(geom, {
       w: o.rect.width,
@@ -717,7 +743,7 @@ export function createMorph(els, options = {}) {
       gsap.to(flying, {
         ...varsEnDestino(title, target, mode),
         duration: d,
-        ease: opts.ease,
+        ease: activeEase,
         // El relevo tiene que ser atómico: primero se muestra el original y
         // recién después se oculta la copia, en el mismo bloque síncrono. Si se
         // ocultara la copia y el título apareciera un tick más tarde, quedaría
@@ -746,10 +772,11 @@ export function createMorph(els, options = {}) {
     await gsap.to(geom, {
       ...target,
       duration: d,
-      ease: opts.ease,
+      ease: activeEase,
       onUpdate: applyGeom,
     });
 
+    box.style.willChange = "auto";
     box.style.overflow = "";
     box.style.pointerEvents = "";
     setState("open");
@@ -794,6 +821,7 @@ export function createMorph(els, options = {}) {
     const o = readOrigin(saved.ref, opts.originRadius) ?? saved.origin;
     box.style.overflow = "hidden";
     box.style.pointerEvents = "none";
+    box.style.willChange = "width, height, top, left, border-radius";
 
     // El origen NO vuelve acá: vuelve de golpe al final, cuando la caja ya
     // ocupa su rect exacto y desaparece. Si reapareciera durante el viaje, se
@@ -856,10 +884,18 @@ export function createMorph(els, options = {}) {
     // Sin esto el panel cerrado sigue interceptando clics (design.md §8).
     if (flying) gsap.set(flying, { opacity: 0, clearProps: "all" });
     if (box) {
+      box.style.willChange = "auto";
       box.style.visibility = "hidden";
       box.style.opacity = "0";
       box.style.pointerEvents = "none";
-      gsap.set(box, { clearProps: "transform,width,height,top,left,borderRadius,backgroundColor" });
+      box.classList.remove(
+        "wisspop-anim-slide-up",
+        "wisspop-anim-slide-down",
+        "wisspop-anim-scale",
+        "wisspop-anim-fade",
+        "wisspop-stagger",
+      );
+      gsap.set(box, { clearProps: "transform,width,height,top,left,borderRadius,backgroundColor,willChange" });
     }
     if (content) gsap.set(content, { clearProps: "all" });
     saved = null;
