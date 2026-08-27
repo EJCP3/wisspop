@@ -5,8 +5,5 @@ dist/
 .DS_Store
 .astro/
 .claude/
-design.md
-requerimientos.md
-wisspop.md
-WISPOP_IMPROVEMENTS.md
 bash.exe.stackdump
+
