@@ -31,6 +31,9 @@ export const WissPopFlip = forwardRef(function WissPopFlip(
     overlayDuration,
     stagger,
     overlayClass = "",
+    overlay = true,
+    overlayBlur = false,
+    overlayDark = false,
     modalClass = "",
     closeButton = false,
     closeButtonClass = "",
@@ -131,7 +134,13 @@ export const WissPopFlip = forwardRef(function WissPopFlip(
       {typeof document !== "undefined" &&
         createPortal(
           <>
-            {visible && <div ref={overlayEl} className={`wisspop-overlay ${overlayClass}`} onClick={close} />}
+            {visible && overlay && (
+              <div
+                ref={overlayEl}
+                className={`wisspop-overlay ${overlayBlur ? "wisspop-overlay-blur" : ""} ${overlayDark ? "wisspop-overlay-dark" : ""} ${overlayClass}`.trim()}
+                onClick={close}
+              />
+            )}
             {visible && (
               <div
                 ref={boxEl}

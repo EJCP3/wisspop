@@ -9,12 +9,58 @@
 import { createModal, createFlipModal } from "../vanilla/index.js";
 
 /**
- * Qué viaja desde el botón. Un nodo explícito gana; si no, el único hijo del
- * botón (icono, imagen, span con icono+texto); si no, su texto.
+ * Resuelve el origen real del modal (permite data-wisspop-origin="closest:.search-filter-pill" o selectores)
  */
-const carga = (btn) =>
-  btn.querySelector("[data-wisspop-label]") ??
-  (btn.children.length === 1 ? btn.firstElementChild : btn.textContent?.trim());
+function resolveOrigin(btn) {
+  const attr = btn.getAttribute("data-wisspop-origin");
+  if (attr) {
+    if (attr === "self") return btn;
+    if (attr.startsWith("closest:")) return btn.closest(attr.slice(8)) || btn;
+    return document.querySelector(attr) || btn;
+  }
+  return btn.closest(".search-filter-pill") || btn;
+}
+
+/**
+ * Resuelve el nodo o texto que vuela (permite data-wisspop-label="closest:.search-filter-pill .search-filter-input-wrap" o selectores)
+ */
+function resolveLabel(btn, origin) {
+  const btnLabel = btn.getAttribute("data-wisspop-label");
+  if (btnLabel) {
+    if (btnLabel === "self") return origin;
+    if (btnLabel.startsWith("closest:")) return btn.closest(btnLabel.slice(8)) || origin;
+    return origin.querySelector(btnLabel) || document.querySelector(btnLabel) || btnLabel;
+  }
+  const originLabel = origin.getAttribute("data-wisspop-label");
+  if (originLabel) {
+    if (originLabel === "self") return origin;
+    return origin.querySelector(originLabel) || originLabel;
+  }
+  return (
+    origin.querySelector("[data-wisspop-label], .search-filter-input-wrap, .con-icono") ??
+    (origin.children.length === 1 ? origin.firstElementChild : origin.textContent?.trim())
+  );
+}
+
+function abrirModalAstro(modal, triggerBtn, conVuelo) {
+  const origin = resolveOrigin(triggerBtn);
+  modal._lastOrigin = origin;
+
+  // Sync input value BEFORE open() so the modal input already shows
+  // the text while the morph animation is running.
+  const origInput = origin.querySelector("input, textarea");
+  const modalInput = modal.content?.querySelector("input, textarea");
+  if (origInput && modalInput) {
+    modalInput.value = origInput.value;
+  }
+
+  const payload = conVuelo ? resolveLabel(triggerBtn, origin) : undefined;
+  modal.open(origin, payload);
+
+  if (origInput && modalInput) {
+    setTimeout(() => modalInput.focus(), 60);
+  }
+}
 
 /**
  * Monta una instancia de modal para un template específico si no está montado aún.
@@ -46,7 +92,14 @@ export function montarTemplate(tpl) {
   const raiz = kind === "flip" ? modal.box : modal.content;
   if (raiz) {
     raiz.addEventListener("click", (e) => {
-      if (e.target.closest("[data-wisspop-close]")) modal.close();
+      if (e.target.closest("[data-wisspop-close]")) {
+        const modalInput = modal.content?.querySelector("input, textarea");
+        const origInput = modal._lastOrigin?.querySelector("input, textarea");
+        if (modalInput && origInput) {
+          origInput.value = modalInput.value;
+        }
+        modal.close();
+      }
     });
   }
 
@@ -55,7 +108,7 @@ export function montarTemplate(tpl) {
   const conVuelo = opts.flyingTextClass != null;
   for (const btn of botones) {
     btn.addEventListener("click", () =>
-      kind === "flip" ? modal.open() : modal.open(btn, conVuelo ? carga(btn) : undefined),
+      kind === "flip" ? modal.open() : abrirModalAstro(modal, btn, conVuelo),
     );
   }
 
@@ -83,8 +136,6 @@ function asegurarDelegacionGlobal() {
     // 1. Botón de cierre delegado
     const closeBtn = target.closest("[data-wisspop-close]");
     if (closeBtn) {
-      // Si el botón está dentro de un wisspop-box abierto, el listener del contenedor ya lo maneja,
-      // pero esto sirve como fallback para estructuras personalizadas.
       return;
     }
 
@@ -109,7 +160,7 @@ function asegurarDelegacionGlobal() {
     if (kind === "flip") {
       modal.open();
     } else {
-      modal.open(triggerBtn, conVuelo ? carga(triggerBtn) : undefined);
+      abrirModalAstro(modal, triggerBtn, conVuelo);
     }
   });
 }

@@ -57,7 +57,7 @@
   "scripts": {
     "build": "vite build",
     "prepublishOnly": "vite build",
-    "test": "node --test"
+    "test": "node --test \"src/**/*.test.js\""
   },
   "peerDependencies": {
     "gsap": ">=3.12",

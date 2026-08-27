@@ -442,7 +442,11 @@ export function createFlip(els, options = {}) {
     // Se revela en el mismo tick que `Flip.from`: la llamada invierte la
     // tarjeta a la posición del trigger de forma síncrona antes de animar, así
     // que no hay paint entre "visible" y "ya invertida" — nunca se ve grande.
-    if (modal) modal.style.visibility = "";
+    if (modal) {
+      modal.style.visibility = "";
+      modal.style.opacity = "";
+      modal.style.pointerEvents = "";
+    }
     Flip.from(flipState, {
       targets: modalTargets,
       duration: d,
@@ -532,6 +536,8 @@ export function createFlip(els, options = {}) {
         // parpadeo al final del cierre. En vanilla no se veía porque ahí
         // `unmount` es un `.remove()` síncrono.
         modal.style.visibility = "hidden";
+        modal.style.opacity = "0";
+        modal.style.pointerEvents = "none";
       }
       // Relevo atómico: el trigger reaparece y el modal se desmonta en el mismo
       // bloque síncrono, así no hay ningún frame con los dos ni con ninguno

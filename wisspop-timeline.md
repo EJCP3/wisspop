@@ -241,8 +241,8 @@ Cuando `swipeToClose: true` está habilitado:
   - Forzar `display: block` destruye los contenedores `display: flex; align-items: center;`, provocando que los iconos y los textos se desalineen verticalmente en pleno vuelo.
 - ❌ **NO esperar tweens de forma desacoplada en `close()`**:
   - Nunca hagas `await gsap.to(geom)` mientras `gsap.to(flying)` corre por su cuenta. Si la geometría termina un frame antes, el texto volador se destruirá a mitad de camino produciendo un parpadeo. Usa siempre `await Promise.all([ ... ])`.
-- ❌ **NO dejar el origen en `opacity: 0` hasta el último milisegundo**:
-  - Si el botón original tiene elementos adicionales (bordes, divisores, texto secundario), restaurar su opacidad en el frame final produce un salto brusco ("pop-in"). Utiliza un crossfade suave en los últimos frames de la trayectoria.
+- ❌ **NO reaparecer el origen (`opacity: 1`) antes de completar la trayectoria de cierre**:
+  - Reaparecer el elemento de origen mediante un crossfade/delay mientras la caja o el elemento viajero todavía están en vuelo produce una **duplicación visual** (se ven el botón estático y la caja viajando a la vez). El relevo debe ser 100% atómico en el frame final: la caja y el elemento viajero viajan opacos hasta encajar exactamente en el `rect` del origen, y en ese mismo frame síncrono la caja se desmonta y el origen recupera su visibilidad sin ningún salto visible.
 - ❌ **NO usar `overflow-y: auto` permanente en la caja**:
   - Provoca que el navegador dibuje una barra de scroll que aparece y desaparece durante la expansión. La caja debe nacer con `overflow: hidden` y solo activar scroll condicional tras finalizar la transición de entrada.
 - ❌ **NO usar `innerHTML` sin limpiar duplicados**:

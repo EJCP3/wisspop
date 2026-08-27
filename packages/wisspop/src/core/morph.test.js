@@ -327,4 +327,28 @@ test("contentStagger: aplica la clase wisspop-stagger para cascada de elementos 
   assert.ok(!esc.box.classList.contains("wisspop-stagger"), "debe limpiar wisspop-stagger al cerrar");
 });
 
+test("DX: open() auto-detecta svg/iconos en el botón disparador cuando no se pasa label", async () => {
+  const esc = armarEscenario();
+  const flyingText = document.createElement("div");
+  const morph = createMorph({ ...esc, flyingText }, {
+    duration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  const btn = document.createElement("button");
+  btn.innerHTML = `<svg viewBox="0 0 20 20"><path d="M0 0"/></svg> <span>Acción</span>`;
+  document.body.append(btn);
+  stubRect(btn, { top: 10, left: 10, width: 80, height: 32 });
+
+  await morph.open(btn);
+  assert.equal(morph.state, "open");
+  // El texto volador debe haber clonado el contenido del botón con el SVG
+  assert.ok(flyingText.querySelector("svg"), "flyingText debe contener el SVG auto-detectado");
+  assert.ok(flyingText.textContent.includes("Acción"), "flyingText debe contener el texto del botón");
+  await morph.close();
+  btn.remove();
+});
+
+
 

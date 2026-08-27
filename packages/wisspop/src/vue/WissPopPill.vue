@@ -1,10 +1,14 @@
 <template>
   <Teleport to="body">
     <div
-      v-if="visible"
+      v-if="visible && overlay"
       ref="overlayEl"
       class="wisspop-overlay"
-      :class="overlayClass"
+      :class="[
+        overlayBlur && 'wisspop-overlay-blur',
+        overlayDark && 'wisspop-overlay-dark',
+        overlayClass
+      ]"
       @click="close"
     />
 
@@ -59,6 +63,9 @@ const props = defineProps({
   borderRadius: { type: Number, default: 40 },
   /** Los estilos son del consumidor: la librería solo se ocupa del movimiento. */
   overlayClass: { type: String, default: "" },
+  overlay: { type: Boolean, default: true },
+  overlayBlur: { type: Boolean, default: false },
+  overlayDark: { type: Boolean, default: false },
   modalClass: { type: String, default: "" },
   flyingTextClass: { type: String, default: "" },
   dataTheme: { type: String, default: null },

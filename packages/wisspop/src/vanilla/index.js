@@ -45,6 +45,9 @@ export function createModal(opts = {}) {
     content,
     modalClass = "",
     overlayClass = "",
+    overlay = true,
+    overlayBlur = false,
+    overlayDark = false,
     flyingTextClass,
     closeOnOverlayClick = true,
     closeButton = false,
@@ -52,7 +55,13 @@ export function createModal(opts = {}) {
     ...coreOpts
   } = opts;
 
-  const overlay = el(`wisspop-overlay ${overlayClass}`);
+  const overlayCls = [
+    "wisspop-overlay",
+    overlayBlur ? "wisspop-overlay-blur" : "",
+    overlayDark ? "wisspop-overlay-dark" : "",
+    overlayClass,
+  ].filter(Boolean).join(" ");
+  const overlayNode = overlay ? el(overlayCls) : null;
   const box = el(`wisspop-box ${modalClass}`);
   const inner = el("wisspop-content");
   box.append(inner);
@@ -63,15 +72,15 @@ export function createModal(opts = {}) {
   const flying = flyingTextClass != null ? el(`wisspop-flying-text ${flyingTextClass}`) : null;
 
   const core = createMorph(
-    { box, content: inner, overlay, flyingText: flying },
+    { box, content: inner, overlay: overlayNode, flyingText: flying },
     {
       ...coreOpts,
-      mount: () => document.body.append(overlay, ...(flying ? [flying] : []), box),
-      unmount: () => [overlay, box, flying].forEach((n) => n?.remove()),
+      mount: () => document.body.append(...(overlayNode ? [overlayNode] : []), ...(flying ? [flying] : []), box),
+      unmount: () => [overlayNode, box, flying].forEach((n) => n?.remove()),
     },
   );
 
-  if (closeOnOverlayClick) overlay.addEventListener("click", () => core.close());
+  if (overlayNode && closeOnOverlayClick) overlayNode.addEventListener("click", () => core.close());
 
   if (closeButton) {
     const btn = document.createElement("button");
@@ -83,7 +92,7 @@ export function createModal(opts = {}) {
     box.append(btn);
   }
 
-  return Object.assign(core, { box, content: inner, overlay, flyingText: flying });
+  return Object.assign(core, { box, content: inner, overlay: overlayNode, flyingText: flying });
 }
 
 /**
@@ -96,13 +105,22 @@ export function createFlipModal(opts = {}) {
     content,
     modalClass = "",
     overlayClass = "",
+    overlay = true,
+    overlayBlur = false,
+    overlayDark = false,
     closeOnOverlayClick = true,
     closeButton = false,
     closeButtonClass = "",
     ...coreOpts
   } = opts;
 
-  const overlay = el(`wisspop-overlay ${overlayClass}`);
+  const overlayCls = [
+    "wisspop-overlay",
+    overlayBlur ? "wisspop-overlay-blur" : "",
+    overlayDark ? "wisspop-overlay-dark" : "",
+    overlayClass,
+  ].filter(Boolean).join(" ");
+  const overlayNode = overlay ? el(overlayCls) : null;
   // Wrapper de centrado (cubre toda la pantalla, solo centra)
   const wrapper = el("wisspop-flip-box");
   // Box real del modal (tamaño del contenido)
@@ -113,16 +131,18 @@ export function createFlipModal(opts = {}) {
   else if (content) box.append(content);
 
   const core = createFlip(
-    { trigger, modal: box, overlay },
+    { trigger, modal: box, overlay: overlayNode },
     {
       ...coreOpts,
-      mount: () => document.body.append(overlay, wrapper),
-      unmount: () => [overlay, wrapper].forEach((n) => n?.remove()),
+      mount: () => document.body.append(...(overlayNode ? [overlayNode] : []), wrapper),
+      unmount: () => [overlayNode, wrapper].forEach((n) => n?.remove()),
     },
   );
 
+  if (overlayNode && closeOnOverlayClick) {
+    overlayNode.addEventListener("click", () => core.close());
+  }
   if (closeOnOverlayClick) {
-    overlay.addEventListener("click", () => core.close());
     wrapper.addEventListener("click", (e) => {
       if (e.target === wrapper) core.close();
     });

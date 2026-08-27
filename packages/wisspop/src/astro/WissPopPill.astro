@@ -1,19 +1,20 @@
 ---
 /**
- * WissPopPill: Modal donde la caja se expande y el label/icono del botón vuela hacia `[data-wisspop-title]`.
- * Ideal para formularios principales, auth, calculadoras y diálogos con título transformable.
+ * WissPopPill: Variante optimizada con elemento viajero que traslada y escala
+ * texto, iconos o imágenes entre el disparador y el modal.
  *
  * NOTA DE BUENAS PRÁCTICAS:
- * - Requiere un elemento con `data-wisspop-title` dentro del modal donde aterrizará el texto del botón.
- * - Puedes usar `data-wisspop-label` en el botón para especificar un texto/nodo específico de vuelo.
- * - Pasa los estilos del contenedor (bg, border, rounded, shadow) en `modalClass`.
+ * - Requiere un elemento con `data-wisspop-title` en el contenido del modal.
+ * - Pasa `flyingTextClass="flying"` para la clase de vuelo animado por GSAP.
  */
 interface Props {
-  /** ID único del modal. Disparadores con `data-wisspop-trigger="id"` lo abrirán. */
+  /** ID único del modal. Los disparadores con `data-wisspop-trigger="id"` lo abrirán automáticamente. */
   id: string;
   /** Selector personalizado de los disparadores. Por defecto: `[data-wisspop-trigger="${id}"]`. */
   trigger?: string;
+  /** Posición: 'origin' | 'center' | 'top' | 'bottom' | 'left' | 'right' | 'drawer-left' | 'drawer-right' | 'drawer-top' | 'drawer-bottom' | 'fullscreen' */
   placement?: string;
+  align?: string;
   width?: number;
   radius?: number;
   originRadius?: number;
@@ -23,6 +24,7 @@ interface Props {
   closeDuration?: number;
   closeEase?: string;
   contentBlur?: boolean;
+  flyingTextClass?: string;
   swipeToClose?: boolean;
   closeButton?: boolean;
   lockScroll?: boolean;
@@ -31,40 +33,18 @@ interface Props {
   restoreFocus?: boolean;
   modalClass?: string;
   overlayClass?: string;
-  /** Clases CSS para el elemento de texto/icono viajero. */
-  flyingTextClass?: string;
   [key: string]: any;
 }
 
 const {
   id,
   trigger = `[data-wisspop-trigger="${id}"]`,
-  placement = 'center',
-  width = 540,
-  radius = 40,
-  originRadius = 999,
-  fullscreenOnMobile = true,
-  duration = 0.45,
-  ease = 'power3.inOut',
-  closeDuration = 0.6,
-  closeEase = 'power3.inOut',
-  contentBlur = false,
-  flyingTextClass = '',
+  flyingTextClass = 'flying',
   ...opciones
 } = Astro.props;
 
 const opts = JSON.stringify({
   trigger,
-  placement,
-  width,
-  radius,
-  originRadius,
-  fullscreenOnMobile,
-  duration,
-  ease,
-  closeDuration,
-  closeEase,
-  contentBlur,
   flyingTextClass,
   ...opciones,
 });

@@ -57,6 +57,9 @@ export const WissPopMorph = forwardRef(function WissPopMorph(
     // Los estilos son del consumidor: la librería solo se ocupa del movimiento.
     modalClass = "",
     overlayClass = "",
+    overlay = true,
+    overlayBlur = false,
+    overlayDark = false,
     // Botón × propio, para cuando no querés armar el tuyo con el `close` del children-render-prop.
     closeButton = false,
     closeButtonClass = "",
@@ -183,7 +186,13 @@ export const WissPopMorph = forwardRef(function WissPopMorph(
 
   return createPortal(
     <>
-      {visible && <div ref={overlayEl} className={`wisspop-overlay ${overlayClass}`} onClick={requestClose} />}
+      {visible && overlay && (
+        <div
+          ref={overlayEl}
+          className={`wisspop-overlay ${overlayBlur ? "wisspop-overlay-blur" : ""} ${overlayDark ? "wisspop-overlay-dark" : ""} ${overlayClass}`.trim()}
+          onClick={requestClose}
+        />
+      )}
       {/* Fuera del panel: el panel es overflow-hidden mientras anima y
           recortaría al viajero durante todo el viaje (design.md §6). */}
       {visible && flyingTextClass != null && (

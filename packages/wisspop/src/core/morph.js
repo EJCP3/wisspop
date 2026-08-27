@@ -207,22 +207,18 @@ function visualMetrics(cs) {
  *
  * @returns {{ from: DOMRect | null, mode: "text" | "box" }}
  */
-function prepareFlying(flying, payload, override, originCs) {
+function prepareFlying(flying, payload, override, originCs, originEl) {
   flying.replaceChildren();
   let from = null;
   let style = visualMetrics(originCs);
 
-  if (payload instanceof Node) {
+  // 1. Si se pasó un nodo DOM explícito distinto del origen (ej. un span .con-icono, svg, img)
+  if (payload instanceof Node && payload !== originEl) {
     const clon = payload.cloneNode(true);
     if (payload.isConnected && payload.getBoundingClientRect) {
       from = payload.getBoundingClientRect();
       const cs = getComputedStyle(payload);
-      // Los estilos del nodo real, no los del botón que lo contiene: es esa
-      // copia la que tiene que verse idéntica al despegar.
       style = visualMetrics(cs);
-      // Estas viven en el nodo mismo, no se heredan del contenedor. Sin
-      // reponerlas, una miniatura recortada con `cover` despega estirada con el
-      // `fill` por defecto: se ve como si la imagen cambiara de zoom de golpe.
       for (const prop of ["objectFit", "objectPosition"]) {
         clon.style[prop] = cs[prop];
       }
@@ -238,20 +234,61 @@ function prepareFlying(flying, payload, override, originCs) {
         clon.value = payload.value;
       }
     }
-    // Si el clon es un elemento de botón/origen, limpiar fondos, bordes y padding para
-    // que no se dupliquen sobre la caja que ya anima con el fondo del origen.
-    if (clon instanceof HTMLElement) {
-      clon.style.background = "transparent";
-      clon.style.backgroundColor = "transparent";
-      clon.style.backgroundImage = "none";
-      clon.style.border = "none";
-      clon.style.boxShadow = "none";
-      clon.style.outline = "none";
-      clon.style.padding = "0";
-    }
     flying.append(clon);
-  } else {
-    flying.textContent = String(payload);
+  }
+  // 2. Si el payload es el elemento origen mismo o null (auto-detectar contenido del botón)
+  else if (originEl instanceof HTMLElement) {
+    const innerTarget = originEl.querySelector(".con-icono, [data-wisspop-title], [data-wisspop-icon]");
+    if (innerTarget && innerTarget.isConnected) {
+      from = innerTarget.getBoundingClientRect();
+      const cs = getComputedStyle(innerTarget);
+      style = visualMetrics(cs);
+      const clon = innerTarget.cloneNode(true);
+      flying.append(clon);
+    } else {
+      // Medir el contenido visual exacto del botón con Range para no depender del padding
+      if (originEl.isConnected && typeof document !== "undefined") {
+        try {
+          const range = document.createRange();
+          range.selectNodeContents(originEl);
+          const r = range.getBoundingClientRect();
+          if (r.width > 0 && r.height > 0) {
+            from = r;
+          }
+        } catch {}
+      }
+      // Clonar los hijos del origen para preservar estructura (icono + texto)
+      Array.from(originEl.childNodes).forEach((child) => {
+        flying.append(child.cloneNode(true));
+      });
+    }
+  }
+  // 3. Fallback: payload es string u otro valor primitivo
+  else {
+    flying.textContent = String(payload ?? "");
+  }
+
+  // Si payload era un string pero tenemos el elemento origen montado en el DOM,
+  // medir la posición exacta donde está el texto dentro del botón real (evita saltos por padding/centrado)
+  if (typeof payload === "string" && !from && originEl instanceof HTMLElement && originEl.isConnected) {
+    const matchingEl = Array.from(originEl.querySelectorAll("span, p, h1, h2, h3, h4, h5, h6, [data-wisspop-title], .con-icono"))
+      .find((el) => el.textContent.trim() === payload.trim());
+    if (matchingEl) {
+      from = matchingEl.getBoundingClientRect();
+      style = visualMetrics(getComputedStyle(matchingEl));
+    } else {
+      try {
+        const range = document.createRange();
+        range.selectNodeContents(originEl);
+        const r = range.getBoundingClientRect();
+        if (r.width > 0 && r.height > 0) from = r;
+      } catch {}
+    }
+  }
+
+  // Si el elemento origen tenía gap en flex, heredarlo
+  if (originCs?.gap && originCs.gap !== "normal") {
+    flying.style.gap = originCs.gap;
   }
 
   // Tipografía que no se anima: se repone una vez y queda. Si no, la copia
@@ -304,12 +341,17 @@ function readOrigin(origin, originRadius) {
   if (cs.borderRadius.includes("%")) {
     radius = (radius / 100) * Math.min(rect.width, rect.height);
   }
+  let bgColor = cs.backgroundColor;
+  if ((!bgColor || bgColor === "rgba(0, 0, 0, 0)" || bgColor === "transparent") && cs.backgroundImage && cs.backgroundImage !== "none") {
+    const match = cs.backgroundImage.match(/rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}/);
+    if (match) bgColor = match[0];
+  }
   return {
     el,
     rect,
     ...textMetrics(cs, 14),
     radius: Math.min(radius, rect.width / 2, rect.height / 2),
-    bgColor: cs.backgroundColor,
+    bgColor,
   };
 }
 
@@ -654,7 +696,7 @@ export function createMorph(els, options = {}) {
     // Si no se pasó un label explícito, auto-detectar si el botón disparador tiene icono o contenido
     let flyingPayload = label;
     if (flyingPayload == null && o.el instanceof HTMLElement) {
-      const hasIcon = o.el.querySelector("svg, img, [data-wisspop-icon]");
+      const hasIcon = o.el.querySelector("svg, img, [data-wisspop-icon], .con-icono");
       if (hasIcon) {
         flyingPayload = o.el;
       } else if (o.el.textContent?.trim()) {
@@ -805,6 +847,7 @@ export function createMorph(els, options = {}) {
         flyingPayload,
         opts.flyingMode,
         o.el ? getComputedStyle(o.el) : null,
+        o.el,
       );
       const fly = { mode, payload: flyingPayload, rect: from, style };
       saved.fly = fly;
@@ -827,6 +870,22 @@ export function createMorph(els, options = {}) {
           gsap.set(flying, { opacity: 0 });
         },
       });
+    }
+
+    const closeBtn = box?.querySelector(".wisspop-close");
+    if (closeBtn) {
+      gsap.set(closeBtn, { autoAlpha: 0, scale: 0.4 });
+      if (d > 0) {
+        gsap.to(closeBtn, {
+          autoAlpha: 1,
+          scale: 1,
+          duration: d * 0.35,
+          delay: d * 0.45,
+          ease: "back.out(1.7)",
+        });
+      } else {
+        gsap.set(closeBtn, { autoAlpha: 1, scale: 1 });
+      }
     }
 
     // El contenido entra según la animación elegida (slide-up, slide-down, scale, fade)
@@ -919,11 +978,82 @@ export function createMorph(els, options = {}) {
     // El origen NO vuelve acá: vuelve de golpe al final, cuando la caja ya
     // ocupa su rect exacto y desaparece. Si reapareciera durante el viaje, se
     // vería debajo del panel que todavía está volviendo.
+    const animType = opts.contentAnimation || "slide-up";
+    const exitDuration = d > 0 ? Math.min(d * 0.4, 0.26) : 0;
+    const closeBtn = box?.querySelector(".wisspop-close");
+
     if (overlay) gsap.to(overlay, { autoAlpha: 0, duration: d * 0.75, ease: "power2.in" });
+
+    // Salida rápida del botón cerrar (×) para que no viaje con la caja
+    if (closeBtn) {
+      if (exitDuration > 0) {
+        gsap.to(closeBtn, { autoAlpha: 0, scale: 0.4, duration: exitDuration * 0.75, ease: "power2.in" });
+      } else {
+        gsap.set(closeBtn, { autoAlpha: 0 });
+      }
+    }
+
+    // Salida del contenido según contentAnimation (slide-up, slide-down, scale, fade, none)
     if (content) {
-      // Ocultar el contenido inmediatamente en el cierre para que la caja quede limpia
-      // y el texto viajero sea 100% visible volando por encima hacia el botón
-      gsap.set(content, { autoAlpha: 0 });
+      if (exitDuration > 0 && animType !== "none") {
+        let contentExitVars = {
+          autoAlpha: 0,
+          duration: exitDuration,
+          ease: "power2.in",
+        };
+        if (opts.contentBlur) {
+          contentExitVars.filter = "blur(4px)";
+        }
+
+        if (animType === "slide-up") {
+          contentExitVars.y = 20;
+          contentExitVars.ease = "power2.in";
+        } else if (animType === "slide-down") {
+          contentExitVars.y = -20;
+          contentExitVars.ease = "power2.in";
+        } else if (animType === "scale") {
+          contentExitVars.scale = 0.72;
+          contentExitVars.transformOrigin = "center center";
+          contentExitVars.ease = "back.in(1.4)";
+        } else if (animType === "fade") {
+          contentExitVars.ease = "power2.inOut";
+        }
+
+        gsap.to(content, contentExitVars);
+
+        if (opts.contentStagger) {
+          const items = content.querySelectorAll(".stagger-item, .cmd-item, .payment-card, [data-stagger]");
+          const targets = items.length > 0
+            ? items
+            : (content.firstElementChild?.children?.length > 1
+                ? content.firstElementChild.children
+                : content.children);
+          if (targets && targets.length > 0) {
+            gsap.to(targets, {
+              autoAlpha: 0,
+              y: 12,
+              stagger: 0.02,
+              duration: exitDuration * 0.8,
+              ease: "power2.in",
+            });
+          }
+        }
+      } else {
+        gsap.set(content, { autoAlpha: 0 });
+      }
+    }
+
+    // Ocultar cualquier otro hijo directo del box
+    if (box) {
+      Array.from(box.children).forEach((child) => {
+        if (child !== content && child !== closeBtn) {
+          if (exitDuration > 0) {
+            gsap.to(child, { autoAlpha: 0, duration: exitDuration, ease: "power2.in" });
+          } else {
+            gsap.set(child, { autoAlpha: 0 });
+          }
+        }
+      });
     }
     if (fling) {
       // Descartado con el gesto: no vuelve al origen. El gesto ya dijo a dónde
@@ -943,8 +1073,16 @@ export function createMorph(els, options = {}) {
       if (flying && saved?.fly) {
         const { mode, payload, style } = saved.fly;
         // Re-medir el elemento del origen en caso de que la página se haya desplazado
-        const liveOriginNode = (o.el && o.el.querySelector(".con-icono, [data-wisspop-icon]")) || (payload instanceof Node && payload.isConnected ? payload : null);
-        const rect = liveOriginNode ? liveOriginNode.getBoundingClientRect() : null;
+        const liveOriginNode = (o.el && o.el.querySelector(".con-icono, [data-wisspop-icon], svg, img")) || (payload instanceof Node && payload.isConnected ? payload : null);
+        let rect = liveOriginNode ? liveOriginNode.getBoundingClientRect() : null;
+        if (!rect && o.el instanceof HTMLElement && o.el.isConnected) {
+          try {
+            const range = document.createRange();
+            range.selectNodeContents(o.el);
+            const r = range.getBoundingClientRect();
+            if (r.width > 0 && r.height > 0) rect = r;
+          } catch {}
+        }
 
         // Re-medir el título en el destino actual
         const liveTitle = box?.querySelector("[data-wisspop-title]");
@@ -984,18 +1122,6 @@ export function createMorph(els, options = {}) {
         }),
       );
 
-      // Reaparecer el elemento de origen suavemente en los últimos frames para evitar saltos o pop-in
-      if (o.el) {
-        tweens.push(
-          gsap.to(o.el, {
-            opacity: 1,
-            duration: d * 0.35,
-            delay: d * 0.65,
-            ease: "power2.out",
-          }),
-        );
-      }
-
       tweens.push(
         gsap.to(geom, {
           w: o.rect.width,
@@ -1029,6 +1155,11 @@ export function createMorph(els, options = {}) {
       gsap.set(box, { clearProps: "transform,width,height,top,left,borderRadius,backgroundColor,willChange" });
     }
     if (content) gsap.set(content, { clearProps: "all" });
+    if (box) {
+      Array.from(box.children).forEach((child) => {
+        gsap.set(child, { clearProps: "all" });
+      });
+    }
     saved = null;
     setState("closed");
     // Devolver el origen y desmontar en el mismo bloque síncrono: el navegador
@@ -1088,7 +1219,15 @@ export function createMorph(els, options = {}) {
       // Si se destruye a mitad de la apertura, el origen quedaría invisible
       // para siempre y sin nadie que lo devuelva.
       if (saved?.origin.el) gsap.set(saved.origin.el, { clearProps: "opacity" });
-      gsap.killTweensOf([geom, resolve(els.box), resolve(els.content), resolve(els.overlay), resolve(els.flyingText)].filter(Boolean));
+      const box = resolve(els.box);
+      gsap.killTweensOf([
+        geom,
+        box,
+        ...(box ? Array.from(box.children) : []),
+        resolve(els.content),
+        resolve(els.overlay),
+        resolve(els.flyingText),
+      ].filter(Boolean));
       saved = null;
       state = "closed"; // sin notificar: desmontar no es "se cerró"
     },

@@ -22,6 +22,9 @@ export const WissPopPill = forwardRef(function WissPopPill(
     borderRadius = 40,
     // Los estilos son del consumidor: la librería solo se ocupa del movimiento.
     overlayClass = "",
+    overlay = true,
+    overlayBlur = false,
+    overlayDark = false,
     modalClass = "",
     flyingTextClass = "",
     dataTheme = null,
@@ -139,7 +142,13 @@ export const WissPopPill = forwardRef(function WissPopPill(
 
   return createPortal(
     <>
-      {visible && <div ref={overlayEl} className={`wisspop-overlay ${overlayClass}`} onClick={close} />}
+      {visible && overlay && (
+        <div
+          ref={overlayEl}
+          className={`wisspop-overlay ${overlayBlur ? "wisspop-overlay-blur" : ""} ${overlayDark ? "wisspop-overlay-dark" : ""} ${overlayClass}`.trim()}
+          onClick={close}
+        />
+      )}
 
       {/* Vive FUERA del panel: el panel es overflow-hidden mientras anima, así
           que un texto de adentro quedaría recortado durante todo el viaje

@@ -17,10 +17,14 @@
 
     <Teleport to="body">
       <div
-        v-if="visible"
+        v-if="visible && overlay"
         ref="overlayEl"
         class="wisspop-overlay"
-        :class="overlayClass"
+        :class="[
+          overlayBlur && 'wisspop-overlay-blur',
+          overlayDark && 'wisspop-overlay-dark',
+          overlayClass
+        ]"
         @click="close"
       />
       <div
@@ -70,6 +74,9 @@ const props = defineProps({
   overlayDuration: { type: Number, default: undefined },
   stagger: { type: Number, default: undefined },
   overlayClass: { type: String, default: "" },
+  overlay: { type: Boolean, default: true },
+  overlayBlur: { type: Boolean, default: false },
+  overlayDark: { type: Boolean, default: false },
   modalClass: { type: String, default: "" },
   closeButton: { type: Boolean, default: false },
   closeButtonClass: { type: String, default: "" },

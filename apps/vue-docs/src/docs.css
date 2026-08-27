@@ -1,4 +1,4 @@
-/* CSS plano, sin Tailwind y sin framework: estas docs son la prueba de
+/* CSS plano, sin Tailwind y sin framework: estas docs son también la prueba de
    que la librería no arrastra ninguno. */
 
 :root {
@@ -158,6 +158,7 @@ button.round {
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
+  box-sizing: border-box;
 }
 
 /* El overlay va transparente: sigue capturando el clic para cerrar, pero sin
@@ -165,6 +166,8 @@ button.round {
 
 .panel-body {
   padding: 1.25rem;
+  box-sizing: border-box;
+  max-width: 100%;
 }
 
 .panel-body h3 {
@@ -178,12 +181,14 @@ button.round {
 .menu {
   list-style: none;
   margin: 0;
-  padding: 0.5rem;
-  min-width: 14rem;
+  padding: 0.35rem;
+  min-width: 9.5rem;
+  width: max-content;
+  max-width: 100%;
 }
 
 .menu li {
-  padding: 0.55rem 0.75rem;
+  padding: 0.5rem 0.75rem;
   border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
@@ -202,10 +207,25 @@ button.round {
 .drawer.drawer-left,
 .drawer.drawer-right {
   width: 18rem;
+  max-width: calc(100vw - 2rem);
+}
+
+.drawer.drawer-top,
+.drawer.drawer-bottom {
+  width: 100vw;
+  max-width: 100vw;
+}
+
+.drawer .menu {
+  width: 100%;
+  min-width: 100%;
 }
 
 /* --- Formatos del elemento viajero --- */
 
+/* En `em`, no en px: así escala con el font-size cuando el core anima el texto.
+   Son iconos outline (Tabler): el color va en el trazo, no en el relleno. El
+   `stroke-width` está en unidades del viewBox, así que engorda solo al crecer. */
 .ico {
   width: 1em;
   height: 1em;
@@ -239,6 +259,10 @@ button.avatar-btn img {
   color: var(--accent);
 }
 
+/* La foto ocupa todo el ancho útil del panel: el salto desde los 52px de la
+   miniatura es lo que hace legible que es la misma imagen viajando. */
+/* El radio va en el `[data-wisspop-title]`, que es donde el core lo lee para
+   interpolarlo desde el del origen. En el `img` de adentro no lo vería. */
 .foto-destino {
   display: block;
   border-radius: 16px;
@@ -256,6 +280,8 @@ button.avatar-btn img {
   margin-top: 1rem;
 }
 
+/* `nowrap` para igualar al volador, que nunca reflowea a mitad de vuelo: si el
+   destino parte el texto en dos líneas, el aterrizaje no puede coincidir. */
 .panel-body h3 .con-icono {
   font-size: 22px;
   color: var(--accent);
@@ -278,12 +304,12 @@ button.avatar-btn img {
 
 /* --- Texto viajero --- */
 
-.flying,
+/* Sin `color` ni `font-weight` fijos: el core los interpola desde el origen hacia el destino. */
 .flying-icon {
   font-weight: 900;
-  letter-spacing: -0.03em;
 }
 
+/* El `+` aterriza dentro del `<h3>`, así que su destino tiene el tamaño del h3. */
 .panel-body h3 [data-wisspop-title] {
   font-size: 34px;
   font-weight: 900;
@@ -342,5 +368,504 @@ input {
   padding: 0;
   margin-top: 0.75rem;
   text-decoration: underline;
-  cursor: pointer;
 }
+
+/* --- Demos de animaciones y stagger --- */
+
+.stagger-demo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+}
+
+.stagger-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.9rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stagger-item .badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: var(--accent);
+  color: #fff;
+  margin-left: auto;
+}
+
+.tag-pill {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-family: ui-monospace, "SF Mono", monospace;
+}
+
+/* --- Variantes de botones para demos avanzados --- */
+
+.btn-plan {
+  background-color: #6366f1;
+  background-image: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 999px;
+  box-shadow: 0 4px 14px rgb(79 70 229 / 0.3);
+}
+
+.btn-plan:hover {
+  filter: brightness(1.1);
+}
+
+.btn-danger {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+}
+
+.btn-search-trigger {
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+}
+
+.btn-search-trigger .kbd {
+  font-size: 0.75rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  padding: 0.1rem 0.4rem;
+  border-radius: 4px;
+  font-family: ui-monospace, monospace;
+}
+
+.payment-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  margin: 1rem 0;
+}
+
+.payment-card {
+  padding: 0.6rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--sunken);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.payment-card:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+/* --- Barra de Filtros / Búsqueda Pill --- */
+.search-filter-pill {
+  display: inline-flex;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.35rem 0.6rem 0.35rem 0.85rem;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+  transition: all 0.2s ease;
+  cursor: text;
+}
+
+.search-filter-pill:hover,
+.search-filter-pill:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.search-filter-input-wrap,
+.filter-modal-search-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.search-filter-input-wrap .ico,
+.filter-modal-search-wrap .ico {
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--muted);
+  flex-shrink: 0;
+  display: block;
+}
+
+.search-filter-input,
+.filter-modal-input {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 400;
+  line-height: 1.2;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: none !important;
+  display: block;
+}
+
+.search-filter-input {
+  width: 12rem;
+}
+
+.filter-modal-input {
+  flex: 1;
+  width: 100%;
+}
+
+.search-filter-input::placeholder,
+.filter-modal-input::placeholder {
+  color: var(--muted);
+  opacity: 0.85;
+  font-weight: 400;
+}
+
+.search-filter-divider {
+  width: 1px;
+  height: 1.4rem;
+  background: var(--border);
+  margin: 0 0.75rem 0 0.5rem;
+}
+
+.search-filter-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  padding: 0.25rem 0.6rem;
+  border: none;
+  background: transparent;
+  border-radius: 9999px;
+  transition: all 0.15s ease;
+}
+
+.search-filter-btn:hover {
+  background: var(--sunken);
+  color: var(--accent);
+}
+
+.search-filter-btn .ico {
+  width: 1.15em;
+  height: 1.15em;
+  color: var(--muted);
+}
+
+/* --- Panel de Modal de Filtros --- */
+.filter-modal-panel {
+  width: 25rem;
+  max-width: 92vw;
+  background: var(--surface);
+  border-radius: 1.25rem;
+  box-sizing: border-box;
+  padding: 1.25rem;
+}
+
+.filter-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1.25rem;
+}
+
+.filter-close-btn {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: var(--sunken);
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  padding: 0;
+}
+
+.filter-close-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.filter-grid-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 600px) {
+  .filter-grid-body {
+    grid-template-columns: 1fr;
+  }
+}
+
+.filter-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.filter-select-btn {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.65rem 0.9rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-sizing: border-box;
+}
+
+.filter-select-btn:hover {
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.filter-select-btn .ico:not(.chevron) {
+  color: var(--muted);
+  width: 1.1em;
+  height: 1.1em;
+}
+
+.filter-select-btn span {
+  flex: 1;
+  text-align: left;
+}
+
+.filter-select-btn .chevron {
+  width: 0.9em;
+  height: 0.9em;
+  color: var(--muted);
+  opacity: 0.7;
+}
+
+.filter-monto-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.filter-monto-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem 0.85rem;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: 0.85rem;
+  box-sizing: border-box;
+}
+
+.filter-monto-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.filter-monto-input {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.15rem;
+  font-weight: 600;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  box-shadow: none !important;
+}
+
+.filter-inline-field {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filter-toggle-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 0.9rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+/* Switch Toggle */
+.filter-switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 20px;
+}
+
+.filter-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.switch-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background-color: var(--border);
+  border-radius: 20px;
+  transition: 0.25s ease;
+}
+
+.switch-slider:before {
+  position: absolute;
+  content: "";
+  height: 14px;
+  width: 14px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  border-radius: 50%;
+  transition: 0.25s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.filter-switch input:checked + .switch-slider {
+  background-color: var(--accent);
+}
+
+.filter-switch input:checked + .switch-slider:before {
+  transform: translateX(16px);
+}
+
+/* --- Estilos para modal a pantalla completa (100% viewport) --- */
+
+.fullscreen-modal {
+  background: var(--bg);
+  border: none;
+  border-radius: 0;
+  width: 100vw;
+  height: 100vh;
+  box-shadow: none;
+  color: var(--text);
+}
+
+.fs-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 2rem;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.fs-nav h2,
+.fs-nav h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.fs-container {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem;
+  width: 100%;
+}
+
+.fs-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.25rem;
+  margin: 1.5rem 0;
+}
+
+.fs-card {
+  padding: 1.5rem;
+  background: var(--sunken);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.fs-card .stat {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--accent);
+  margin: 0.5rem 0 0.2rem;
+}
+
+
+

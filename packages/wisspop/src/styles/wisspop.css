@@ -16,6 +16,23 @@ html {
   inset: 0;
   z-index: var(--wisspop-z-overlay, 40);
   background-color: var(--wisspop-overlay-bg, transparent);
+  backdrop-filter: var(--wisspop-overlay-blur, none);
+  -webkit-backdrop-filter: var(--wisspop-overlay-blur, none);
+}
+
+.wisspop-overlay.wisspop-overlay-blur {
+  backdrop-filter: var(--wisspop-overlay-blur, blur(6px));
+  -webkit-backdrop-filter: var(--wisspop-overlay-blur, blur(6px));
+}
+
+.wisspop-overlay.wisspop-overlay-dark {
+  background-color: var(--wisspop-overlay-bg, rgba(0, 0, 0, 0.25));
+}
+
+.wisspop-overlay.wisspop-overlay-blur.wisspop-overlay-dark {
+  background-color: var(--wisspop-overlay-bg, rgba(0, 0, 0, 0.2));
+  backdrop-filter: var(--wisspop-overlay-blur, blur(6px));
+  -webkit-backdrop-filter: var(--wisspop-overlay-blur, blur(6px));
 }
 
 .wisspop-box {
@@ -226,19 +243,18 @@ html {
 
 .wisspop-flying-text {
   position: fixed;
-  z-index: var(--wisspop-z-flying, 51);
+  z-index: var(--wisspop-z-flying, 60);
   pointer-events: none;
   white-space: nowrap;
-  transform-origin: left;
+  transform-origin: left top;
   display: inline-flex;
   align-items: center;
   gap: inherit;
   will-change: transform, font-size, width, height, top, left;
-  /* El core escribe `line-height` inline en cada punta del viaje para que el
-     glifo caiga en el mismo lugar dentro de su caja que en el destino. Esto es
-     solo el piso por si alguien lo usa sin pasar por el core. */
   line-height: 1;
   margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 /**

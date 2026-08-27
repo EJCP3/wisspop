@@ -1,10 +1,14 @@
 <template>
   <Teleport to="body">
     <div
-      v-if="visible"
+      v-if="visible && overlay"
       ref="overlayEl"
       class="wisspop-overlay"
-      :class="overlayClass"
+      :class="[
+        overlayBlur && 'wisspop-overlay-blur',
+        overlayDark && 'wisspop-overlay-dark',
+        overlayClass
+      ]"
       @click="requestClose"
     />
     <!-- Vive FUERA del panel: el panel es overflow-hidden mientras anima, así
@@ -91,6 +95,9 @@ const props = defineProps({
   /** Los estilos son del consumidor: la librería solo se ocupa del movimiento. */
   modalClass: { type: String, default: "" },
   overlayClass: { type: String, default: "" },
+  overlay: { type: Boolean, default: true },
+  overlayBlur: { type: Boolean, default: false },
+  overlayDark: { type: Boolean, default: false },
   /** Botón × propio, para cuando no querés armar el tuyo con el `close` del slot. */
   closeButton: { type: Boolean, default: false },
   closeButtonClass: { type: String, default: "" },
