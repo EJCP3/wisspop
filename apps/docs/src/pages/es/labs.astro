@@ -1,0 +1,21 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navbar from '../../components/home/Navbar.astro';
+import LabsSidebar from '../../components/labs/LabsSidebar.astro';
+import LabsContent from '../../components/labs/LabsContent.astro';
+import FabAgents from '../../components/home/FabAgents.astro';
+---
+
+<Layout lang="es">
+  <Navbar lang="es" currentTab="labs" />
+
+  <!-- Interactive Labs Playground -->
+  <section class="bg-white dark:bg-zinc-950 min-h-screen pt-28 pb-24 transition-colors duration-300">
+    <div class="max-w-6xl mx-auto px-4 md:px-8 flex gap-12 relative">
+      <LabsSidebar lang="es" />
+      <LabsContent lang="es" />
+    </div>
+  </section>
+
+  <FabAgents lang="es" />
+</Layout>

@@ -1,7 +1,6 @@
 // Ejemplo 4: Drawer (cajón lateral y vertical)
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const lado = 'left'; // left | right | top | bottom
 const btn = document.querySelector('#abrir-drawer');
@@ -16,7 +15,6 @@ const drawer = createModal({
 btn.addEventListener('click', () => drawer.open(btn));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 
 const LADOS = ['left', 'right', 'top', 'bottom'];
 ---
@@ -41,7 +39,6 @@ const LADOS = ['left', 'right', 'top', 'bottom'];
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const lado = ref('left'); // left | right | top | bottom
 const boton = ref(null);
@@ -68,7 +65,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Drawer() {
   const boton = useRef(null);

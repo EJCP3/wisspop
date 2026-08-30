@@ -1,7 +1,6 @@
 // Snippet de la sección "Framework Support", antes de los ejemplos.
 export default {
   vanilla: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const boton = document.querySelector('#abrir');
 
@@ -18,7 +17,6 @@ modal.content.addEventListener('click', (e) => {
 });`,
   astro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="mi-modal">Abrir</button>
@@ -30,7 +28,6 @@ import 'wisspop/styles.css';
   vue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const abierto = ref(false);
 const boton = ref(null);
@@ -53,7 +50,6 @@ const boton = ref(null);
 </template>`,
   react: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Demo() {
   const boton = useRef(null);

@@ -5,24 +5,58 @@ import { GITHUB_URL, NPM_URL } from '../../config/site';
 
 interface Props {
   lang: Lang;
+  currentTab?: 'docs' | 'labs';
 }
 
-const { lang } = Astro.props;
+const { lang, currentTab = 'docs' } = Astro.props;
 const t = useTranslations(lang);
 const otherLang = lang === 'en' ? 'es' : 'en';
-const langTargetUrl = lang === 'en' ? '/es/' : '/';
+const langTargetUrl =
+  currentTab === 'labs'
+    ? lang === 'en'
+      ? '/es/labs'
+      : '/labs'
+    : lang === 'en'
+      ? '/es/'
+      : '/';
 ---
 
-<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-4 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors duration-300 border-b border-zinc-100 dark:border-zinc-900">
-  <div class="font-bold text-lg tracking-tight">
-    <a href={lang === 'es' ? '/es/' : '/'} class="hover:opacity-80 transition-opacity">
-      <span id="nav-text" class="text-zinc-900 dark:text-zinc-100 transition-colors duration-300">wisspop</span><span id="nav-dot" class="text-zinc-400">.</span>
-    </a>
+<nav class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-3.5 bg-white/80 dark:bg-zinc-950/80 backdrop-blur-md transition-colors duration-300 border-b border-zinc-100 dark:border-zinc-900">
+  <div class="flex items-center gap-6">
+    <div class="font-bold text-lg tracking-tight">
+      <a href={lang === 'es' ? '/es/' : '/'} class="hover:opacity-80 transition-opacity">
+        <span id="nav-text" class="text-zinc-900 dark:text-zinc-100 transition-colors duration-300">wisspop</span><span id="nav-dot" class="text-zinc-400">.</span>
+      </a>
+    </div>
+
+    <!-- Segmented Tab Switcher [ Labs | Docs ] -->
+    <div class="inline-flex items-center p-0.5 rounded-full bg-zinc-100 dark:bg-zinc-900 border border-zinc-200/80 dark:border-zinc-800 text-xs font-semibold shadow-inner">
+      <a
+        href={lang === 'es' ? '/es/labs' : '/labs'}
+        class={`px-3 py-1 rounded-full transition-all duration-200 ${
+          currentTab === 'labs'
+            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm font-bold'
+            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
+        }`}
+      >
+        {t('nav.labs')}
+      </a>
+      <a
+        href={lang === 'es' ? '/es/' : '/'}
+        class={`px-3 py-1 rounded-full transition-all duration-200 ${
+          currentTab === 'docs'
+            ? 'bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900 shadow-sm font-bold'
+            : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-zinc-100'
+        }`}
+      >
+        {t('nav.docs')}
+      </a>
+    </div>
   </div>
+
   <div class="flex items-center gap-4 md:gap-6 text-sm font-medium text-zinc-500 dark:text-zinc-400">
     <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.github')}</a>
     <a href={NPM_URL} target="_blank" rel="noopener noreferrer" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.npm')}</a>
-    <a href="#docs" class="hidden md:inline-block hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">{t('nav.docs')}</a>
 
     <div class="hidden md:block w-px h-4 bg-zinc-200 dark:bg-zinc-800"></div>
 
@@ -30,7 +64,7 @@ const langTargetUrl = lang === 'en' ? '/es/' : '/';
       {t('nav.lang_toggle')}
     </a>
 
-    <button id="theme-toggle" type="button" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center" title={t('nav.theme_toggle_tooltip')}>
+    <button id="theme-toggle" type="button" class="hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors flex items-center cursor-pointer" title={t('nav.theme_toggle_tooltip')}>
       <svg class="w-5 h-5 dark:hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
       </svg>

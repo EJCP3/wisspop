@@ -1,7 +1,6 @@
 // Ejemplo 9: DropdownPanel — Despliegue elástico (id="dropdown-panel")
 export default {
   code: `import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const btn = document.querySelector('#abrir-dropdown');
 const panel = document.querySelector('#mi-dropdown');
@@ -21,7 +20,6 @@ btn.addEventListener('click', () => {
   codeAstro: `---
 // El dropdown elástico es un helper de animación, no un componente: se
 // aplica al panel que ya tengas. En Astro va en un <script> de la página.
-import 'wisspop/styles.css';
 ---
 
 <button id="abrir">Desplegar</button>
@@ -49,7 +47,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const panel = ref(null);
 const montado = ref(false);
@@ -71,7 +68,6 @@ const alSalir = (el, done) => leaveDropdownAnimation(el, done, { transformOrigin
 </template>`,
   codeReact: `import { useRef, useState, useLayoutEffect } from 'react';
 import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 export function Dropdown() {
   const panel = useRef(null);

@@ -197,6 +197,12 @@ function visualMetrics(cs) {
   };
 }
 
+function getInputs(root) {
+  if (!root || !(root instanceof HTMLElement)) return [];
+  const list = root.matches("input, textarea, select") ? [root] : [];
+  return list.concat(Array.from(root.querySelectorAll("input, textarea, select")));
+}
+
 /**
  * Carga el contenido del elemento viajero y decide cómo se escala.
  *
@@ -212,9 +218,31 @@ function prepareFlying(flying, payload, override, originCs, originEl) {
   let from = null;
   let style = visualMetrics(originCs);
 
+  const cleanClone = (el) => {
+    if (el instanceof HTMLElement) {
+      el.style.removeProperty("opacity");
+      el.style.removeProperty("visibility");
+      el.style.removeProperty("transition");
+      el.style.opacity = "";
+      el.style.visibility = "";
+      el.style.transition = "";
+      el.querySelectorAll("*").forEach((child) => {
+        if (child instanceof HTMLElement) {
+          child.style.removeProperty("opacity");
+          child.style.removeProperty("visibility");
+          child.style.removeProperty("transition");
+          child.style.opacity = "";
+          child.style.visibility = "";
+          child.style.transition = "";
+        }
+      });
+    }
+    return el;
+  };
+
   // 1. Si se pasó un nodo DOM explícito distinto del origen (ej. un span .con-icono, svg, img)
   if (payload instanceof Node && payload !== originEl) {
-    const clon = payload.cloneNode(true);
+    const clon = cleanClone(payload.cloneNode(true));
     if (payload.isConnected && payload.getBoundingClientRect) {
       from = payload.getBoundingClientRect();
       const cs = getComputedStyle(payload);
@@ -225,14 +253,15 @@ function prepareFlying(flying, payload, override, originCs, originEl) {
     }
     // Preservar valores de campos de formulario dentro del clon
     if (payload instanceof HTMLElement && clon instanceof HTMLElement) {
-      const origInputs = payload.querySelectorAll("input, textarea, select");
-      const clonInputs = clon.querySelectorAll("input, textarea, select");
+      const origInputs = getInputs(payload);
+      const clonInputs = getInputs(clon);
       origInputs.forEach((inp, idx) => {
-        if (clonInputs[idx]) clonInputs[idx].value = inp.value;
+        if (clonInputs[idx]) {
+          clonInputs[idx].value = inp.value;
+          clonInputs[idx].defaultValue = inp.value;
+          clonInputs[idx].setAttribute("value", inp.value);
+        }
       });
-      if (payload.matches("input, textarea, select") && clon.matches("input, textarea, select")) {
-        clon.value = payload.value;
-      }
     }
     flying.append(clon);
   }
@@ -243,7 +272,16 @@ function prepareFlying(flying, payload, override, originCs, originEl) {
       from = innerTarget.getBoundingClientRect();
       const cs = getComputedStyle(innerTarget);
       style = visualMetrics(cs);
-      const clon = innerTarget.cloneNode(true);
+      const clon = cleanClone(innerTarget.cloneNode(true));
+      const origInputs = getInputs(innerTarget);
+      const clonInputs = getInputs(clon);
+      origInputs.forEach((inp, idx) => {
+        if (clonInputs[idx]) {
+          clonInputs[idx].value = inp.value;
+          clonInputs[idx].defaultValue = inp.value;
+          clonInputs[idx].setAttribute("value", inp.value);
+        }
+      });
       flying.append(clon);
     } else {
       // Medir el contenido visual exacto del botón con Range para no depender del padding
@@ -259,7 +297,19 @@ function prepareFlying(flying, payload, override, originCs, originEl) {
       }
       // Clonar los hijos del origen para preservar estructura (icono + texto)
       Array.from(originEl.childNodes).forEach((child) => {
-        flying.append(child.cloneNode(true));
+        const clon = cleanClone(child.cloneNode(true));
+        if (child instanceof HTMLElement && clon instanceof HTMLElement) {
+          const origInputs = getInputs(child);
+          const clonInputs = getInputs(clon);
+          origInputs.forEach((inp, idx) => {
+            if (clonInputs[idx]) {
+              clonInputs[idx].value = inp.value;
+              clonInputs[idx].defaultValue = inp.value;
+              clonInputs[idx].setAttribute("value", inp.value);
+            }
+          });
+        }
+        flying.append(clon);
       });
     }
   }
@@ -776,8 +826,16 @@ export function createMorph(els, options = {}) {
     // que se vea desaparecer. Con un fade, en cambio, durante todo el
     // solapamiento se ven los dos — y si hay texto viajero, se ve el label del
     // botón y su copia voladora separándose. Eso era el "saltito".
-    if (o.el && (opts.hideOrigin ?? coversOrigin(opts.placement))) {
-      gsap.set(o.el, { opacity: 0 });
+    const shouldHideOrigin = opts.hideOrigin ?? coversOrigin(opts.placement);
+    if (shouldHideOrigin) {
+      if (o.el) {
+        o.el.style.setProperty("transition", "none", "important");
+        o.el.style.setProperty("opacity", "0", "important");
+      }
+      if (flyingPayload instanceof HTMLElement && flyingPayload !== o.el) {
+        flyingPayload.style.setProperty("transition", "none", "important");
+        flyingPayload.style.setProperty("opacity", "0", "important");
+      }
     }
 
     // Opaca desde el frame 1, con el fondo del origen. Si la caja hiciera
@@ -852,6 +910,20 @@ export function createMorph(els, options = {}) {
       const fly = { mode, payload: flyingPayload, rect: from, style };
       saved.fly = fly;
 
+      // Sincronizar automáticamente valores de inputs del origen hacia el modal
+      const liveTitle = resolve(els.box)?.querySelector("[data-wisspop-title]");
+      if (liveTitle) {
+        const origInputs = getInputs(flyingPayload instanceof HTMLElement ? flyingPayload : o.el);
+        const modalInputs = getInputs(liveTitle);
+        origInputs.forEach((inp, idx) => {
+          if (modalInputs[idx]) {
+            modalInputs[idx].value = inp.value;
+            modalInputs[idx].defaultValue = inp.value;
+            modalInputs[idx].setAttribute("value", inp.value);
+          }
+        });
+      }
+
       // El color también viaja. Si arranca con el color de destino, en el
       // instante del despegue el glifo cambia de color de golpe y deja de
       // leerse como el mismo objeto moviéndose: se lee como que uno se apagó y
@@ -868,6 +940,18 @@ export function createMorph(els, options = {}) {
         onComplete: () => {
           resolve(els.box)?.classList.add("wisspop-open");
           gsap.set(flying, { opacity: 0 });
+          const liveT = resolve(els.box)?.querySelector("[data-wisspop-title]");
+          if (liveT && flying) {
+            const fInputs = getInputs(flying);
+            const tInputs = getInputs(liveT);
+            fInputs.forEach((fInp, idx) => {
+              if (tInputs[idx] && fInp.value) {
+                tInputs[idx].value = fInp.value;
+                tInputs[idx].defaultValue = fInp.value;
+                tInputs[idx].setAttribute("value", fInp.value);
+              }
+            });
+          }
         },
       });
     }
@@ -967,6 +1051,7 @@ export function createMorph(els, options = {}) {
     const flying = resolve(els.flyingText);
     const d = reducedMotion() ? 0 : (opts.closeDuration ?? (opts.duration ? opts.duration * 0.9 : 0.5));
     const prevActive = saved?.previousActiveElement;
+    const savedPayload = saved?.fly?.payload;
 
     // El origen pudo moverse mientras el panel estaba abierto (scroll, hover,
     // cambio de tema). Volver a leerlo evita el salto al final (design.md §4).
@@ -1086,6 +1171,37 @@ export function createMorph(els, options = {}) {
 
         // Re-medir el título en el destino actual
         const liveTitle = box?.querySelector("[data-wisspop-title]");
+
+        // Sincronizar valores actualizados de inputs/formularios o texto dinámico desde el destino hacia el elemento volador y el origen
+        if (liveTitle && flying) {
+          const liveInputs = getInputs(liveTitle);
+          const flyingInputs = getInputs(flying);
+          const originTarget = payload instanceof HTMLElement ? payload : o.el;
+          const originInputs = getInputs(originTarget instanceof HTMLElement ? originTarget : null);
+          const oElInputs = getInputs(o.el instanceof HTMLElement ? o.el : null);
+
+          if (liveInputs.length > 0) {
+            liveInputs.forEach((inp, idx) => {
+              if (flyingInputs[idx]) {
+                flyingInputs[idx].value = inp.value;
+                if ("defaultValue" in flyingInputs[idx]) flyingInputs[idx].defaultValue = inp.value;
+              }
+              if (originInputs[idx]) {
+                originInputs[idx].value = inp.value;
+                if ("defaultValue" in originInputs[idx]) originInputs[idx].defaultValue = inp.value;
+              }
+              if (oElInputs[idx]) {
+                oElInputs[idx].value = inp.value;
+                if ("defaultValue" in oElInputs[idx]) oElInputs[idx].defaultValue = inp.value;
+              }
+            });
+          }
+
+          if (mode === "text" && liveTitle.children.length === 0 && liveTitle.textContent.trim()) {
+            flying.textContent = liveTitle.textContent;
+          }
+        }
+
         const currentTitle = liveTitle
           ? {
               top: liveTitle.getBoundingClientRect().top,
@@ -1111,16 +1227,6 @@ export function createMorph(els, options = {}) {
       if (o.bgColor && saved.bgColor) {
         tweens.push(gsap.to(box, { backgroundColor: o.bgColor, duration: d, ease: closeEase }));
       }
-
-      // Desvanecer suavemente sombras del modal al llegar al origen
-      tweens.push(
-        gsap.to(box, {
-          boxShadow: "none",
-          duration: d * 0.4,
-          delay: d * 0.6,
-          ease: "power2.out",
-        }),
-      );
 
       tweens.push(
         gsap.to(geom, {
@@ -1165,7 +1271,16 @@ export function createMorph(els, options = {}) {
     // Devolver el origen y desmontar en el mismo bloque síncrono: el navegador
     // no pinta entre estas dos líneas, así que el relevo es atómico y no hay
     // ningún frame con los dos visibles ni con ninguno.
-    if (o.el) gsap.set(o.el, { clearProps: "opacity" });
+    if (o.el) {
+      o.el.style.removeProperty("transition");
+      o.el.style.removeProperty("opacity");
+      gsap.set(o.el, { clearProps: "opacity" });
+    }
+    if (savedPayload instanceof HTMLElement && savedPayload !== o.el) {
+      savedPayload.style.removeProperty("transition");
+      savedPayload.style.removeProperty("opacity");
+      gsap.set(savedPayload, { clearProps: "opacity" });
+    }
     opts.unmount?.();
 
     if (isScrollLocked) {

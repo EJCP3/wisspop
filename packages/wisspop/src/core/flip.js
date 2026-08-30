@@ -455,7 +455,7 @@ export function createFlip(els, options = {}) {
       // Ancho/alto reales, no scale (design.md §5): con scale el border-radius
       // se deforma y las imágenes quedan borrosas durante el viaje.
       props: "borderRadius",
-      zIndex: 100,
+      zIndex: 9996,
       onComplete: () => {
         restaurarEstiloOriginal(estiloOriginalModal);
         finishOpen();
@@ -588,7 +588,7 @@ export function createFlip(els, options = {}) {
       absolute: TOP_SELECTOR,
       // Ídem apertura: width/height reales, no scale (design.md §5).
       props: "borderRadius",
-      zIndex: 100,
+      zIndex: 9996,
       // `Flip.from` lo asume solo; `Flip.to` NO — hay que pedirlo explícito.
       // El adaptador crea el box una sola vez y lo reusa en cada apertura, así
       // que sin esto los nodos del modal quedan con la geometría del trigger

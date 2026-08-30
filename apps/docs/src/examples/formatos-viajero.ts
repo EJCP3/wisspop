@@ -1,7 +1,6 @@
 // Ejemplo 6: Formatos del elemento viajero
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const modal = createModal({
   content: '<div class="panel-body"><h3><span data-wisspop-title>Solo texto</span></h3></div>',
@@ -22,7 +21,6 @@ btn.addEventListener('click', () => modal.open(btn, 'Solo texto'));
 // modal.open(btn, btn.querySelector('img'));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <${'!--'} El wrapper de Astro elige solo qué viaja: si el botón tiene un único
@@ -50,7 +48,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const abierto = ref(false);
@@ -87,7 +84,6 @@ const abrirConIcono = () => {
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Formatos() {
   const boton = useRef(null);

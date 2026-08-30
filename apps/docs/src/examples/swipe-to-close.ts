@@ -1,7 +1,6 @@
 // Ejemplo 7: Cerrar con el gesto (Swipe to Close)
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const btn = document.querySelector('#arrastrable');
 
@@ -16,7 +15,6 @@ const modal = createModal({
 btn.addEventListener('click', () => modal.open(btn));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="swipe">Arrastrame para cerrar</button>
@@ -39,7 +37,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const abierto = ref(false);
@@ -67,7 +64,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Swipe() {
   const boton = useRef(null);

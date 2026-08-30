@@ -2,7 +2,7 @@
 
 Modales, dropdowns y drawers con **animaciones ancladas al origen**: el panel no aparece de la nada, nace del elemento que lo abrió y vuelve a él al cerrarse.
 
-Un motor core agnóstico de alto rendimiento escrito en JS Vanilla + GSAP, con adaptadores nativos para **Astro**, **Vue 3**, **React 18/19** y **Vanilla JS**.
+Un motor core agnóstico de alto rendimiento escrito en JS Vanilla + GSAP, con adaptador nativo para **Vue 3** y adaptador **Vanilla JS** (utilizable en cualquier framework o web vanilla).
 
 ---
 
@@ -25,7 +25,6 @@ Un motor core agnóstico de alto rendimiento escrito en JS Vanilla + GSAP, con a
 - **Posicionamiento inteligente**: 6 posiciones ancladas, modo `origin` (crece en el lugar), drawers laterales/verticales y acotado automático contra los bordes de la ventana.
 - **Descarte por gesto (Swipe to Close)**: Arrastre táctil o de mouse para descartar el modal hacia cualquier dirección.
 - **Accesibilidad nativa (WAI-ARIA)**: Focus trap confinado, tecla `Escape`, restauración de foco al origen, bloqueo de scroll en body y respeto a `prefers-reduced-motion`.
-- **Soporte View Transitions**: Compatible de forma nativa con Astro `<ClientRouter />` y recarga idempotente.
 
 ---
 
@@ -34,12 +33,11 @@ Un motor core agnóstico de alto rendimiento escrito en JS Vanilla + GSAP, con a
 ```text
 wisspop/
 ├── packages/
-│   └── wisspop/           # Código fuente de la librería (Core, Vanilla, Astro, Vue, React)
+│   └── wisspop/           # Código fuente de la librería (Core, Vanilla, Vue 3)
 └── apps/
-    ├── docs/              # Sitio oficial de documentación interactiva (Astro)
-    ├── docs-astro/        # Testbed nativo de Astro
-    ├── vue-docs/          # Aplicación demo y testbed de Vue 3
-    └── react-docs/        # Aplicación demo y testbed de React 18/19
+    ├── docs/              # Sitio oficial de documentación interactiva
+    ├── docs-test/         # Playground de pruebas Vanilla JS
+    └── vue-docs/          # Aplicación demo y testbed de Vue 3
 ```
 
 ---

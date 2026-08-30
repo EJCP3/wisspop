@@ -1,0 +1,39 @@
+---
+interface Props {
+  id: string;
+  trigger?: string;
+  placement?: string;
+  align?: string;
+  gap?: number;
+  margin?: number;
+  duration?: number;
+  ease?: string;
+  closeDuration?: number;
+  closeEase?: string;
+  contentBlur?: boolean;
+  flyingTextClass?: string;
+  labelOffsetX?: number;
+  flyingMode?: 'text' | 'box';
+  fullscreenOnMobile?: boolean;
+  swipeToClose?: boolean;
+  closeButton?: boolean;
+  lockScroll?: boolean;
+  closeOnEscape?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
+  modalClass?: string;
+  overlayClass?: string;
+  [key: string]: any;
+}
+
+const { id, trigger = `[data-wisspop-trigger="${id}"]`, flyingTextClass = '', ...opciones } = Astro.props;
+---
+
+<template data-wisspop="pill" data-id={id} data-opts={JSON.stringify({ trigger, flyingTextClass, ...opciones })}>
+  <slot />
+</template>
+
+<script>
+  import { initWissPop } from './client.js';
+  initWissPop('pill');
+</script>

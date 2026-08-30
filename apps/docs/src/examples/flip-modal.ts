@@ -1,7 +1,6 @@
 // Ejemplo 8: FlipModal — Elementos compartidos (id="flip-modal")
 export default {
   code: `import { createFlipModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const trigger = document.querySelector('#card-trigger');
 
@@ -23,7 +22,6 @@ const flip = createFlipModal({
 trigger.addEventListener('click', () => flip.open());`,
   codeAstro: `---
 import { WissPopFlip } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <${'!--'} Los data-flip-id del trigger y del modal se emparejan por nombre.
@@ -53,7 +51,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopFlip } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const abierto = ref(false);
 <${'/script'}>
@@ -75,7 +72,6 @@ const abierto = ref(false);
   </WissPopFlip>
 </template>`,
   codeReact: `import { WissPopFlip } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Tarjeta() {
   return (

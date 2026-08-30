@@ -1,0 +1,119 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const LABS_SECTIONS = [
+  { id: 'lab-anclados', label: lang === 'es' ? '1. Anclados (6 posiciones)' : '1. Anchored (6 placements)' },
+  { id: 'lab-circular', label: lang === 'es' ? '2. Botón Circular / FAB' : '2. Circular Button / FAB' },
+  { id: 'lab-origin', label: lang === 'es' ? '3. Crecer en el lugar' : '3. Expand in Place' },
+  { id: 'lab-drawers', label: lang === 'es' ? '4. Drawers (4 lados)' : '4. Drawers (4 sides)' },
+  { id: 'lab-texto-viajero', label: lang === 'es' ? '5. Texto Viajero (Pill)' : '5. Flying Text (Pill)' },
+  { id: 'lab-formatos', label: lang === 'es' ? '6. Formatos Viajeros' : '6. Flying Formats' },
+  { id: 'lab-casos-avanzados', label: lang === 'es' ? '7. Casos de Uso Avanzados' : '7. Advanced Use Cases' },
+  { id: 'lab-gesto', label: lang === 'es' ? '8. Gesto Swipe to Close' : '8. Swipe to Close' },
+  { id: 'lab-flip', label: lang === 'es' ? '9. FLIP Elementos Compartidos' : '9. FLIP Shared Elements' },
+  { id: 'lab-dropdown', label: lang === 'es' ? '10. Dropdown Elástico' : '10. Elastic Dropdown' },
+  { id: 'lab-content-anim', label: lang === 'es' ? '11. Animación Contenido' : '11. Content Animations' },
+  { id: 'lab-stagger', label: lang === 'es' ? '12. Cascada Stagger' : '12. Stagger Cascade' },
+  { id: 'lab-eases', label: lang === 'es' ? '13. Físicas & Curvas GSAP' : '13. GSAP Physics & Eases' },
+  { id: 'lab-mobile-perf', label: lang === 'es' ? '14. Optimización Móvil' : '14. Mobile Performance' },
+  { id: 'lab-fullscreen', label: lang === 'es' ? '15. Fullscreen 100vw/vh' : '15. Fullscreen Viewport' },
+  { id: 'lab-scroll', label: lang === 'es' ? '16. Scroll en Vivo' : '16. Live Scroll Follow' },
+  { id: 'lab-reactivo', label: lang === 'es' ? '17. Alto Reactivo & Vistas' : '17. Reactive Height' },
+];
+---
+
+<!-- Sticky Sidebar for Labs -->
+<aside class="w-56 shrink-0 hidden lg:block">
+  <div class="sticky top-24 space-y-6">
+    <div class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-zinc-400 dark:text-zinc-500">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path>
+      </svg>
+      {lang === 'es' ? '17 Laboratorios' : '17 Labs'}
+    </div>
+    <nav class="flex flex-col gap-1.5 text-xs text-zinc-500 dark:text-zinc-400 toc-nav max-h-[calc(100vh-10rem)] overflow-y-auto pr-2">
+      {LABS_SECTIONS.map((sec) => (
+        <a href={`#${sec.id}`} class="toc-link group flex items-center gap-2.5 py-1 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+          <span class="toc-line w-2.5 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-4 group-hover:bg-zinc-400"></span>
+          <span class="truncate">{sec.label}</span>
+        </a>
+      ))}
+    </nav>
+  </div>
+</aside>
+
+<script>
+  function setupLabsScrollSpy() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-nav a.toc-link');
+    if (!links.length) return;
+
+    const sections: HTMLElement[] = [];
+    links.forEach((link) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const el = document.getElementById(href.slice(1));
+        if (el) sections.push(el);
+      }
+    });
+
+    if (!sections.length) return;
+
+    function updateActive() {
+      const scrollPos = window.scrollY + 180;
+      let currentSectionId = '';
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentSectionId = section.id;
+          break;
+        }
+        if (scrollPos >= top) {
+          currentSectionId = section.id;
+        }
+      }
+
+      if (!currentSectionId && sections.length > 0) {
+        currentSectionId = sections[0].id;
+      }
+
+      links.forEach((link) => {
+        const href = link.getAttribute('href');
+        const isActive = href === `#${currentSectionId}`;
+        const line = link.querySelector('.toc-line');
+
+        if (isActive) {
+          link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+          link.classList.remove('text-zinc-500', 'dark:text-zinc-400');
+          if (line) {
+            line.classList.add('w-5', 'bg-indigo-600', 'dark:bg-indigo-400');
+            line.classList.remove('w-2.5', 'bg-zinc-200', 'dark:bg-zinc-800');
+          }
+        } else {
+          link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+          link.classList.add('text-zinc-500', 'dark:text-zinc-400');
+          if (line) {
+            line.classList.remove('w-5', 'bg-indigo-600', 'dark:bg-indigo-400');
+            line.classList.add('w-2.5', 'bg-zinc-200', 'dark:bg-zinc-800');
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  setupLabsScrollSpy();
+  document.addEventListener('astro:page-load', setupLabsScrollSpy);
+  document.addEventListener('astro:after-swap', setupLabsScrollSpy);
+</script>

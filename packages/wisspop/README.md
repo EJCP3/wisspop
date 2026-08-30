@@ -2,7 +2,7 @@
 
 Modales y dropdowns con **animaciones ancladas al origen**: el panel no aparece de la nada, nace del elemento que lo abrió y vuelve a él al cerrarse.
 
-Un motor core sin framework (JS + GSAP) con adaptadores finos para **Astro**, **Vue**, **React** y **Vanilla JS**.
+Un motor core sin framework (JS + GSAP) con adaptadores finos para **Vue 3** y **Vanilla JS** (utilizable en cualquier framework o web vanilla).
 
 ---
 
@@ -14,7 +14,7 @@ pnpm add wisspop gsap
 npm install wisspop gsap
 ```
 
-`gsap` (≥3.12) es dependencia requerida. `vue` o `react` solo son necesarias si utilizas sus respectivos wrappers.
+`gsap` (≥3.12) es dependencia requerida. `vue` (≥3.4) solo es necesaria si utilizas el wrapper de Vue.
 
 ---
 
@@ -24,9 +24,7 @@ npm install wisspop gsap
 |---|---|---|
 | `wisspop` | `createMorph`, `createFlip`, `placeBox` (core puro) | `gsap` |
 | `wisspop/vanilla` | `createModal`, `createFlipModal`, helpers dropdown | `gsap` |
-| `wisspop/astro` | `WissPopMorph`, `WissPopPill`, `WissPopFlip` (componentes `.astro`) | `gsap` |
 | `wisspop/vue` | `WissPopMorph`, `WissPopPill`, `WissPopFlip` | `gsap`, `vue >= 3.4` |
-| `wisspop/react` | `WissPopMorph`, `WissPopPill`, `WissPopFlip` | `gsap`, `react >= 18` |
 | `wisspop/styles.css` | Estructura CSS obligatoria (position, z-index, overflow) | — |
 
 ---
@@ -91,69 +89,11 @@ WissPop incluye optimizaciones de bajo nivel para garantizar fluidez nativa a 60
 
 ---
 
-## Guía de Uso por Framework
+## Guía de Uso
 
-### 1. Astro (Nativo)
+### 1. Vue 3 (Wrapper Nativo)
 
-Se usa de forma 100% declarativa mediante `data-wisspop-trigger="id"` y `data-wisspop-close`:
-
-```astro
----
-import { WissPopMorph, WissPopPill } from 'wisspop/astro';
-import 'wisspop/styles.css';
----
-
-<!-- 1. Morph Modal (Menús, Dropdowns, Drawers) -->
-<button data-wisspop-trigger="filtros-modal" class="btn">Filtros</button>
-
-<WissPopMorph 
-  id="filtros-modal" 
-  placement="bottom" 
-  align="center"
-  modalClass="bg-white dark:bg-zinc-900 rounded-2xl border border-zinc-200 dark:border-zinc-800 shadow-xl"
-  swipeToClose={true}
->
-  <div class="p-6" style="width: min(22rem, calc(100vw - 2rem));">
-    <h3 class="font-bold text-lg text-zinc-900 dark:text-zinc-100">Filtros</h3>
-    <button data-wisspop-close class="btn mt-4 w-full">Aplicar</button>
-  </div>
-</WissPopMorph>
-
-<!-- 2. Pill Modal (Auth, Formularios con texto viajero) -->
-<button data-wisspop-trigger="auth-modal" class="btn">Crear cuenta</button>
-
-<WissPopPill
-  id="auth-modal"
-  placement="center"
-  modalClass="bg-white dark:bg-zinc-900 rounded-3xl border border-zinc-200 dark:border-zinc-800 shadow-2xl"
-  flyingTextClass="font-bold text-lg"
-  swipeToClose={true}
->
-  <div class="p-6" style="width: min(24rem, calc(100vw - 2rem));">
-    <h2 data-wisspop-title class="font-bold text-2xl mb-4">Crear cuenta</h2>
-    <input placeholder="Email" class="input mb-3 w-full" />
-    <button data-wisspop-close class="btn w-full">Continuar</button>
-  </div>
-</WissPopPill>
-```
-
-#### Configuración en Astro (`astro.config.mjs`)
-
-```js
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-
-export default defineConfig({
-  vite: {
-    plugins: [tailwindcss()],
-    ssr: {
-      noExternal: ['wisspop']
-    }
-  },
-});
-```
-
-### 2. Vue 3
+WissPop incluye componentes nativos para Vue 3 (`WissPopMorph`, `WissPopPill`, `WissPopFlip`):
 
 ```vue
 <script setup>
@@ -185,42 +125,9 @@ const abierto = ref(false);
 </template>
 ```
 
-### 3. React 18 / 19
+### 2. Vanilla JS / Agnóstico
 
-```jsx
-import { useRef, useState } from 'react';
-import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
-
-export function Demo() {
-  const btnRef = useRef(null);
-  const [open, setOpen] = useState(false);
-
-  return (
-    <>
-      <button ref={btnRef} onClick={() => setOpen(true)}>Abrir</button>
-
-      <WissPopMorph
-        open={open}
-        onClose={() => setOpen(false)}
-        originRef={btnRef.current}
-        placement="bottom"
-        align="center"
-        modalClass="panel"
-      >
-        {({ close }) => (
-          <div className="panel-body" style={{ width: 'min(22rem, calc(100vw - 2rem))' }}>
-            <p>Contenido del modal</p>
-            <button onClick={close}>Cerrar</button>
-          </div>
-        )}
-      </WissPopMorph>
-    </>
-  );
-}
-```
-
-### 4. Vanilla JS
+Puedes usar `wisspop/vanilla` en cualquier proyecto sin framework (o dentro de Astro, React, Svelte, etc.):
 
 ```js
 import { createModal } from 'wisspop/vanilla';
@@ -231,6 +138,7 @@ const modal = createModal({
   placement: 'bottom',
   align: 'center',
   modalClass: 'panel',
+  closeButton: true,
 });
 
 document.querySelector('#btn').addEventListener('click', (e) => {

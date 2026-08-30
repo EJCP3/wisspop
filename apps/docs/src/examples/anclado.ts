@@ -1,7 +1,6 @@
 // Ejemplo 1: Anclado a un botón (id="morph-modal")
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const boton = document.querySelector('#mi-boton');
 
@@ -16,7 +15,6 @@ const modal = createModal({
 boton.addEventListener('click', () => modal.open(boton));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="menu">Ordenar</button>
@@ -30,7 +28,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const abierto = ref(false);
@@ -55,7 +52,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Ejemplo() {
   const boton = useRef(null);

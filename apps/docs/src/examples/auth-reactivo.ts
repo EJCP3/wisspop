@@ -1,7 +1,6 @@
 // Ejemplo 10: Alto reactivo y cambio de vista (Auth Demo)
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const modal = createModal({
   modalClass: 'pill-panel',
@@ -43,7 +42,6 @@ btn.addEventListener('click', () => modal.open(btn, 'Crear cuenta'));`,
 // changeView()/resync() son métodos de la instancia, no props: en Astro se
 // llegan por el <template> del componente, que guarda el modal en _wisspop.
 import { WissPopPill } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="auth" class="pill">Crear cuenta</button>
@@ -73,7 +71,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref, nextTick } from 'vue';
 import { WissPopPill } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const pill = ref(null);
@@ -125,7 +122,6 @@ const alternarError = async () => {
   codeReact: `import { useRef, useState } from 'react';
 import { flushSync } from 'react-dom';
 import { WissPopPill } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Auth() {
   const boton = useRef(null);

@@ -1,7 +1,6 @@
 // Ejemplo 2: Desde un botón circular
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const btnFab = document.querySelector('#fab');
 
@@ -19,7 +18,6 @@ const modal = createModal({
 btnFab.addEventListener('click', () => modal.open(btnFab, '+'));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <${'!--'} El radio se lee del CSS del botón y se acota a la mitad del lado
@@ -43,7 +41,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const fab = ref(null);
 const abierto = ref(false);
@@ -73,7 +70,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Fab() {
   const fab = useRef(null);

@@ -14,10 +14,7 @@ html {
 .wisspop-overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--wisspop-z-overlay, 40);
-  background-color: var(--wisspop-overlay-bg, transparent);
-  backdrop-filter: var(--wisspop-overlay-blur, none);
-  -webkit-backdrop-filter: var(--wisspop-overlay-blur, none);
+  z-index: var(--wisspop-z-overlay, 9990);
 }
 
 .wisspop-overlay.wisspop-overlay-blur {
@@ -37,7 +34,7 @@ html {
 
 .wisspop-box {
   position: fixed;
-  z-index: var(--wisspop-z-box, 50);
+  z-index: var(--wisspop-z-box, 9995);
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -63,7 +60,7 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: var(--wisspop-z-box, 50);
+  z-index: var(--wisspop-z-box, 9995);
   pointer-events: none;
 }
 
@@ -243,7 +240,7 @@ html {
 
 .wisspop-flying-text {
   position: fixed;
-  z-index: var(--wisspop-z-flying, 60);
+  z-index: var(--wisspop-z-flying, 9998);
   pointer-events: none;
   white-space: nowrap;
   transform-origin: left top;

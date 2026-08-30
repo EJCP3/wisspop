@@ -1,7 +1,6 @@
 // Ejemplo 5: Texto viajero (PillModal) — id="pill-modal"
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 // El preset "pill": flyingTextClass es lo que crea el elemento viajero.
 const auth = createModal({
@@ -21,7 +20,6 @@ btn.addEventListener('click', () => auth.open(btn, 'Crear cuenta'));
 // auth.open(btn, 'Crear cuenta', { placement: 'origin' });`,
   codeAstro: `---
 import { WissPopPill } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="auth" class="pill">Crear cuenta</button>
@@ -38,7 +36,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopPill } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const abierto = ref(false);
@@ -65,7 +62,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef } from 'react';
 import { WissPopPill } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Auth() {
   const boton = useRef(null);

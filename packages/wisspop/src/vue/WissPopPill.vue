@@ -54,6 +54,7 @@
 import { ref, nextTick, onBeforeUnmount, useAttrs } from "vue";
 import { createMorph } from "../core/morph.js";
 import { attrsToOptions } from "./attrs-to-options.js";
+import { soloDefinidos } from "../shared/solo-definidos.js";
 
 // Ver WissPopMorph.vue: los attrs son configuración del core.
 defineOptions({ inheritAttrs: false });
@@ -72,12 +73,14 @@ const props = defineProps({
   labelOffsetX: { type: Number, default: 24 },
   mobileBreakpoint: { type: Number, default: 640 },
   /**
-   * Velocidad y curva del viaje optimizadas para movimientos orgánicos y nítidos.
+   * Velocidad y curva. Sin default propio A PROPÓSITO: si el wrapper mandara
+   * siempre un valor, pisaría al del core y `setDefaults()` no serviría de
+   * nada. Sin poner nada manda el core (0.55 / 0.7, o lo que fije setDefaults).
    */
-  duration: { type: Number, default: 0.38 },
-  ease: { type: String, default: "power3.out" },
-  closeDuration: { type: Number, default: 0.32 },
-  closeEase: { type: String, default: "power3.inOut" },
+  duration: { type: Number, default: undefined },
+  ease: { type: String, default: undefined },
+  closeDuration: { type: Number, default: undefined },
+  closeEase: { type: String, default: undefined },
   /** Botón × propio, para cuando no querés armar el tuyo con el `close` del slot. */
   closeButton: { type: Boolean, default: false },
   closeButtonClass: { type: String, default: "" },
@@ -118,10 +121,12 @@ const core = createMorph(
     fullscreenOnMobile: true,
     mobileBreakpoint: props.mobileBreakpoint,
     labelOffsetX: props.labelOffsetX,
-    duration: props.duration,
-    ease: props.ease,
-    closeDuration: props.closeDuration,
-    closeEase: props.closeEase,
+    ...soloDefinidos({
+      duration: props.duration,
+      ease: props.ease,
+      closeDuration: props.closeDuration,
+      closeEase: props.closeEase,
+    }),
     contentBlur: false,
     closeOnEscape: props.closeOnEscape,
     trapFocus: props.trapFocus,

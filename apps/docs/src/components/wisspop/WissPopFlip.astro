@@ -1,0 +1,31 @@
+---
+interface Props {
+  id: string;
+  trigger?: string;
+  flipId?: string;
+  duration?: number;
+  ease?: string;
+  fadeDuration?: number;
+  nestedDuration?: number;
+  swipeToClose?: boolean;
+  closeButton?: boolean;
+  lockScroll?: boolean;
+  closeOnEscape?: boolean;
+  trapFocus?: boolean;
+  restoreFocus?: boolean;
+  modalClass?: string;
+  overlayClass?: string;
+  [key: string]: any;
+}
+
+const { id, trigger = `[data-wisspop-trigger="${id}"]`, ...opciones } = Astro.props;
+---
+
+<template data-wisspop="flip" data-id={id} data-opts={JSON.stringify({ trigger, ...opciones })}>
+  <slot />
+</template>
+
+<script>
+  import { initWissPop } from './client.js';
+  initWissPop('flip');
+</script>

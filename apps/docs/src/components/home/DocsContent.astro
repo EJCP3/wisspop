@@ -1,9 +1,11 @@
 ---
-import type { Lang } from '../../i18n/utils';
-import { useTranslations } from '../../i18n/utils';
-import CodeBlock from '../CodeBlock.astro';
-import DocExampleCard from '../DocExampleCard.astro';
-import { WissPopMorph, WissPopPill, WissPopFlip } from 'wisspop/astro';
+import type { Lang } from "../../i18n/utils";
+import { useTranslations } from "../../i18n/utils";
+import CodeBlock from "../CodeBlock.astro";
+import DocExampleCard from "../DocExampleCard.astro";
+import WissPopMorph from "../wisspop/WissPopMorph.astro";
+import WissPopPill from "../wisspop/WissPopPill.astro";
+import WissPopFlip from "../wisspop/WissPopFlip.astro";
 
 interface Props {
   lang: Lang;
@@ -12,50 +14,99 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 
+const isEs = lang === "es";
+
 const ANCLADOS = [
-  { placement: 'top', align: 'start', etiqueta: 'top start' },
-  { placement: 'top', align: 'center', etiqueta: 'top center' },
-  { placement: 'top', align: 'end', etiqueta: 'top end' },
-  { placement: 'left', align: 'center', etiqueta: 'left center' },
-  { placement: 'right', align: 'center', etiqueta: 'right center' },
-  { placement: 'bottom', align: 'center', etiqueta: 'bottom center' },
+  {
+    placement: "top",
+    align: "start",
+    etiqueta: isEs ? "top start" : "top start",
+  },
+  {
+    placement: "top",
+    align: "center",
+    etiqueta: isEs ? "top center" : "top center",
+  },
+  { placement: "top", align: "end", etiqueta: isEs ? "top end" : "top end" },
+  {
+    placement: "left",
+    align: "center",
+    etiqueta: isEs ? "left center" : "left center",
+  },
+  {
+    placement: "right",
+    align: "center",
+    etiqueta: isEs ? "right center" : "right center",
+  },
+  {
+    placement: "bottom",
+    align: "center",
+    etiqueta: isEs ? "bottom center" : "bottom center",
+  },
 ];
 ---
 
 <div class="flex-1 min-w-0 space-y-16 pb-24">
   <!-- Introducción -->
   <section id="introduccion" class="scroll-mt-28 space-y-4 border-t-0 pt-0">
-    <h2 class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.intro_title')}</h2>
+    <h2
+      class="text-3xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      {t("docs.intro_title")}
+    </h2>
     <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed text-base">
-      {t('docs.intro_p1')}
+      {t("docs.intro_p1")}
     </p>
     <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed text-base">
-      {t('docs.intro_p2')}
+      {t("docs.intro_p2")}
     </p>
   </section>
 
   <!-- Instalación -->
-  <section id="instalacion" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.install_title')}</h2>
+  <section
+    id="instalacion"
+    class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
+    <h2
+      class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      {t("docs.install_title")}
+    </h2>
     <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      {t('docs.install_p')}
+      {t("docs.install_p")}
     </p>
-    <CodeBlock lang="bash" code="pnpm add wisspop # o npm install wisspop / yarn add wisspop" />
+    <CodeBlock
+      lang="bash"
+      code="pnpm add wisspop # o npm install wisspop / yarn add wisspop"
+    />
   </section>
 
   <!-- Ejemplos e Interacciones Completa -->
-  <section id="uso-basico" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+  <section
+    id="uso-basico"
+    class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
     <div>
-      <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.uso_title')}</h2>
+      <h2
+        class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+      >
+        {t("docs.uso_title")}
+      </h2>
       <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mt-2">
-        Catálogo completo de demostraciones de wisspop con sus métodos, configuraciones de origen, animaciones viajeras y gestos.
+        {
+          isEs
+            ? "Catálogo completo de demostraciones de wisspop con sus métodos, configuraciones de origen, animaciones viajeras y gestos."
+            : "Comprehensive catalog of wisspop live demos showing origin-anchored morphing, flying text, FLIP transitions, and gestures."
+        }
       </p>
     </div>
 
     <!-- Ejemplo 1: Anclado a un botón -->
     <DocExampleCard
-      title="1. Anclado a un botón"
-      description="El panel nace del botón y se posiciona en cualquiera de sus 6 combinaciones. El parámetro align controla la posición sobre el eje cruzado."
+      title={isEs ? "1. Anclado a un botón" : "1. Anchored to a button"}
+      description={isEs
+        ? "El panel nace del botón y se posiciona en cualquiera de sus 6 combinaciones. El parámetro align controla la posición sobre el eje cruzado."
+        : "The panel grows out of the button and docks at any of the 6 placement combinations."}
       code={`import { createModal } from 'wisspop/vanilla';
 
 createModal({
@@ -67,37 +118,47 @@ createModal({
       lang="javascript"
     >
       <div class="row">
-        {ANCLADOS.map((item) => (
-          <button
-            data-wisspop-trigger={`anclado-${item.placement}-${item.align}`}
-            class="demo-btn"
-          >
-            {item.etiqueta}
-          </button>
-        ))}
+        {
+          ANCLADOS.map((item) => (
+            <button
+              data-wisspop-trigger={`anclado-${item.placement}-${item.align}`}
+              class="demo-btn"
+            >
+              {item.etiqueta}
+            </button>
+          ))
+        }
       </div>
 
-      {ANCLADOS.map((item) => (
-        <WissPopMorph
-          id={`anclado-${item.placement}-${item.align}`}
-          placement={item.placement}
-          align={item.align}
-          modalClass="panel"
-          swipeToClose={true}
-        >
-          <ul class="menu">
-            <li data-wisspop-close>Más recientes</li>
-            <li data-wisspop-close>Más antiguos</li>
-            <li data-wisspop-close>Mayor monto</li>
-          </ul>
-        </WissPopMorph>
-      ))}
+      {
+        ANCLADOS.map((item) => (
+          <WissPopMorph
+            id={`anclado-${item.placement}-${item.align}`}
+            placement={item.placement}
+            align={item.align}
+            modalClass="panel"
+            swipeToClose={true}
+          >
+            <ul class="menu">
+              <li data-wisspop-close>
+                {isEs ? "Más recientes" : "Most recent"}
+              </li>
+              <li data-wisspop-close>{isEs ? "Más antiguos" : "Oldest"}</li>
+              <li data-wisspop-close>
+                {isEs ? "Mayor monto" : "Highest amount"}
+              </li>
+            </ul>
+          </WissPopMorph>
+        ))
+      }
     </DocExampleCard>
 
     <!-- Ejemplo 2: Desde un botón circular -->
     <DocExampleCard
-      title="2. Desde un botón circular"
-      description="El radio del origen se lee dinámicamente del CSS. El glifo del botón '+' viaja hacia el elemento data-wisspop-title."
+      title={isEs ? "2. Desde un botón circular" : "2. From a circular button"}
+      description={isEs
+        ? "El radio del origen se lee dinámicamente del CSS. El glifo del botón '+' viaja hacia el elemento data-wisspop-title."
+        : "The trigger's border radius is computed dynamically. The '+' icon flies into data-wisspop-title."}
       code={`createModal({
   placement: 'center',
   ease: 'power3.out',
@@ -110,22 +171,45 @@ createModal({
         <button data-wisspop-trigger="modal-fab-demo" class="round">+</button>
       </div>
 
-      <WissPopPill id="modal-fab-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="modal-fab-demo"
+        placement="center"
+        modalClass="panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
-          <h3><span data-wisspop-title>+</span> Nuevo movimiento</h3>
-          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Concepto</label>
-          <input placeholder="Café" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
-          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1">Monto</label>
-          <input placeholder="2500" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800" />
-          <button data-wisspop-close class="demo-btn w-full mt-3">Guardar</button>
+          <h3>
+            <span data-wisspop-title>+</span>
+            {isEs ? "Nuevo movimiento" : "New entry"}
+          </h3>
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1"
+            >{isEs ? "Concepto" : "Description"}</label
+          >
+          <input
+            placeholder={isEs ? "Café" : "Coffee"}
+            class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+          />
+          <label class="block text-xs font-semibold text-zinc-500 mt-2 mb-1"
+            >{isEs ? "Monto" : "Amount"}</label
+          >
+          <input
+            placeholder="2500"
+            class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800"
+          />
+          <button data-wisspop-close class="demo-btn w-full mt-3"
+            >{isEs ? "Guardar" : "Save"}</button
+          >
         </div>
       </WissPopPill>
     </DocExampleCard>
 
     <!-- Ejemplo 3: Crecer en el lugar -->
     <DocExampleCard
-      title="3. Crecer en el lugar"
-      description="placement: 'origin' hace que el panel comparta el centro con el botón y se expanda directamente ahí sin viajar al centro de la ventana."
+      title={isEs ? "3. Crecer en el lugar" : "3. Expand in place"}
+      description={isEs
+        ? "placement: 'origin' hace que el panel comparta el centro con el botón y se expanda directamente ahí sin viajar al centro de la ventana."
+        : "placement: 'origin' centers the panel on the trigger button without moving towards viewport center."}
       code={`createModal({
   content: '...',
   placement: 'origin',
@@ -135,23 +219,42 @@ createModal({
       lang="javascript"
     >
       <div class="row">
-        <button data-wisspop-trigger="modal-inline-demo" class="demo-btn">Renombrar</button>
+        <button data-wisspop-trigger="modal-inline-demo" class="demo-btn"
+          >{isEs ? "Renombrar" : "Rename"}</button
+        >
       </div>
 
-      <WissPopMorph id="modal-inline-demo" placement="origin" modalClass="panel" swipeToClose={true} closeButton={true}>
+      <WissPopMorph
+        id="modal-inline-demo"
+        placement="origin"
+        modalClass="panel"
+        swipeToClose={true}
+        closeButton={true}
+      >
         <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
-          <h3>Renombrar</h3>
-          <label class="block text-xs font-semibold text-zinc-500 mb-1">Nombre</label>
-          <input placeholder="Supermercado" class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 mb-3" />
-          <button data-wisspop-close class="demo-btn w-full">Listo</button>
+          <h3>{isEs ? "Renombrar" : "Rename"}</h3>
+          <label class="block text-xs font-semibold text-zinc-500 mb-1"
+            >{isEs ? "Nombre" : "Name"}</label
+          >
+          <input
+            placeholder={isEs ? "Supermercado" : "Supermarket"}
+            class="w-full px-3 py-2 text-sm rounded-lg border border-zinc-200 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 mb-3"
+          />
+          <button data-wisspop-close class="demo-btn w-full"
+            >{isEs ? "Listo" : "Done"}</button
+          >
         </div>
       </WissPopMorph>
     </DocExampleCard>
 
     <!-- Ejemplo 4: Drawer -->
     <DocExampleCard
-      title="4. Drawer (Cajón lateral y vertical)"
-      description="drawer-left, drawer-right, drawer-top y drawer-bottom adhieren el panel a los bordes completos de la ventana."
+      title={isEs
+        ? "4. Drawer (Cajón lateral y vertical)"
+        : "4. Drawers (Side and top/bottom)"}
+      description={isEs
+        ? "drawer-left, drawer-right, drawer-top y drawer-bottom adhieren el panel a los bordes completos de la ventana."
+        : "drawer-left, drawer-right, drawer-top, and drawer-bottom dock the panel seamlessly to screen edges."}
       code={`createModal({
   content: '<ul class="menu">...</ul>',
   placement: 'drawer-left', // drawer-left | drawer-right | drawer-top | drawer-bottom
@@ -160,71 +263,108 @@ createModal({
       lang="javascript"
     >
       <div class="row">
-        {['left', 'right', 'top', 'bottom'].map((lado) => (
-          <button data-wisspop-trigger={`drawer-${lado}-demo`} class="demo-btn">
-            drawer-{lado}
-          </button>
-        ))}
+        {
+          ["left", "right", "top", "bottom"].map((lado) => (
+            <button
+              data-wisspop-trigger={`drawer-${lado}-demo`}
+              class="demo-btn"
+            >
+              drawer-{lado}
+            </button>
+          ))
+        }
       </div>
 
-      {['left', 'right', 'top', 'bottom'].map((lado) => (
-        <WissPopMorph
-          id={`drawer-${lado}-demo`}
-          placement={`drawer-${lado}`}
-          modalClass={`panel drawer drawer-${lado}`}
-          swipeToClose={true}
-        >
-          <ul class="menu p-4">
-            <li data-wisspop-close>Inicio</li>
-            <li data-wisspop-close>Movimientos</li>
-            <li data-wisspop-close>Presupuestos</li>
-            <li data-wisspop-close>Ajustes</li>
-          </ul>
-        </WissPopMorph>
-      ))}
+      {
+        ["left", "right", "top", "bottom"].map((lado) => (
+          <WissPopMorph
+            id={`drawer-${lado}-demo`}
+            placement={`drawer-${lado}`}
+            modalClass={`panel drawer drawer-${lado}`}
+            swipeToClose={true}
+          >
+            <ul class="menu p-4">
+              <li data-wisspop-close>{isEs ? "Inicio" : "Home"}</li>
+              <li data-wisspop-close>
+                {isEs ? "Movimientos" : "Transactions"}
+              </li>
+              <li data-wisspop-close>{isEs ? "Presupuestos" : "Budgets"}</li>
+              <li data-wisspop-close>{isEs ? "Ajustes" : "Settings"}</li>
+            </ul>
+          </WissPopMorph>
+        ))
+      }
     </DocExampleCard>
 
     <!-- Ejemplo 5: Texto viajero (PillModal) -->
     <DocExampleCard
-      title="5. Texto viajero (PillModal)"
-      description="El texto del botón despegado viaja e interpola escala y posición hasta aterrizar en el título data-wisspop-title."
+      title={isEs
+        ? "5. Texto viajero (PillModal)"
+        : "5. Flying text (PillModal)"}
+      description={isEs
+        ? "El texto del botón despegado viaja e interpola escala y posición hasta aterrizar en el título data-wisspop-title."
+        : "The trigger label flies across the screen, smoothly interpolating size and position onto data-wisspop-title."}
       code={`// Una misma instancia puede abrirse en center u origin según la opción enviada al open
 modal.open(boton, "Crear cuenta");
 modal.open(boton, "Crear cuenta", { placement: "origin" });`}
       lang="javascript"
     >
       <div class="row">
-        <button data-wisspop-trigger="pill-center-demo" class="pill">Crear cuenta (Center)</button>
-        <button data-wisspop-trigger="pill-origin-demo" class="pill">Crear cuenta (Origin)</button>
+        <button data-wisspop-trigger="pill-center-demo" class="pill"
+          >{isEs ? "Crear cuenta (Center)" : "Create account (Center)"}</button
+        >
+        <button data-wisspop-trigger="pill-origin-demo" class="pill"
+          >{isEs ? "Crear cuenta (Origin)" : "Create account (Origin)"}</button
+        >
       </div>
 
-      <WissPopPill id="pill-center-demo" placement="center" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="pill-center-demo"
+        placement="center"
+        modalClass="pill-panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
-          <h2 data-wisspop-title>Crear cuenta</h2>
+          <h2 data-wisspop-title>{isEs ? "Crear cuenta" : "Create account"}</h2>
           <label>Email</label>
           <input placeholder="hola@ejemplo.com" />
-          <label>Contraseña</label>
+          <label>{isEs ? "Contraseña" : "Password"}</label>
           <input type="password" placeholder="••••••••" />
-          <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
+          <button data-wisspop-close class="pill w-full mt-2"
+            >{isEs ? "Continuar" : "Continue"}</button
+          >
         </div>
       </WissPopPill>
 
-      <WissPopPill id="pill-origin-demo" placement="origin" modalClass="pill-panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="pill-origin-demo"
+        placement="origin"
+        modalClass="pill-panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="pill-body" style="width: min(22rem, calc(100vw - 2rem));">
-          <h2 data-wisspop-title>Crear cuenta</h2>
+          <h2 data-wisspop-title>{isEs ? "Crear cuenta" : "Create account"}</h2>
           <label>Email</label>
           <input placeholder="hola@ejemplo.com" />
-          <label>Contraseña</label>
+          <label>{isEs ? "Contraseña" : "Password"}</label>
           <input type="password" placeholder="••••••••" />
-          <button data-wisspop-close class="pill w-full mt-2">Continuar</button>
+          <button data-wisspop-close class="pill w-full mt-2"
+            >{isEs ? "Continuar" : "Continue"}</button
+          >
         </div>
       </WissPopPill>
     </DocExampleCard>
 
     <!-- Ejemplo 6: Formatos del elemento viajero -->
     <DocExampleCard
-      title="6. Formatos del elemento viajero"
-      description="Se escala automáticamente texto con font-size o imágenes y nodos con width/height. Admite solo texto, texto con icono, solo icono o imágenes completas."
+      title={isEs
+        ? "6. Formatos del elemento viajero"
+        : "6. Flying element formats"}
+      description={isEs
+        ? "Se escala automáticamente texto con font-size o imágenes y nodos con width/height. Admite solo texto, texto con icono, solo icono o imágenes completas."
+        : "Scales font-size for text, and width/height for icons and images."}
       code={`// Texto suelto
 modal.open(boton, "Solo texto");
 
@@ -234,18 +374,38 @@ modal.open(boton, boton.querySelector("img"));`}
       lang="javascript"
     >
       <div class="row">
-        <button data-wisspop-trigger="fmt-texto-demo" class="pill">Solo texto</button>
+        <button data-wisspop-trigger="fmt-texto-demo" class="pill"
+          >{isEs ? "Solo texto" : "Plain text"}</button
+        >
         <button data-wisspop-trigger="fmt-mixto-demo" class="pill">
           <span class="con-icono">
-            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path>
+            <svg
+              class="ico"
+              viewBox="0 0 24 24"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              aria-hidden="true"
+            >
+              <path
+                d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"
+              ></path>
             </svg>
-            <span>Me gusta</span>
+            <span>{isEs ? "Me gusta" : "Like"}</span>
           </span>
         </button>
         <button data-wisspop-trigger="fmt-icono-demo" class="round">
-          <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path>
+          <svg
+            class="ico"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"
+            ></path>
           </svg>
         </button>
         <button data-wisspop-trigger="fmt-imagen-demo" class="avatar-btn">
@@ -253,53 +413,137 @@ modal.open(boton, boton.querySelector("img"));`}
         </button>
       </div>
 
-      <WissPopPill id="fmt-texto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="fmt-texto-demo"
+        placement="center"
+        modalClass="panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
-          <h3><span data-wisspop-title>Solo texto</span></h3>
-          <p class="nota">No hay nodo que medir, el punto de partida sale del texto del botón.</p>
-          <button data-wisspop-close class="demo-btn">Cerrar</button>
+          <h3>
+            <span data-wisspop-title>{isEs ? "Solo texto" : "Plain text"}</span>
+          </h3>
+          <p class="nota">
+            {
+              isEs
+                ? "No hay nodo que medir, el punto de partida sale del texto del botón."
+                : "No DOM node to measure, the origin point is calculated from button text."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn"
+            >{isEs ? "Cerrar" : "Close"}</button
+          >
         </div>
       </WissPopPill>
 
-      <WissPopPill id="fmt-mixto-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="fmt-mixto-demo"
+        placement="center"
+        modalClass="panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <h3>
             <span data-wisspop-title class="con-icono">
-              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"></path></svg>
-              <span>Me gusta</span>
+              <svg
+                class="ico"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                  d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"
+                ></path></svg
+              >
+              <span>{isEs ? "Me gusta" : "Like"}</span>
             </span>
           </h3>
-          <p class="nota">El icono medido en em escala exactamente junto con el texto.</p>
-          <button data-wisspop-close class="demo-btn">Cerrar</button>
+          <p class="nota">
+            {
+              isEs
+                ? "El icono medido en em escala exactamente junto con el texto."
+                : "The icon sized in em scales proportionally with the text."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn"
+            >{isEs ? "Cerrar" : "Close"}</button
+          >
         </div>
       </WissPopPill>
 
-      <WissPopPill id="fmt-icono-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="fmt-icono-demo"
+        placement="center"
+        modalClass="panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
           <h3>
             <span data-wisspop-title class="ico-destino">
-              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"></path></svg>
+              <svg
+                class="ico"
+                viewBox="0 0 24 24"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                ><path
+                  d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"
+                ></path></svg
+              >
             </span>
           </h3>
-          <p class="nota">Sin texto que escalar, el core pasa a modo box animando width/height.</p>
-          <button data-wisspop-close class="demo-btn">Cerrar</button>
+          <p class="nota">
+            {
+              isEs
+                ? "Sin texto que escalar, el core pasa a modo box animando width/height."
+                : "Without text to scale, core switches to box mode animating width/height."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn"
+            >{isEs ? "Cerrar" : "Close"}</button
+          >
         </div>
       </WissPopPill>
 
-      <WissPopPill id="fmt-imagen-demo" placement="center" modalClass="panel" flyingTextClass="flying" swipeToClose={true}>
+      <WissPopPill
+        id="fmt-imagen-demo"
+        placement="center"
+        modalClass="panel"
+        flyingTextClass="flying"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(21rem, calc(100vw - 2rem));">
-          <span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span>
-          <h3 class="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-3">No hace nada, HD</h3>
-          <p class="nota">Despega desde la miniatura y aterriza en el destino manteniendo proporción.</p>
-          <button data-wisspop-close class="demo-btn">Cerrar</button>
+          <span data-wisspop-title class="foto-destino"
+            ><img src="/gato.jpg" alt="" /></span
+          >
+          <h3 class="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-3">
+            {isEs ? "No hace nada, HD" : "Cat Portrait, HD"}
+          </h3>
+          <p class="nota">
+            {
+              isEs
+                ? "Despega desde la miniatura y aterriza en el destino manteniendo proporción."
+                : "Takes off from thumbnail and lands into destination maintaining aspect ratio."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn"
+            >{isEs ? "Cerrar" : "Close"}</button
+          >
         </div>
       </WissPopPill>
     </DocExampleCard>
 
     <!-- Ejemplo 7: Cerrar con el gesto -->
     <DocExampleCard
-      title="7. Cerrar con el gesto (Swipe to Close)"
-      description="swipeToClose: true permite descartar el panel arrastrándolo hacia cualquier dirección con el mouse o dedo."
+      title={isEs
+        ? "7. Cerrar con el gesto (Swipe to Close)"
+        : "7. Gesture dismissal (Swipe to Close)"}
+      description={isEs
+        ? "swipeToClose: true permite descartar el panel arrastrándolo hacia cualquier dirección con el mouse o dedo."
+        : "swipeToClose: true allows dismissing the panel by dragging it in any direction."}
       code={`createModal({
   content: '...',
   modalClass: 'panel',
@@ -309,22 +553,41 @@ modal.open(boton, boton.querySelector("img"));`}
       lang="javascript"
     >
       <div class="row">
-        <button data-wisspop-trigger="swipe-demo-modal" class="demo-btn">Arrastrame para cerrar</button>
+        <button data-wisspop-trigger="swipe-demo-modal" class="demo-btn"
+          >{isEs ? "Arrastrame para cerrar" : "Drag me to close"}</button
+        >
       </div>
 
-      <WissPopMorph id="swipe-demo-modal" placement="center" modalClass="panel" swipeToClose={true}>
+      <WissPopMorph
+        id="swipe-demo-modal"
+        placement="center"
+        modalClass="panel"
+        swipeToClose={true}
+      >
         <div class="panel-body" style="width: min(20rem, calc(100vw - 2rem));">
-          <h3>Arrastrame</h3>
-          <p class="nota">Hacia cualquier lado con el mouse o dedo. Si soltás antes del umbral, vuelve solo.</p>
-          <button data-wisspop-close class="demo-btn">O cerrame así</button>
+          <h3>{isEs ? "Arrastrame" : "Drag me"}</h3>
+          <p class="nota">
+            {
+              isEs
+                ? "Hacia cualquier lado con el mouse o dedo. Si soltás antes del umbral, vuelve solo."
+                : "In any direction with mouse or finger. If released before threshold, snaps back."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn"
+            >{isEs ? "O cerrame así" : "Or close me like this"}</button
+          >
         </div>
       </WissPopMorph>
     </DocExampleCard>
 
     <!-- Ejemplo 8: FlipModal — Elementos compartidos -->
     <DocExampleCard
-      title="8. FlipModal — Elementos compartidos"
-      description="Elementos individuales con data-flip-id viajan del origen al modal conservando su identidad visual con GSAP Flip."
+      title={isEs
+        ? "8. FlipModal — Elementos compartidos"
+        : "8. FlipModal — Shared elements"}
+      description={isEs
+        ? "Elementos individuales con data-flip-id viajan del origen al modal conservando su identidad visual con GSAP Flip."
+        : "Individual elements with data-flip-id travel from trigger to modal with GSAP Flip."}
       code={`createFlipModal({
   trigger: document.getElementById('card-trigger'),
   flipId: 'demo',
@@ -333,30 +596,75 @@ modal.open(boton, boton.querySelector("img"));`}
 });`}
       lang="javascript"
     >
-      <div class="row">
-        <div data-wisspop-trigger="flip-card-demo" class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-800 border border-zinc-200 dark:border-zinc-700 rounded-2xl w-64">
-          <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-28 object-cover rounded-xl" alt="" />
-          <h3 data-flip-id="demo-title" class="mt-2 text-base font-bold text-zinc-900 dark:text-zinc-100">Gato Viajero</h3>
-          <p class="text-xs text-zinc-400 mt-1">Clic para expandir detalle</p>
-        </div>
+      <div
+        id="card-flip-trigger"
+        data-wisspop-trigger="flip-card-demo"
+        data-flip-id="demo-card"
+        class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-64 shadow-sm hover:shadow-md transition-shadow"
+      >
+        <img
+          data-flip-id="demo-img"
+          src="/gato.jpg"
+          class="w-full h-28 object-cover rounded-xl"
+          alt="Gato Viajero"
+        />
+        <h3
+          data-flip-id="demo-title"
+          class="mt-2 text-base font-bold text-zinc-900 dark:text-zinc-100"
+        >
+          {isEs ? "Gato Viajero" : "Travelling Cat"}
+        </h3>
+        <p class="trigger-fade-item-demo text-xs text-zinc-400 mt-1">
+          {isEs ? "Clic para expandir detalle" : "Click to expand detail"}
+        </p>
       </div>
 
-      <WissPopFlip id="flip-card-demo" flipId="demo" modalClass="panel" swipeToClose={true}>
-        <div data-flip-id="demo-card" class="p-6" style="width: min(24rem, calc(100vw - 2rem));">
-          <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-52 object-cover rounded-xl" alt="" />
-          <h3 data-flip-id="demo-title" class="mt-4 text-2xl font-bold text-zinc-900 dark:text-zinc-100">Gato Viajero</h3>
-          <p class="mt-2 text-sm text-zinc-500 leading-relaxed">
-            Esta foto y título viajaron directamente desde la tarjeta usando GSAP Flip.
+      <WissPopFlip
+        id="flip-card-demo"
+        flipId="demo"
+        closeButton={true}
+        swipeToClose={true}
+      >
+        <div
+          data-flip-id="demo-card"
+          class="panel"
+          style="padding: 1.5rem; width: 24rem; max-width: 90vw;"
+        >
+          <img
+            data-flip-id="demo-img"
+            src="/gato.jpg"
+            style="width: 100%; height: 220px; object-fit: cover; border-radius: 0.75rem;"
+            alt="Gato Viajero"
+          />
+          <h3
+            data-flip-id="demo-title"
+            style="margin-top: 1rem; font-size: 1.5rem;"
+            class="text-zinc-900 dark:text-zinc-100 font-bold"
+          >
+            {isEs ? "Gato Viajero" : "Travelling Cat"}
+          </h3>
+          <p
+            class="modal-fade-item-demo"
+            style="margin-top: 0.5rem; color: var(--muted); line-height: 1.4; font-size: 0.9rem;"
+          >
+            {
+              isEs
+                ? "Esta foto y título viajaron directamente desde la tarjeta usando GSAP Flip conservando dimensiones reales."
+                : "This photo and heading travelled directly from the card using GSAP Flip."
+            }
           </p>
-          <button data-wisspop-close class="demo-btn mt-4">Cerrar</button>
         </div>
       </WissPopFlip>
     </DocExampleCard>
 
     <!-- Ejemplo 9: DropdownPanel — Despliegue elástico -->
     <DocExampleCard
-      title="9. DropdownPanel — Despliegue elástico"
-      description="Despliegue elástico ligero con enterDropdownAnimation y leaveDropdownAnimation."
+      title={isEs
+        ? "9. DropdownPanel — Despliegue elástico"
+        : "9. DropdownPanel — Elastic menu"}
+      description={isEs
+        ? "Despliegue elástico ligero con enterDropdownAnimation y leaveDropdownAnimation."
+        : "Elastic dropdown with enterDropdownAnimation and leaveDropdownAnimation."}
       code={`import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
 
 enterDropdownAnimation(panel, null, { transformOrigin: 'top center' });
@@ -364,15 +672,29 @@ leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
       lang="javascript"
     >
       <div class="row">
-        <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn">Desplegar Dropdown</button>
+        <button data-wisspop-trigger="dropdown-dir-demo" class="demo-btn"
+          >{isEs ? "Desplegar Dropdown" : "Open Dropdown"}</button
+        >
       </div>
 
-      <WissPopMorph id="dropdown-dir-demo" placement="bottom" align="center" gap={8} modalClass="panel">
+      <WissPopMorph
+        id="dropdown-dir-demo"
+        placement="bottom"
+        align="center"
+        gap={8}
+        modalClass="panel"
+      >
         <div class="p-2 min-w-[14rem]">
           <ul class="menu">
-            <li data-wisspop-close>Opción 1</li>
-            <li data-wisspop-close>Opción 2</li>
-            <li data-wisspop-close>Opción 3</li>
+            <li data-wisspop-close>
+              {isEs ? "Opción 1: Ver detalles" : "Option 1: View details"}
+            </li>
+            <li data-wisspop-close>
+              {isEs ? "Opción 2: Preferencias" : "Option 2: Preferences"}
+            </li>
+            <li data-wisspop-close>
+              {isEs ? "Opción 3: Exportar" : "Option 3: Export"}
+            </li>
           </ul>
         </div>
       </WissPopMorph>
@@ -380,8 +702,12 @@ leaveDropdownAnimation(panel, onComplete, { transformOrigin: 'top center' });`}
 
     <!-- Ejemplo 10: Alto reactivo y cambio de vista -->
     <DocExampleCard
-      title="10. Alto reactivo y cambio de vista (Auth Demo)"
-      description="Demuestra resync() al modificar la altura del contenido dinámicamente y changeView() para alternar entre Login y Signup sin cerrar el panel."
+      title={isEs
+        ? "10. Alto reactivo y cambio de vista (Auth Demo)"
+        : "10. Reactive height & view switcher (Auth Demo)"}
+      description={isEs
+        ? "Demuestra resync() al modificar la altura del contenido dinámicamente y changeView() para alternar entre Login y Signup sin cerrar el panel."
+        : "Demonstrates resync() on height changes and changeView() when switching between signup and login."}
       code={`// RF-4: resync al cambiar la altura del contenido
 modal.resync();
 
@@ -393,21 +719,177 @@ modal.changeView(() => {
       lang="javascript"
     >
       <div class="row">
-        <button id="btn-auth-full-trigger" class="pill">Abrir Formulario Auth Reactivo</button>
+        <button id="btn-auth-full-trigger" class="pill"
+          >{
+            isEs ? "Abrir Formulario Auth Reactivo" : "Open Reactive Auth Modal"
+          }</button
+        >
       </div>
+    </DocExampleCard>
+
+    <!-- Ejemplo 11: Telón de fondo (Overlay, Blur y Opacidad) -->
+    <DocExampleCard
+      title={isEs
+        ? "11. Telón de fondo (Overlay, Blur y Opacidad)"
+        : "11. Backdrop overlay (Blur & Opacity)"}
+      description={isEs
+        ? "Personaliza el fondo detrás del modal: activa los presets nativos overlayBlur y overlayDark, o aplica clases directas con overlayClass."
+        : "Customize the background overlay: toggle built-in presets (overlayBlur & overlayDark) or provide utility classes via overlayClass."}
+      code={`// 1. Preset de Desenfoque Nativo (6px)
+createModal({ overlayBlur: true, placement: 'center', modalClass: 'panel' }).open(btn);
+
+// 2. Preset de Fondo Oscuro (rgba(0,0,0,0.25))
+createModal({ overlayDark: true, placement: 'center', modalClass: 'panel' }).open(btn);
+
+// 3. Desenfoque + Fondo Oscuro combinados
+createModal({ overlayBlur: true, overlayDark: true, placement: 'center', modalClass: 'panel' }).open(btn);
+
+// 4. Clases personalizadas o Tailwind CSS
+createModal({ overlayClass: 'bg-indigo-950/60 backdrop-blur-md', placement: 'center', modalClass: 'panel' }).open(btn);`}
+      lang="javascript"
+    >
+      <div class="flex flex-wrap justify-center gap-3">
+        <button data-wisspop-trigger="modal-overlay-blur-demo" class="demo-btn"
+          >{isEs ? "Blur Nativo (6px)" : "Native Blur (6px)"}</button
+        >
+        <button data-wisspop-trigger="modal-overlay-dark-demo" class="demo-btn"
+          >{isEs ? "Fondo Oscuro Suave" : "Soft Dark Overlay"}</button
+        >
+        <button data-wisspop-trigger="modal-overlay-combo-demo" class="demo-btn"
+          >{isEs ? "Blur + Fondo Oscuro" : "Blur + Dark Tint"}</button
+        >
+        <button
+          data-wisspop-trigger="modal-overlay-custom-demo"
+          class="demo-btn"
+          >{isEs ? "Custom overlayClass" : "Custom overlayClass"}</button
+        >
+      </div>
+
+      <WissPopMorph
+        id="modal-overlay-blur-demo"
+        placement="center"
+        modalClass="panel"
+        overlayBlur={true}
+        swipeToClose={true}
+      >
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h3>{isEs ? "Desenfoque Nativo (6px)" : "Native Blur (6px)"}</h3>
+          <p class="nota">
+            {
+              isEs
+                ? "overlayBlur: true aplica backdrop-filter: blur(6px) sobre el fondo sin necesidad de escribir CSS."
+                : "overlayBlur: true applies native backdrop-filter: blur(6px) without writing custom CSS."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn w-full mt-3"
+            >{isEs ? "Entendido" : "Got it"}</button
+          >
+        </div>
+      </WissPopMorph>
+
+      <WissPopMorph
+        id="modal-overlay-dark-demo"
+        placement="center"
+        modalClass="panel"
+        overlayDark={true}
+        swipeToClose={true}
+      >
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h3>{isEs ? "Fondo Oscuro Suave" : "Soft Dark Overlay"}</h3>
+          <p class="nota">
+            {
+              isEs
+                ? "overlayDark: true aplica un fondo oscuro sutil (rgba(0, 0, 0, 0.25)) para destacar el modal."
+                : "overlayDark: true applies a subtle dark background (rgba(0, 0, 0, 0.25)) to emphasize the modal."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn w-full mt-3"
+            >{isEs ? "Entendido" : "Got it"}</button
+          >
+        </div>
+      </WissPopMorph>
+
+      <WissPopMorph
+        id="modal-overlay-combo-demo"
+        placement="center"
+        modalClass="panel"
+        overlayBlur={true}
+        overlayDark={true}
+        swipeToClose={true}
+      >
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h3>
+            {
+              isEs
+                ? "Blur + Fondo Oscuro Combinados"
+                : "Combined Blur + Dark Tint"
+            }
+          </h3>
+          <p class="nota">
+            {
+              isEs
+                ? "overlayBlur: true junto con overlayDark: true fusionan desenfoque y contraste óptico automáticamente."
+                : "overlayBlur: true combined with overlayDark: true merges blur and contrast automatically."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn w-full mt-3"
+            >{isEs ? "Entendido" : "Got it"}</button
+          >
+        </div>
+      </WissPopMorph>
+
+      <WissPopMorph
+        id="modal-overlay-custom-demo"
+        placement="center"
+        modalClass="panel"
+        overlayClass="bg-indigo-950/60 backdrop-blur-md"
+        swipeToClose={true}
+      >
+        <div class="panel-body" style="width: min(22rem, calc(100vw - 2rem));">
+          <h3>
+            {
+              isEs
+                ? "Custom overlayClass (Tailwind)"
+                : "Custom overlayClass (Tailwind)"
+            }
+          </h3>
+          <p class="nota">
+            {
+              isEs
+                ? "overlayClass='bg-indigo-950/60 backdrop-blur-md' te da control total sobre colores, opacidad y niveles de desenfoque."
+                : "overlayClass='bg-indigo-950/60 backdrop-blur-md' gives you total control over colors, opacity and blur intensity."
+            }
+          </p>
+          <button data-wisspop-close class="demo-btn w-full mt-3"
+            >{isEs ? "Entendido" : "Got it"}</button
+          >
+        </div>
+      </WissPopMorph>
     </DocExampleCard>
   </section>
 
   <!-- Métodos de la API -->
-  <section id="metodos" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Métodos de la API</h2>
+  <section
+    id="metodos"
+    class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
+    <h2
+      class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      Métodos de la API
+    </h2>
     <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
-      La instancia devuelta por createModal() o expuesta por los wrappers contiene los siguientes métodos de control:
+      La instancia devuelta por createModal() o expuesta por los wrappers
+      contiene los siguientes métodos de control:
     </p>
 
-    <div class="overflow-x-auto my-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+    <div
+      class="overflow-x-auto my-4 rounded-xl border border-zinc-200 dark:border-zinc-800"
+    >
       <table class="w-full text-left text-xs">
-        <thead class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800">
+        <thead
+          class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800"
+        >
           <tr>
             <th class="p-3 font-semibold">Método</th>
             <th class="p-3 font-semibold">Firma</th>
@@ -416,29 +898,60 @@ modal.changeView(() => {
         </thead>
         <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
           <tr>
-            <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">open</td>
-            <td class="p-3 font-mono text-zinc-500">(originRef, label?, options?)</td>
-            <td class="p-3">Inicia la animación de apertura despegando desde el origen medido.</td>
+            <td
+              class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+              >open</td
+            >
+            <td class="p-3 font-mono text-zinc-500"
+              >(originRef, label?, options?)</td
+            >
+            <td class="p-3"
+              >Inicia la animación de apertura despegando desde el origen
+              medido.</td
+            >
           </tr>
           <tr>
-            <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">close</td>
+            <td
+              class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+              >close</td
+            >
             <td class="p-3 font-mono text-zinc-500">()</td>
-            <td class="p-3">Inicia la animación de cierre retornando a la posición actual del origen.</td>
+            <td class="p-3"
+              >Inicia la animación de cierre retornando a la posición actual del
+              origen.</td
+            >
           </tr>
           <tr>
-            <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">changeView</td>
+            <td
+              class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+              >changeView</td
+            >
             <td class="p-3 font-mono text-zinc-500">(mutateFn)</td>
-            <td class="p-3">Aplica el cambio de vista y ajusta el alto con un fade-through corto sin cerrar el panel.</td>
+            <td class="p-3"
+              >Aplica el cambio de vista y ajusta el alto con un fade-through
+              corto sin cerrar el panel.</td
+            >
           </tr>
           <tr>
-            <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">resync</td>
+            <td
+              class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+              >resync</td
+            >
             <td class="p-3 font-mono text-zinc-500">()</td>
-            <td class="p-3">Recalcula la geometría del contenido y ajusta suavemente la altura del panel abierto.</td>
+            <td class="p-3"
+              >Recalcula la geometría del contenido y ajusta suavemente la
+              altura del panel abierto.</td
+            >
           </tr>
           <tr>
-            <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">destroy</td>
+            <td
+              class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+              >destroy</td
+            >
             <td class="p-3 font-mono text-zinc-500">()</td>
-            <td class="p-3">Limpia observers y elimina los elementos del DOM.</td>
+            <td class="p-3"
+              >Limpia observers y elimina los elementos del DOM.</td
+            >
           </tr>
         </tbody>
       </table>
@@ -446,13 +959,26 @@ modal.changeView(() => {
   </section>
 
   <!-- Opciones y Posicionamiento -->
-  <section id="opciones" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.opciones_title')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.opciones_desc')}</p>
-    
-    <div class="overflow-x-auto my-4 rounded-xl border border-zinc-200 dark:border-zinc-800">
+  <section
+    id="opciones"
+    class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
+    <h2
+      class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      {t("docs.opciones_title")}
+    </h2>
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      {t("docs.opciones_desc")}
+    </p>
+
+    <div
+      class="overflow-x-auto my-4 rounded-xl border border-zinc-200 dark:border-zinc-800"
+    >
       <table class="w-full text-left text-xs">
-        <thead class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800">
+        <thead
+          class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800"
+        >
           <tr>
             <th class="p-3 font-semibold">Opción</th>
             <th class="p-3 font-semibold">Valores</th>
@@ -463,15 +989,23 @@ modal.changeView(() => {
         <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
           <tr>
             <td class="p-3 font-mono font-bold">placement</td>
-            <td class="p-3 font-mono text-zinc-500">top | bottom | left | right | origin | center | drawer-left | drawer-right | drawer-top | drawer-bottom</td>
+            <td class="p-3 font-mono text-zinc-500"
+              >top | bottom | left | right | origin | center | drawer-left |
+              drawer-right | drawer-top | drawer-bottom</td
+            >
             <td class="p-3 font-mono text-zinc-500">'bottom'</td>
-            <td class="p-3">Posición respecto al origen. origin crece en el lugar; drawer-* fija a bordes.</td>
+            <td class="p-3"
+              >Posición respecto al origen. origin crece en el lugar; drawer-*
+              fija a bordes.</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">align</td>
             <td class="p-3 font-mono text-zinc-500">start | center | end</td>
             <td class="p-3 font-mono text-zinc-500">'center'</td>
-            <td class="p-3">Alineación sobre el eje cruzado al punto de anclaje.</td>
+            <td class="p-3"
+              >Alineación sobre el eje cruzado al punto de anclaje.</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">gap</td>
@@ -483,111 +1017,489 @@ modal.changeView(() => {
             <td class="p-3 font-mono font-bold">margin</td>
             <td class="p-3 font-mono text-zinc-500">number (px)</td>
             <td class="p-3 font-mono text-zinc-500">16</td>
-            <td class="p-3">Margen mínimo de seguridad a los bordes de la ventana.</td>
+            <td class="p-3"
+              >Margen mínimo de seguridad a los bordes de la ventana.</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">swipeToClose</td>
             <td class="p-3 font-mono text-zinc-500">boolean</td>
             <td class="p-3 font-mono text-zinc-500">false</td>
-            <td class="p-3">Permite descartar el panel arrastrándolo con la mano o mouse.</td>
+            <td class="p-3"
+              >Permite descartar el panel arrastrándolo con la mano o mouse.</td
+            >
+          </tr>
+          <tr>
+            <td class="p-3 font-mono font-bold">overlay</td>
+            <td class="p-3 font-mono text-zinc-500">boolean</td>
+            <td class="p-3 font-mono text-zinc-500">true</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Renderiza una capa de telón de fondo (backdrop) detrás del modal."
+                  : "Renders a background backdrop overlay behind the open modal."
+              }</td
+            >
+          </tr>
+          <tr>
+            <td class="p-3 font-mono font-bold">overlayBlur</td>
+            <td class="p-3 font-mono text-zinc-500">boolean</td>
+            <td class="p-3 font-mono text-zinc-500">false</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Aplica un desenfoque de fondo nativo (6px) con backdrop-filter sin CSS extra."
+                  : "Applies standard native backdrop-filter: blur(6px) without custom CSS."
+              }</td
+            >
+          </tr>
+          <tr>
+            <td class="p-3 font-mono font-bold">overlayDark</td>
+            <td class="p-3 font-mono text-zinc-500">boolean</td>
+            <td class="p-3 font-mono text-zinc-500">false</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Aplica un fondo oscurecido suave predeterminado (rgba(0, 0, 0, 0.25))."
+                  : "Applies standard soft dark tint background (rgba(0, 0, 0, 0.25))."
+              }</td
+            >
+          </tr>
+          <tr>
+            <td class="p-3 font-mono font-bold">overlayClass</td>
+            <td class="p-3 font-mono text-zinc-500">string</td>
+            <td class="p-3 font-mono text-zinc-500">""</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Clases CSS o utilidades Tailwind para personalizar la opacidad, color y blur (ej. 'bg-black/60 backdrop-blur-md')."
+                  : "Custom CSS or Tailwind classes to customize opacity, color, and blur (e.g. 'bg-black/60 backdrop-blur-md')."
+              }</td
+            >
+          </tr>
+          <tr>
+            <td class="p-3 font-mono font-bold">overlayDuration</td>
+            <td class="p-3 font-mono text-zinc-500">number</td>
+            <td class="p-3 font-mono text-zinc-500">undefined</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Duración en segundos de la animación del overlay (por defecto hereda duration)."
+                  : "Custom duration in seconds for the overlay transition (inherits duration by default)."
+              }</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">closeOnEscape</td>
             <td class="p-3 font-mono text-zinc-500">boolean</td>
             <td class="p-3 font-mono text-zinc-500">true</td>
-            <td class="p-3">Cierra el modal al pulsar la tecla Escape.</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Cierra el modal al pulsar la tecla Escape."
+                  : "Closes modal on Escape key press."
+              }</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">lockScroll</td>
             <td class="p-3 font-mono text-zinc-500">boolean</td>
             <td class="p-3 font-mono text-zinc-500">true</td>
-            <td class="p-3">Bloquea el scroll del body con compensación de scrollbar.</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Bloquea el scroll del body con compensación de scrollbar."
+                  : "Locks body scroll with scrollbar gutter compensation."
+              }</td
+            >
           </tr>
           <tr>
             <td class="p-3 font-mono font-bold">fullscreenOnMobile</td>
             <td class="p-3 font-mono text-zinc-500">boolean</td>
             <td class="p-3 font-mono text-zinc-500">true</td>
-            <td class="p-3">Modales grandes toman la pantalla completa en pantallas menores a 640px.</td>
+            <td class="p-3"
+              >{
+                isEs
+                  ? "Modales grandes toman la pantalla completa en pantallas menores a 640px."
+                  : "Expands modal to 100% full screen on viewports < 640px."
+              }</td
+            >
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Subsección: Personalización del Overlay -->
+    <div class="mt-8 space-y-6">
+      <div class="space-y-2">
+        <h3
+          class="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+        >
+          {
+            isEs
+              ? "Personalización del Overlay (Opacidad, Fondo y Blur)"
+              : "Overlay Customization (Opacity, Background & Blur)"
+          }
+        </h3>
+        <p
+          class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed max-w-3xl"
+        >
+          {
+            isEs
+              ? "El telón de fondo (overlay) de WissPop es completamente flexible. Puedes ajustar la opacidad del backgroundColor y la intensidad del backdrop-blur mediante 3 enfoques:"
+              : "WissPop's background overlay is fully customizable. You can adjust the backgroundColor opacity and backdrop-blur intensity through 3 flexible approaches:"
+          }
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 gap-5">
+        <!-- Opción 1: overlayClass -->
+        <div
+          class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-3"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="px-2 py-0.5 rounded text-[11px] font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300"
+            >
+              {isEs ? "Opción 1" : "Option 1"}
+            </span>
+            <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+              {
+                isEs
+                  ? "Mediante Clases (overlayClass / Tailwind CSS) — Recomendado"
+                  : "Via Utility Classes (overlayClass / Tailwind CSS) — Recommended"
+              }
+            </h4>
+          </div>
+          <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            {
+              isEs
+                ? "Pasa clases personalizadas o utilidades de Tailwind directamente al modal para controlar la opacidad exacta (ej. `bg-black/50` o `bg-slate-900/80`) y el desenfoque (`backdrop-blur-sm`, `backdrop-blur-md`, `backdrop-blur-xl`):"
+                : "Pass custom or Tailwind classes directly into overlayClass to configure exact background opacity (e.g. `bg-black/50`, `bg-slate-900/80`) and blur intensity (`backdrop-blur-sm`, `backdrop-blur-md`, `backdrop-blur-xl`):"
+            }
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <CodeBlock
+              lang="javascript"
+              label="Vanilla JS"
+              code={`import { createModal } from 'wisspop/vanilla';
+
+const modal = createModal({
+  overlay: true,
+  // 60% opacidad negra + desenfoque medio
+  overlayClass: 'bg-black/60 backdrop-blur-md',
+  content: '<div class="p-6">Contenido...</div>'
+});`}
+            />
+            <CodeBlock
+              lang="vue"
+              label="Vue 3"
+              code={`<template>
+  <WissPopMorph
+    v-model="isOpen"
+    :origin-ref="btnRef"
+    overlayClass="bg-black/60 backdrop-blur-md"
+  >
+    <div class="p-6">Contenido...</div>
+  </WissPopMorph>
+</template>`}
+            />
+          </div>
+        </div>
+
+        <!-- Opción 2: Variables CSS -->
+        <div
+          class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-3"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300"
+            >
+              {isEs ? "Opción 2" : "Option 2"}
+            </span>
+            <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+              {
+                isEs
+                  ? "Mediante Variables CSS Globales o Locales (--wisspop-overlay-*)"
+                  : "Via CSS Custom Properties (--wisspop-overlay-*)"
+              }
+            </h4>
+          </div>
+          <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            {
+              isEs
+                ? "WissPop lee variables CSS estándar. Puedes sobreescribirlas a nivel global en tu `:root` o de forma aislada en una clase CSS:"
+                : "WissPop supports standard CSS custom properties. You can override them globally in `:root` or locally inside a custom CSS selector:"
+            }
+          </p>
+
+          <CodeBlock
+            lang="css"
+            label="styles.css"
+            code={`/* Configuración global para toda tu aplicación */
+:root {
+  /* Color y nivel de opacidad (ej. 40%, 50%, 75%) */
+  --wisspop-overlay-bg: rgba(0, 0, 0, 0.55);
+
+  /* Intensidad del desenfoque (ej. blur(4px), blur(12px), blur(20px)) */
+  --wisspop-overlay-blur: blur(10px);
+}
+
+/* O para un modal específico */
+.overlay-vidrio-intenso {
+  --wisspop-overlay-bg: rgba(15, 23, 42, 0.8);
+  --wisspop-overlay-blur: blur(20px);
+}`}
+          />
+        </div>
+
+        <!-- Opción 3: Modos Preconfigurados Nativos -->
+        <div
+          class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/30 space-y-3"
+        >
+          <div class="flex items-center gap-2">
+            <span
+              class="px-2 py-0.5 rounded text-[11px] font-bold bg-amber-100 dark:bg-amber-950 text-amber-700 dark:text-amber-300"
+            >
+              {isEs ? "Opción 3" : "Option 3"}
+            </span>
+            <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
+              {
+                isEs
+                  ? "Modos Preconfigurados Nativos (overlayBlur & overlayDark)"
+                  : "Built-in Preset Flags (overlayBlur & overlayDark)"
+              }
+            </h4>
+          </div>
+          <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
+            {
+              isEs
+                ? "Si no necesitas Tailwind ni CSS adicional, puedes activar los presets predefinidos con flags booleanos:"
+                : "If you don't use Tailwind or custom CSS, enable instant preset styles with boolean flags:"
+            }
+          </p>
+          <ul
+            class="list-disc list-inside text-xs text-zinc-600 dark:text-zinc-400 space-y-1.5 pl-1"
+          >
+            <li>
+              <code>overlayBlur: true</code> &rarr; {
+                isEs
+                  ? "Aplica desenfoque estándar de 6px (`backdrop-filter: blur(6px)`)."
+                  : "Applies standard 6px blur (`backdrop-filter: blur(6px)`)."
+              }
+            </li>
+            <li>
+              <code>overlayDark: true</code> &rarr; {
+                isEs
+                  ? "Aplica un oscurecido sutil estándar (`rgba(0, 0, 0, 0.25)`)."
+                  : "Applies standard soft dark tint (`rgba(0, 0, 0, 0.25)`)."
+              }
+            </li>
+            <li>
+              <code>overlayBlur: true, overlayDark: true</code> &rarr; {
+                isEs
+                  ? "Combina automáticamente ambos estilos sin necesidad de clases adicionales."
+                  : "Seamlessly combines both blur and dark tint."
+              }
+            </li>
+          </ul>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+            <CodeBlock
+              lang="javascript"
+              label="Vanilla JS Presets"
+              code={`createModal({
+  overlay: true,
+  overlayBlur: true, // Desenfoque nativo 6px
+  overlayDark: true, // Fondo oscuro suave
+  content: '<div class="p-6">Panel con blur nativo</div>'
+});`}
+            />
+            <CodeBlock
+              lang="vue"
+              label="Vue 3 Presets"
+              code={`<WissPopMorph
+  v-model="isOpen"
+  :origin-ref="btnRef"
+  :overlay="true"
+  :overlay-blur="true"
+  :overlay-dark="true"
+>
+  <div class="p-6">Panel con blur nativo</div>
+</WissPopMorph>`}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   </section>
 
   <!-- Soporte Frameworks -->
-  <section id="frameworks" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.frameworks_title')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.frameworks_desc')}</p>
+  <section
+    id="frameworks"
+    class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
+    <h2
+      class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      {t("docs.frameworks_title")}
+    </h2>
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      {t("docs.frameworks_desc")}
+    </p>
 
     <div class="flex flex-col gap-6">
       <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-orange-600 dark:text-orange-400">Astro (Nativo)</h4>
-        <CodeBlock lang="astro" code={`---
-import { WissPopMorph } from 'wisspop/astro';
----
-
-<button data-wisspop-trigger="mi-modal">Abrir</button>
-
-<WissPopMorph id="mi-modal" placement="bottom">
-  <p>Contenido Astro...</p>
-  <button data-wisspop-close>Cerrar</button>
-</WissPopMorph>`} />
-      </div>
-
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-emerald-600 dark:text-emerald-400">Vue 3</h4>
-        <CodeBlock lang="vue" code={`<${'script'} setup>
+        <h4
+          class="font-bold text-sm mb-2 text-emerald-600 dark:text-emerald-400"
+        >
+          Vue 3 (Wrapper Nativo)
+        </h4>
+        <CodeBlock
+          lang="vue"
+          code={`<script setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
 
 const open = ref(false);
 const btnRef = ref(null);
-</${'script'}>
+</script>
 
 <template>
   <button ref="btnRef" @click="open = true">Abrir</button>
-  <WissPopMorph v-model="open" :origin-ref="btnRef">
-    <p>Contenido Vue...</p>
+  <WissPopMorph v-model="open" :origin-ref="btnRef" placement="bottom" modalClass="panel">
+    <template #default="{ close }">
+      <p>Contenido Vue...</p>
+      <button @click="close">Cerrar</button>
+    </template>
   </WissPopMorph>
-</template>`} />
+</template>`}
+        />
       </div>
 
       <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
-        <h4 class="font-bold text-sm mb-2 text-blue-600 dark:text-blue-400">React 18/19</h4>
-        <CodeBlock lang="jsx" code={`import { useRef, useState } from 'react';
-import { WissPopMorph } from 'wisspop/react';
+        <h4 class="font-bold text-sm mb-2 text-amber-600 dark:text-amber-400">
+          Vanilla JS / Agnóstico
+        </h4>
+        <CodeBlock
+          lang="javascript"
+          code={`import { createModal } from 'wisspop/vanilla';
 
-export function Demo() {
+const modal = createModal({
+  content: '<p>Contenido...</p>',
+  placement: 'bottom',
+  modalClass: 'panel',
+  closeButton: true,
+});
+
+document.querySelector('#btn').addEventListener('click', (e) => {
+  modal.open(e.currentTarget);
+});`}
+        />
+      </div>
+
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div class="flex items-center gap-2 mb-2">
+          <h4 class="font-bold text-sm text-orange-600 dark:text-orange-400">
+            Astro
+          </h4>
+          <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-800">
+            {isEs ? "via vanilla" : "via vanilla"}
+          </span>
+        </div>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3 leading-relaxed">
+          {isEs
+            ? "Astro no necesita wrapper reactivo. Usa la API vanilla directamente en un <script> del componente .astro."
+            : "Astro doesn't need a reactive wrapper. Use the vanilla API directly in a <script> inside your .astro component."}
+        </p>
+        <CodeBlock
+          lang="astro"
+          code={`---
+// MiModal.astro
+---
+<button id="mi-btn">Abrir modal</button>
+
+<script>
+  import { createModal } from 'wisspop/vanilla';
+
+  const modal = createModal({
+    content: '<div class="p-6"><h2 data-wisspop-title>Hola Astro</h2><p>Contenido del modal</p></div>',
+    placement: 'bottom',
+    modalClass: 'panel',
+    closeButton: true,
+  });
+
+  document.getElementById('mi-btn')
+    ?.addEventListener('click', (e) => modal.open(e.currentTarget));
+</script>`}
+        />
+      </div>
+
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div class="flex items-center gap-2 mb-2">
+          <h4 class="font-bold text-sm text-sky-600 dark:text-sky-400">
+            React
+          </h4>
+          <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400 border border-sky-200 dark:border-sky-800">
+            {isEs ? "via vanilla" : "via vanilla"}
+          </span>
+        </div>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3 leading-relaxed">
+          {isEs
+            ? "React aún no tiene wrapper nativo. Usa la API vanilla con useRef y useEffect para integrar wisspop."
+            : "React doesn't have a native wrapper yet. Use the vanilla API with useRef and useEffect to integrate wisspop."}
+        </p>
+        <CodeBlock
+          lang="javascript"
+          label="React"
+          code={`import { useRef, useEffect } from 'react';
+import { createModal } from 'wisspop/vanilla';
+
+export default function MiModal() {
   const btnRef = useRef(null);
-  const [open, setOpen] = useState(false);
+  const modalRef = useRef(null);
+
+  useEffect(() => {
+    modalRef.current = createModal({
+      content: '<div class="p-6"><h2 data-wisspop-title>Hola React</h2><p>Contenido</p></div>',
+      placement: 'bottom',
+      modalClass: 'panel',
+      closeButton: true,
+    });
+    return () => modalRef.current?.destroy?.();
+  }, []);
 
   return (
-    <>
-      <button ref={btnRef} onClick={() => setOpen(true)}>Abrir</button>
-      <WissPopMorph open={open} onClose={() => setOpen(false)} originRef={btnRef.current} modalClass="panel">
-        {({ close }) => (
-          <div className="panel-body" style={{ width: 'min(22rem, calc(100vw - 2rem))' }}>
-            <p>Contenido React...</p>
-            <button onClick={close}>Cerrar</button>
-          </div>
-        )}
-      </WissPopMorph>
-    </>
+    <button ref={btnRef} onClick={() => modalRef.current?.open(btnRef.current)}>
+      Abrir modal
+    </button>
   );
-}`} />
+}`}
+        />
       </div>
     </div>
   </section>
 
   <!-- Guía de Buenas Prácticas y Errores Comunes -->
-  <section id="buenas-practicas" class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8">
+  <section
+    id="buenas-practicas"
+    class="scroll-mt-28 space-y-8 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
     <div>
-      <div class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3 border border-indigo-100 dark:border-indigo-900">
+      <div
+        class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 mb-3 border border-indigo-100 dark:border-indigo-900"
+      >
         <span>Guía Técnica</span>
       </div>
-      <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">Guía de Buenas Prácticas y Errores Comunes</h2>
+      <h2
+        class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+      >
+        Guía de Buenas Prácticas y Errores Comunes
+      </h2>
       <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed mt-2 text-sm">
-        Patrones recomendados, advertencias técnicas y soluciones aprendidas para integrar <strong>WissPop</strong> con la máxima fluidez visual.
+        Patrones recomendados, advertencias técnicas y soluciones aprendidas
+        para integrar <strong>WissPop</strong> con la máxima fluidez visual.
       </p>
     </div>
 
@@ -596,9 +1508,13 @@ export function Demo() {
       <h3 class="text-lg font-bold text-zinc-900 dark:text-zinc-100">
         Tipos de Modales y Cuándo Usar Cada Uno
       </h3>
-      <div class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800">
+      <div
+        class="overflow-x-auto rounded-xl border border-zinc-200 dark:border-zinc-800"
+      >
         <table class="w-full text-left text-xs">
-          <thead class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800">
+          <thead
+            class="bg-zinc-50 dark:bg-zinc-900/80 border-b border-zinc-200 dark:border-zinc-800"
+          >
             <tr>
               <th class="p-3 font-semibold">Componente</th>
               <th class="p-3 font-semibold">Tipo de Animación</th>
@@ -608,22 +1524,59 @@ export function Demo() {
           </thead>
           <tbody class="divide-y divide-zinc-200 dark:divide-zinc-800">
             <tr>
-              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopMorph</td>
-              <td class="p-3">La caja física nace del botón y se expande/transforma hacia su destino (<code>placement="origin"</code> o anclado).</td>
-              <td class="p-3">Dropdowns, menús contextuales, drawers laterales, mini-modales de confirmación o aviso.</td>
-              <td class="p-3"><strong class="text-rose-500">NO usa texto volador.</strong> La caja hace todo el morph físico.</td>
+              <td
+                class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+                >WissPopMorph</td
+              >
+              <td class="p-3"
+                >La caja física nace del botón y se expande/transforma hacia su
+                destino (<code>placement="origin"</code> o anclado).</td
+              >
+              <td class="p-3"
+                >Dropdowns, menús contextuales, drawers laterales, mini-modales
+                de confirmación o aviso.</td
+              >
+              <td class="p-3"
+                ><strong class="text-rose-500">NO usa texto volador.</strong> La caja
+                hace todo el morph físico.</td
+              >
             </tr>
             <tr>
-              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopPill</td>
-              <td class="p-3">La caja se expande y el <strong>texto o icono del botón vuela</strong> e interpola su escala hacia el título.</td>
-              <td class="p-3">Modales de formularios principales, login/auth, calculadoras donde la etiqueta del botón se convierte en el título.</td>
-              <td class="p-3">Requiere <code>[data-wisspop-title]</code> en el modal y opcionalmente <code>data-wisspop-label</code> en el botón.</td>
+              <td
+                class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+                >WissPopPill</td
+              >
+              <td class="p-3"
+                >La caja se expande y el <strong
+                  >texto o icono del botón vuela</strong
+                > e interpola su escala hacia el título.</td
+              >
+              <td class="p-3"
+                >Modales de formularios principales, login/auth, calculadoras
+                donde la etiqueta del botón se convierte en el título.</td
+              >
+              <td class="p-3"
+                >Requiere <code>[data-wisspop-title]</code> en el modal y opcionalmente
+                <code>data-wisspop-label</code> en el botón.</td
+              >
             </tr>
             <tr>
-              <td class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400">WissPopFlip</td>
-              <td class="p-3">Transición FLIP completa de múltiples elementos compartidos (imágenes, títulos, badges) entre tarjeta y vista de detalle.</td>
-              <td class="p-3">Galerías de productos, cards interactivas que se expanden a pantalla completa.</td>
-              <td class="p-3">Requiere atributos <code>data-flip-id="id-unico"</code> coincidentes en el trigger y en el modal.</td>
+              <td
+                class="p-3 font-mono font-bold text-indigo-600 dark:text-indigo-400"
+                >WissPopFlip</td
+              >
+              <td class="p-3"
+                >Transición FLIP completa de múltiples elementos compartidos
+                (imágenes, títulos, badges) entre tarjeta y vista de detalle.</td
+              >
+              <td class="p-3"
+                >Galerías de productos, cards interactivas que se expanden a
+                pantalla completa.</td
+              >
+              <td class="p-3"
+                >Requiere atributos <code>data-flip-id="id-unico"</code> coincidentes
+                en el trigger y en el modal.</td
+              >
             </tr>
           </tbody>
         </table>
@@ -637,35 +1590,45 @@ export function Demo() {
       </h3>
 
       <!-- Doble Contenedor en WissPopMorph -->
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+      <div
+        class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30"
+      >
         <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
           Crear un Doble Contenedor en WissPopMorph
         </h4>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>El Problema:</strong> Wisspop anima directamente su propio elemento contenedor <code>.wisspop-box</code> (modifica con GSAP <code>width</code>, <code>height</code>, <code>borderRadius</code>, <code>top</code> y <code>left</code>). Si dentro del slot colocas otro <code>&lt;div&gt;</code> con fondo, borde, redondeo y sombra, habrá dos cajas compitiendo y se producirá un salto o retraso visual ("efecto pop").
+          <strong>El Problema:</strong> Wisspop anima directamente su propio elemento
+          contenedor <code>.wisspop-box</code> (modifica con GSAP <code
+            >width</code
+          >, <code>height</code>, <code>borderRadius</code>, <code>top</code> y <code
+            >left</code
+          >). Si dentro del slot colocas otro <code>&lt;div&gt;</code> con fondo,
+          borde, redondeo y sombra, habrá dos cajas compitiendo y se producirá un
+          salto o retraso visual ("efecto pop").
         </p>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>La Solución:</strong> Pasa los estilos del contenedor directamente a la propiedad <code>modalClass</code>.
+          <strong>La Solución:</strong> Pasa los estilos del contenedor directamente
+          a la propiedad <code>modalClass</code>.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="error" 
-              label="Incorrecto (Doble caja con saltos)" 
+            <CodeBlock
+              lang="astro"
+              variant="error"
+              label="Incorrecto (Doble caja con saltos)"
               code={`<WissPopMorph id="mi-modal" placement="origin">
   <!-- Doble contenedor: compite con .wisspop-box -->
   <div class="bg-white rounded-2xl border border-slate-900 shadow-xl p-5">
     <h3>Contenido</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="success" 
-              label="Correcto (Estilos en modalClass)" 
+            <CodeBlock
+              lang="astro"
+              variant="success"
+              label="Correcto (Estilos en modalClass)"
               code={`<WissPopMorph 
   id="mi-modal" 
   placement="origin" 
@@ -677,109 +1640,141 @@ export function Demo() {
   <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
     <h3 class="font-bold text-base">Contenido</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
         </div>
       </div>
 
       <!-- Mezclar flyingTextClass o data-wisspop-title -->
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+      <div
+        class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30"
+      >
         <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
           Mezclar flyingTextClass o data-wisspop-title en WissPopMorph
         </h4>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>El Problema:</strong> <code>flyingTextClass</code> y <code>data-wisspop-title</code> son exclusivos del sistema de texto viajero de <strong>WissPopPill</strong>. Si los usas en un <code>WissPopMorph</code>, Wisspop ocultará temporalmente el título (<code>visibility: hidden</code>) esperando una animación de vuelo que nunca ocurrirá.
+          <strong>El Problema:</strong>
+          <code>flyingTextClass</code> y <code>data-wisspop-title</code> son exclusivos
+          del sistema de texto viajero de <strong>WissPopPill</strong>. Si los
+          usas en un <code>WissPopMorph</code>, Wisspop ocultará temporalmente
+          el título (<code>visibility: hidden</code>) esperando una animación de
+          vuelo que nunca ocurrirá.
         </p>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>La Solución:</strong> En <code>WissPopMorph</code>, usa encabezados HTML normales <code>&lt;h3&gt;</code> sin <code>data-wisspop-title</code>. Para títulos con texto viajero, utiliza <code>&lt;WissPopPill&gt;</code>.
+          <strong>La Solución:</strong> En <code>WissPopMorph</code>, usa
+          encabezados HTML normales <code>&lt;h3&gt;</code> sin <code
+            >data-wisspop-title</code
+          >. Para títulos con texto viajero, utiliza <code
+            >&lt;WissPopPill&gt;</code
+          >.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="error" 
-              label="Incorrecto en WissPopMorph" 
+            <CodeBlock
+              lang="astro"
+              variant="error"
+              label="Incorrecto en WissPopMorph"
               code={`<!-- Ocultará el título esperando un vuelo que no ocurrirá -->
 <WissPopMorph id="mi-modal" modalClass="panel">
   <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
     <h3 data-wisspop-title>Título Oculto</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="success" 
-              label="Correcto en WissPopMorph" 
+            <CodeBlock
+              lang="astro"
+              variant="success"
+              label="Correcto en WissPopMorph"
               code={`<!-- Encabezado normal sin atributos de vuelo -->
 <WissPopMorph id="mi-modal" modalClass="panel">
   <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
     <h3 class="font-bold text-lg">Título Visible</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
         </div>
       </div>
 
       <!-- No Definir Ancho -->
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+      <div
+        class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30"
+      >
         <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
           No Definir Ancho en el Contenido Interno
         </h4>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>El Problema:</strong> Para que GSAP mida con precisión la geometría final de la caja antes de animar el despegue, el cuerpo del panel debe tener un ancho medible.
+          <strong>El Problema:</strong> Para que GSAP mida con precisión la geometría
+          final de la caja antes de animar el despegue, el cuerpo del panel debe tener
+          un ancho medible.
         </p>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>La Solución:</strong> Establece un ancho explícito o responsivo en el <code>div</code> interior (ej. <code>style="width: min(24rem, calc(100vw - 2rem));"</code> o clases Tailwind equivalentes como <code>w-80 max-w-[calc(100vw-2rem)]</code>).
+          <strong>La Solución:</strong> Establece un ancho explícito o responsivo
+          en el <code>div</code> interior (ej. <code
+            >style="width: min(24rem, calc(100vw - 2rem));"</code
+          > o clases Tailwind equivalentes como <code
+            >w-80 max-w-[calc(100vw-2rem)]</code
+          >).
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="error" 
-              label="Incorrecto (Sin ancho medible)" 
+            <CodeBlock
+              lang="astro"
+              variant="error"
+              label="Incorrecto (Sin ancho medible)"
               code={`<WissPopMorph id="mi-modal" modalClass="panel">
   <!-- Sin ancho: GSAP no puede calcular la geometría exacta -->
   <div class="p-5">
     <h3>Contenido sin ancho</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
           <div>
-            <CodeBlock 
-              lang="astro" 
-              variant="success" 
-              label="Correcto (Ancho responsivo)" 
+            <CodeBlock
+              lang="astro"
+              variant="success"
+              label="Correcto (Ancho responsivo)"
               code={`<WissPopMorph id="mi-modal" modalClass="panel">
   <!-- Ancho explícito y responsivo para medición fluida -->
   <div class="p-5" style="width: min(24rem, calc(100vw - 2rem));">
     <h3>Contenido</h3>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
             />
           </div>
         </div>
       </div>
 
       <!-- Modales Anidados y Disparadores Dinámicos -->
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+      <div
+        class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30"
+      >
         <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
           Modales Anidados o Disparadores Dinámicos Dentro de &lt;template&gt;
         </h4>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>El Problema:</strong> En Astro, los slots se emiten dentro de etiquetas <code>&lt;template data-wisspop="..."&gt;</code>. Si un botón que abre un submodal se encuentra dentro del template de otro modal que aún no se ha abierto, <code>document.querySelectorAll()</code> no lo encontrará en la carga inicial.
+          <strong>El Problema:</strong> En Astro, los slots se emiten dentro de etiquetas
+          <code>&lt;template data-wisspop="..."&gt;</code>. Si un botón que abre
+          un submodal se encuentra dentro del template de otro modal que aún no
+          se ha abierto, <code>document.querySelectorAll()</code> no lo encontrará
+          en la carga inicial.
         </p>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>La Solución:</strong> El runtime cliente de <code>wisspop/astro</code> incluye delegación global automática de eventos para <code>[data-wisspop-trigger]</code>, montando bajo demanda cualquier submodal anidado o disparador dinámico.
+          <strong>La Solución:</strong> El runtime cliente de <code
+            >wisspop/astro</code
+          > incluye delegación global automática de eventos para <code
+            >[data-wisspop-trigger]</code
+          >, montando bajo demanda cualquier submodal anidado o disparador
+          dinámico.
         </p>
-        <CodeBlock 
-          lang="astro" 
-          variant="success" 
-          label="Delegación Automática para Submodales" 
+        <CodeBlock
+          lang="astro"
+          variant="success"
+          label="Delegación Automática para Submodales"
           code={`<!-- Disparador dentro de otro modal o generado dinámicamente -->
 <button data-wisspop-trigger="sub-modal-confirmacion" class="demo-btn">
   Abrir Confirmación
@@ -791,43 +1786,57 @@ export function Demo() {
     <h4 class="font-bold mb-3">¿Deseas confirmar la acción?</h4>
     <button data-wisspop-close class="demo-btn w-full">Aceptar</button>
   </div>
-</WissPopMorph>`} 
+</WissPopMorph>`}
         />
       </div>
 
       <!-- Destellos de Color por Interpolación -->
-      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30">
+      <div
+        class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800 space-y-3 bg-zinc-50/50 dark:bg-zinc-900/30"
+      >
         <h4 class="font-bold text-sm text-zinc-900 dark:text-zinc-100">
-          Destellos de Color Inesperados al Abrir/Cerrar (Interpolación de backgroundColor)
+          Destellos de Color Inesperados al Abrir/Cerrar (Interpolación de
+          backgroundColor)
         </h4>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>El Problema:</strong> WissPop lee automáticamente el color de fondo computado del botón disparador (<code>getComputedStyle(ref).backgroundColor</code>) y lo interpola con GSAP hacia el color del modal al abrir, y <strong>de vuelta al color del botón al cerrar</strong>. Si el botón tiene un color muy saturado o semitransparente (ej. <code>bg-amber-500/10</code>), toda la caja del modal se teñirá de ese tono mientras se encoge.
+          <strong>El Problema:</strong> WissPop lee automáticamente el color de fondo
+          computado del botón disparador (<code
+            >getComputedStyle(ref).backgroundColor</code
+          >) y lo interpola con GSAP hacia el color del modal al abrir, y <strong
+            >de vuelta al color del botón al cerrar</strong
+          >. Si el botón tiene un color muy saturado o semitransparente (ej. <code
+            >bg-amber-500/10</code
+          >), toda la caja del modal se teñirá de ese tono mientras se encoge.
         </p>
         <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-          <strong>La Solución:</strong> Mantén el fondo del botón disparador en un tono armónico o neutro respecto al modal (ej. <code>bg-white</code>, <code>bg-zinc-100</code> o tonos arena), y aplica los colores de acento/alerta en iconos, bordes o badges internos.
+          <strong>La Solución:</strong> Mantén el fondo del botón disparador en un
+          tono armónico o neutro respecto al modal (ej. <code>bg-white</code>, <code
+            >bg-zinc-100</code
+          > o tonos arena), y aplica los colores de acento/alerta en iconos, bordes
+          o badges internos.
         </p>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
           <div>
-            <CodeBlock 
-              lang="html" 
-              variant="error" 
-              label="Destello amarillo al encogerse" 
+            <CodeBlock
+              lang="html"
+              variant="error"
+              label="Destello amarillo al encogerse"
               code={`<!-- El modal completo se teñirá de amarillo al cerrar -->
 <button class="bg-amber-500/10 border border-amber-500" data-wisspop-trigger="mi-modal">
   Aviso Importante
-</button>`} 
+</button>`}
             />
           </div>
           <div>
-            <CodeBlock 
-              lang="html" 
-              variant="success" 
-              label="Transición limpia y armónica" 
+            <CodeBlock
+              lang="html"
+              variant="success"
+              label="Transición limpia y armónica"
               code={`<!-- Fondo neutro; color de acento en el icono -->
 <button class="bg-zinc-100 dark:bg-zinc-800 border border-zinc-300 dark:border-zinc-700 flex items-center gap-2 p-2 rounded-xl" data-wisspop-trigger="mi-modal">
   <span class="bg-amber-100 dark:bg-amber-950 text-amber-600 p-1 rounded-lg">!</span>
   <span>Aviso Importante</span>
-</button>`} 
+</button>`}
             />
           </div>
         </div>
@@ -840,9 +1849,14 @@ export function Demo() {
         Configuración de Proyecto y View Transitions
       </h3>
       <p class="text-xs text-zinc-600 dark:text-zinc-400 leading-relaxed">
-        Para asegurar que Astro y Vite procesen correctamente los módulos de WissPop en SSR y durante las transiciones de página de <code>&lt;ClientRouter /&gt;</code>:
+        Para asegurar que Astro y Vite procesen correctamente los módulos de
+        WissPop en SSR y durante las transiciones de página de <code
+          >&lt;ClientRouter /&gt;</code
+        >:
       </p>
-      <CodeBlock lang="js" code={`// astro.config.mjs
+      <CodeBlock
+        lang="js"
+        code={`// astro.config.mjs
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
@@ -853,88 +1867,147 @@ export default defineConfig({
       noExternal: ['wisspop']
     }
   },
-});`} />
+});`}
+      />
     </div>
   </section>
 
   <!-- Accesibilidad (A11Y) -->
-  <section id="accesibilidad" class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8">
-    <h2 class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">{t('docs.accesibilidad')}</h2>
-    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">{t('docs.a11y_desc')}</p>
-    <ul class="list-disc list-inside space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
-      <li><strong>Focus Trap:</strong> El foco del teclado queda confinado dentro del modal abierto.</li>
-      <li><strong>Tecla Escape:</strong> Cierra el panel automáticamente de forma nativa.</li>
-      <li><strong>Foco de Retorno:</strong> Al cerrar el panel, el foco vuelve automáticamente al elemento disparador.</li>
-      <li><strong>Reduced Motion:</strong> Si el sistema tiene activado <code class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800">prefers-reduced-motion</code>, se salta la animación hacia la geometría final.</li>
+  <section
+    id="accesibilidad"
+    class="scroll-mt-28 space-y-4 border-t border-zinc-200 dark:border-zinc-800 pt-8"
+  >
+    <h2
+      class="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100"
+    >
+      {t("docs.accesibilidad")}
+    </h2>
+    <p class="text-zinc-600 dark:text-zinc-400 leading-relaxed">
+      {t("docs.a11y_desc")}
+    </p>
+    <ul
+      class="list-disc list-inside space-y-2 text-sm text-zinc-600 dark:text-zinc-400"
+    >
+      <li>
+        <strong>Focus Trap:</strong> El foco del teclado queda confinado dentro del
+        modal abierto.
+      </li>
+      <li>
+        <strong>Tecla Escape:</strong> Cierra el panel automáticamente de forma nativa.
+      </li>
+      <li>
+        <strong>Foco de Retorno:</strong> Al cerrar el panel, el foco vuelve automáticamente
+        al elemento disparador.
+      </li>
+      <li>
+        <strong>Reduced Motion:</strong> Si el sistema tiene activado <code
+          class="font-mono text-xs px-1.5 py-0.5 rounded bg-zinc-100 dark:bg-zinc-800"
+          >prefers-reduced-motion</code
+        >, se salta la animación hacia la geometría final.
+      </li>
     </ul>
   </section>
 </div>
 
 <script>
-  import { createModal } from 'wisspop/vanilla';
+  import { createModal } from "wisspop/vanilla";
 
   function initFullAuthDemo() {
-    const btnFull = document.getElementById('btn-auth-full-trigger');
-    if (!btnFull) return;
+    const btnFull = document.getElementById("btn-auth-full-trigger");
+    if (!btnFull || btnFull.dataset.wired) return;
+    btnFull.dataset.wired = "true";
 
-    let vista = 'signup';
+    const isEs = document.documentElement.lang === "es";
+    let vista = "signup";
     let error = false;
 
     const campos = (v: string) => `
       <label>Email</label><input placeholder="hola@ejemplo.com" />
-      <label>Contraseña</label><input type="password" placeholder="••••••••" />
-      ${v === 'signup' ? '<label>Repetir contraseña</label><input type="password" placeholder="••••••••" />' : ''}`;
+      <label>${isEs ? "Contraseña" : "Password"}</label><input type="password" placeholder="••••••••" />
+      ${v === "signup" ? `<label>${isEs ? "Repetir contraseña" : "Confirm password"}</label><input type="password" placeholder="••••••••" />` : ""}`;
 
     const modal = createModal({
       swipeToClose: true,
-      modalClass: 'pill-panel',
-      flyingTextClass: 'flying',
+      modalClass: "pill-panel",
+      flyingTextClass: "flying",
       width: 540,
       radius: 40,
       originRadius: 999,
       duration: 0.45,
-      ease: 'power3.inOut',
+      ease: "power3.inOut",
     });
 
     const render = () => {
+      const title =
+        vista === "signup"
+          ? isEs
+            ? "Crear cuenta"
+            : "Create account"
+          : isEs
+            ? "Iniciar sesión"
+            : "Sign in";
+
+      const switchText =
+        vista === "signup"
+          ? isEs
+            ? "Ya tengo cuenta"
+            : "I already have an account"
+          : isEs
+            ? "Quiero crear una cuenta"
+            : "I want to create an account";
+
+      const errorToggleText = error
+        ? isEs
+          ? "Ocultar error"
+          : "Hide error"
+        : isEs
+          ? "Mostrar un error (resync)"
+          : "Trigger error (resync)";
+
+      const errorMsg = isEs
+        ? "Las contraseñas no coinciden."
+        : "Passwords do not match.";
+      const continueBtn = isEs ? "Continuar" : "Continue";
+
       modal.content.innerHTML = `
         <div class="pill-body">
-          <h2 data-wisspop-title>${vista === 'signup' ? 'Crear cuenta' : 'Iniciar sesión'}</h2>
+          <h2 data-wisspop-title>${title}</h2>
           ${campos(vista)}
-          ${error ? '<p class="error">Las contraseñas no coinciden.</p>' : ''}
-          <button data-close class="pill w-full mt-2">Continuar</button>
-          <button class="switch" data-error>${error ? 'Ocultar error' : 'Mostrar un error (resync)'}</button>
-          <button class="switch" data-vista>${vista === 'signup' ? 'Ya tengo cuenta' : 'Quiero crear una cuenta'}</button>
+          ${error ? `<p class="error">${errorMsg}</p>` : ""}
+          <button data-close class="pill w-full mt-2">${continueBtn}</button>
+          <button class="switch" data-error>${errorToggleText}</button>
+          <button class="switch" data-vista>${switchText}</button>
         </div>`;
     };
 
     render();
 
-    modal.content.addEventListener('click', (e: Event) => {
+    modal.content.addEventListener("click", (e: Event) => {
       const target = e.target as HTMLElement;
-      if (target.closest('[data-close]')) modal.close();
-      if (target.closest('[data-error]')) {
+      if (target.closest("[data-close]")) modal.close();
+      if (target.closest("[data-error]")) {
         error = !error;
         render();
         modal.resync();
       }
-      if (target.closest('[data-vista]')) {
+      if (target.closest("[data-vista]")) {
         modal.changeView(() => {
-          vista = vista === 'signup' ? 'login' : 'signup';
+          vista = vista === "signup" ? "login" : "signup";
           error = false;
           render();
         });
       }
     });
 
-    btnFull.addEventListener('click', () => {
-      vista = 'signup';
+    btnFull.addEventListener("click", () => {
+      vista = "signup";
       error = false;
       render();
-      modal.open(btnFull, 'Crear cuenta');
+      modal.open(btnFull, isEs ? "Crear cuenta" : "Create account");
     });
   }
 
   initFullAuthDemo();
-  document.addEventListener('astro:after-swap', initFullAuthDemo);
+  document.addEventListener("astro:page-load", initFullAuthDemo);
+  document.addEventListener("astro:after-swap", initFullAuthDemo);
 </script>

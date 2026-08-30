@@ -1,7 +1,6 @@
 // Ejemplo 3: Crecer en el lugar
 export default {
   code: `import { createModal } from 'wisspop/vanilla';
-import 'wisspop/styles.css';
 
 const btnInline = document.querySelector('#renombrar');
 
@@ -15,7 +14,6 @@ const modal = createModal({
 btnInline.addEventListener('click', () => modal.open(btnInline));`,
   codeAstro: `---
 import { WissPopMorph } from 'wisspop/astro';
-import 'wisspop/styles.css';
 ---
 
 <button data-wisspop-trigger="renombrar">Renombrar</button>
@@ -32,7 +30,6 @@ import 'wisspop/styles.css';
   codeVue: `<${'script'} setup>
 import { ref } from 'vue';
 import { WissPopMorph } from 'wisspop/vue';
-import 'wisspop/styles.css';
 
 const boton = ref(null);
 const abierto = ref(false);
@@ -59,7 +56,6 @@ const abierto = ref(false);
 </template>`,
   codeReact: `import { useRef, useState } from 'react';
 import { WissPopMorph } from 'wisspop/react';
-import 'wisspop/styles.css';
 
 export function Renombrar() {
   const boton = useRef(null);

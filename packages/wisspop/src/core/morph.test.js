@@ -350,5 +350,77 @@ test("DX: open() auto-detecta svg/iconos en el botón disparador cuando no se pa
   btn.remove();
 });
 
+test("DX: sincroniza valores de inputs modificados dentro del modal hacia el volador y el origen al cerrar", async () => {
+  const esc = armarEscenario({ titulo: "none" });
+  const flyingText = document.createElement("div");
+  esc.content.innerHTML = `
+    <div data-wisspop-title>
+      <input id="modal-inp" type="text" value="" />
+    </div>
+  `;
+
+  const morph = createMorph({ ...esc, flyingText }, {
+    duration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  const originWrap = document.createElement("div");
+  originWrap.innerHTML = `<input id="orig-inp" type="text" value="inicial" />`;
+  document.body.append(originWrap);
+  stubRect(originWrap, { top: 10, left: 10, width: 150, height: 36 });
+
+  await morph.open(originWrap, originWrap.firstElementChild);
+  assert.equal(morph.state, "open");
+
+  // El usuario escribe en el input del modal
+  const modalInput = esc.box.querySelector("#modal-inp");
+  assert.ok(modalInput, "modal input debe existir");
+  modalInput.value = "nuevo valor escrito por usuario";
+
+  await morph.close();
+
+  // Al cerrar, el input del origen y el elemento volador deben haber capturado el nuevo valor
+  const origInput = originWrap.querySelector("#orig-inp");
+  assert.equal(origInput.value, "nuevo valor escrito por usuario", "el input del origen debe actualizarse con el valor del modal");
+  originWrap.remove();
+});
+
+test("DX: el valor del input viaja y es visible en el clon volador durante open()", async () => {
+  const esc = armarEscenario({ titulo: "none" });
+  const flyingText = document.createElement("div");
+  esc.content.innerHTML = `
+    <div data-wisspop-title>
+      <input id="modal-inp" type="text" value="" />
+    </div>
+  `;
+
+  const morph = createMorph({ ...esc, flyingText }, {
+    duration: 0,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  const originWrap = document.createElement("div");
+  originWrap.innerHTML = `<input id="orig-inp" type="text" value="mi busqueda" />`;
+  document.body.append(originWrap);
+  stubRect(originWrap, { top: 10, left: 10, width: 150, height: 36 });
+
+  // Antes de abrir, el input tiene "mi busqueda"
+  const origInp = originWrap.querySelector("#orig-inp");
+  origInp.value = "mi busqueda";
+
+  await morph.open(originWrap, origInp);
+
+  // El input dentro del modal debe haber recibido "mi busqueda"
+  const modalInput = esc.box.querySelector("#modal-inp");
+  assert.equal(modalInput.value, "mi busqueda", "el modal input debe recibir el valor del origen");
+
+  await morph.close();
+  originWrap.remove();
+});
+
+
+
 
 

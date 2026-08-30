@@ -8,56 +8,104 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+const DOCS_SECTIONS = [
+  { id: 'introduccion', label: t('sidebar.introduccion') },
+  { id: 'instalacion', label: t('sidebar.instalacion') },
+  { id: 'uso-basico', label: t('sidebar.uso_basico') },
+  { id: 'metodos', label: lang === 'es' ? 'Métodos API' : 'API Methods' },
+  { id: 'opciones', label: t('sidebar.opciones') },
+  { id: 'frameworks', label: t('sidebar.frameworks') },
+  { id: 'buenas-practicas', label: t('sidebar.buenas_practicas') },
+  { id: 'accesibilidad', label: t('sidebar.accesibilidad') },
+];
 ---
 
-<!-- Sticky Sidebar -->
+<!-- Sticky Sidebar for Docs -->
 <aside class="w-48 shrink-0 hidden md:block">
   <div class="sticky top-24 space-y-6">
     <div class="flex items-center gap-2 text-xs font-bold tracking-wider uppercase text-zinc-400 dark:text-zinc-500">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path></svg>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"></path>
+      </svg>
       {t('sidebar.title')}
     </div>
     <nav class="flex flex-col gap-2 text-sm text-zinc-500 dark:text-zinc-400 toc-nav">
-      <a href="#introduccion" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.introduccion')}
-      </a>
-      <a href="#instalacion" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.instalacion')}
-      </a>
-      <a href="#uso-basico" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.uso_basico')}
-      </a>
-      <a href="#morph-modal" class="toc-link pl-4 group flex items-center gap-2 text-xs hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        {t('sidebar.morph_modal')}
-      </a>
-      <a href="#pill-modal" class="toc-link pl-4 group flex items-center gap-2 text-xs hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        {t('sidebar.pill_modal')}
-      </a>
-      <a href="#flip-modal" class="toc-link pl-4 group flex items-center gap-2 text-xs hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        {t('sidebar.flip_modal')}
-      </a>
-      <a href="#dropdown-panel" class="toc-link pl-4 group flex items-center gap-2 text-xs hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        {t('sidebar.dropdown_panel')}
-      </a>
-      <a href="#opciones" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.opciones')}
-      </a>
-      <a href="#frameworks" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.frameworks')}
-      </a>
-      <a href="#buenas-practicas" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.buenas_practicas')}
-      </a>
-      <a href="#accesibilidad" class="toc-link group flex items-center gap-3 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
-        <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
-        {t('sidebar.accesibilidad')}
-      </a>
+      {DOCS_SECTIONS.map((sec) => (
+        <a href={`#${sec.id}`} class="toc-link group flex items-center gap-3 py-1 hover:text-zinc-900 dark:hover:text-zinc-100 transition-colors">
+          <span class="toc-line w-3 h-px bg-zinc-200 dark:bg-zinc-800 transition-all group-hover:w-5 group-hover:bg-zinc-400"></span>
+          <span>{sec.label}</span>
+        </a>
+      ))}
     </nav>
   </div>
 </aside>
+
+<script>
+  function setupDocsScrollSpy() {
+    const links = document.querySelectorAll<HTMLAnchorElement>('.toc-nav a.toc-link');
+    if (!links.length) return;
+
+    const sections: HTMLElement[] = [];
+    links.forEach((link) => {
+      const href = link.getAttribute('href');
+      if (href && href.startsWith('#')) {
+        const el = document.getElementById(href.slice(1));
+        if (el) sections.push(el);
+      }
+    });
+
+    if (!sections.length) return;
+
+    function updateActive() {
+      const scrollPos = window.scrollY + 180;
+      let currentSectionId = '';
+
+      for (let i = 0; i < sections.length; i++) {
+        const section = sections[i];
+        const top = section.offsetTop;
+        const height = section.offsetHeight;
+        if (scrollPos >= top && scrollPos < top + height) {
+          currentSectionId = section.id;
+          break;
+        }
+        if (scrollPos >= top) {
+          currentSectionId = section.id;
+        }
+      }
+
+      if (!currentSectionId && sections.length > 0) {
+        currentSectionId = sections[0].id;
+      }
+
+      links.forEach((link) => {
+        const href = link.getAttribute('href');
+        const isActive = href === `#${currentSectionId}`;
+        const line = link.querySelector('.toc-line');
+
+        if (isActive) {
+          link.classList.add('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+          link.classList.remove('text-zinc-500', 'dark:text-zinc-400');
+          if (line) {
+            line.classList.add('w-6', 'bg-indigo-600', 'dark:bg-indigo-400');
+            line.classList.remove('w-3', 'bg-zinc-200', 'dark:bg-zinc-800');
+          }
+        } else {
+          link.classList.remove('text-indigo-600', 'dark:text-indigo-400', 'font-bold');
+          link.classList.add('text-zinc-500', 'dark:text-zinc-400');
+          if (line) {
+            line.classList.remove('w-6', 'bg-indigo-600', 'dark:bg-indigo-400');
+            line.classList.add('w-3', 'bg-zinc-200', 'dark:bg-zinc-800');
+          }
+        }
+      });
+    }
+
+    window.addEventListener('scroll', updateActive, { passive: true });
+    updateActive();
+  }
+
+  setupDocsScrollSpy();
+  document.addEventListener('astro:page-load', setupDocsScrollSpy);
+  document.addEventListener('astro:after-swap', setupDocsScrollSpy);
+</script>

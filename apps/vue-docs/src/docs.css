@@ -157,7 +157,6 @@ button.round {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 16px;
-  box-shadow: 0 24px 60px rgb(15 20 30 / 0.18);
   box-sizing: border-box;
 }
 
@@ -322,7 +321,6 @@ button.avatar-btn img {
 .pill-panel {
   background: var(--surface);
   color: var(--text);
-  box-shadow: 0 30px 80px rgb(15 20 30 / 0.25);
 }
 
 .pill-body {
@@ -501,7 +499,7 @@ input {
   border-radius: 9999px;
   padding: 0.35rem 0.6rem 0.35rem 0.85rem;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
-  transition: all 0.2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
   cursor: text;
 }
 

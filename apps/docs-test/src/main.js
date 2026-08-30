@@ -717,11 +717,25 @@ if (searchBox && btnFilters) {
 
   btnFilters.addEventListener("click", (e) => {
     e.stopPropagation();
-    modalSearch.open(searchBox, searchBox.querySelector(".search-filter-input-wrap"));
+    const wrap = searchBox.querySelector(".search-filter-input-wrap");
+    modalSearch.open(searchBox, wrap);
     const modalInput = modalSearch.content.querySelector(".filter-modal-input");
     if (modalInput && searchInput) {
       modalInput.value = searchInput.value;
       setTimeout(() => modalInput.focus(), 60);
+    }
+  });
+
+  searchInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      btnFilters.click();
+    }
+  });
+
+  modalSearch.content.addEventListener("input", (e) => {
+    if (e.target.matches(".filter-modal-input") && searchInput) {
+      searchInput.value = e.target.value;
     }
   });
 

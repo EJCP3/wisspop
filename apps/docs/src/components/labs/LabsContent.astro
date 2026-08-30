@@ -1,0 +1,1192 @@
+---
+import type { Lang } from '../../i18n/utils';
+import { useTranslations } from '../../i18n/utils';
+import CodeBlock from '../CodeBlock.astro';
+import DocExampleCard from '../DocExampleCard.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const isEs = lang === 'es';
+---
+
+<div class="flex-1 min-w-0 space-y-16 pb-24">
+  <!-- Header de Labs -->
+  <div class="space-y-4 border-b border-zinc-200 dark:border-zinc-800 pb-8">
+    <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-100">
+      {t('labs.title')}
+    </h1>
+    <p class="text-zinc-600 dark:text-zinc-400 text-base leading-relaxed max-w-3xl">
+      {t('labs.subtitle')}
+    </p>
+  </div>
+
+  <!-- 1 · Anclado a un botón -->
+  <section id="lab-anclados" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "1. Anclado a un botón (6 Combinaciones)" : "1. Anchored to a Button (6 Placements)"}
+      description={isEs ? "El panel nace del botón disparador y se expande en la dirección seleccionada. El parámetro align controla el eje cruzado." : "The panel originates from the trigger button and expands towards the chosen placement. The align option controls the cross-axis."}
+      code={`import { createModal } from 'wisspop/vanilla';
+
+const modal = createModal({
+  content: '<ul class="menu"><li>Más recientes</li><li>Más antiguos</li><li>Mayor monto</li></ul>',
+  placement: 'top', // top | bottom | left | right
+  align: 'center',  // start | center | end
+  modalClass: 'panel'
+});
+
+modal.open(buttonEl);`}
+    >
+      <div class="flex flex-col items-center">
+        <span class="text-xs font-semibold text-zinc-400 dark:text-zinc-500 uppercase tracking-wider mb-4">
+          {isEs ? "Haz clic en cualquier posición:" : "Click any placement button:"}
+        </span>
+        <div class="matriz" id="matriz-anclado"></div>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 2 · Desde un botón circular (FAB) -->
+  <section id="lab-circular" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "2. Desde un botón circular (FAB Flotante)" : "2. From a Circular Button (Floating FAB)"}
+      description={isEs ? "El radio del botón circular se lee automáticamente (originRadius: 999). El glifo '+' viaja e interpola al título del modal sin saltos." : "The circular button's radius is computed automatically. The '+' icon flies smoothly to become the modal heading."}
+      code={`const fabModal = createModal({
+  content: '<div class="panel-body"><h3><span data-wisspop-title>+</span> Nuevo</h3>...</div>',
+  placement: 'center',
+  modalClass: 'panel',
+  flyingTextClass: 'flying-icon',
+  ease: 'power3.out',
+  duration: 0.65
+});
+
+fabModal.open(btnEl, '+');`}
+    >
+      <button id="btn-fab" class="round" title="Crear nuevo">+</button>
+    </DocExampleCard>
+  </section>
+
+  <!-- 3 · Crecer en el lugar (placement: origin) -->
+  <section id="lab-origin" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "3. Crecer en el lugar (placement: 'origin')" : "3. Expand in Place (placement: 'origin')"}
+      description={isEs ? "El panel comparte el centro con el botón y crece exactamente donde el usuario está mirando, sin desplazarse al centro de la ventana." : "The panel shares the trigger's center point and expands right in place without moving towards the screen center."}
+      code={`const inlineModal = createModal({
+  content: '<div class="panel-body"><h3>Renombrar</h3>...</div>',
+  placement: 'origin',
+  closeButton: true,
+  modalClass: 'panel'
+});
+
+inlineModal.open(btnEl);`}
+    >
+      <button id="btn-inline" class="demo-btn font-semibold">{isEs ? "Renombrar Elemento" : "Rename Item"}</button>
+    </DocExampleCard>
+  </section>
+
+  <!-- 4 · Drawers perimetrales -->
+  <section id="lab-drawers" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "4. Drawers Perimetrales (4 Bordes)" : "4. Perimeter Drawers (4 Edges)"}
+      description={isEs ? "drawer-left, drawer-right, drawer-top, drawer-bottom. Ocupan el 100% de la longitud del borde y se deslizan sin márgenes." : "drawer-left, drawer-right, drawer-top, drawer-bottom span the full edge length and dock seamlessly."}
+      code={`createModal({
+  content: '<ul class="menu"><li>Inicio</li><li>Ajustes</li></ul>',
+  placement: 'drawer-left', // 'drawer-left' | 'drawer-right' | 'drawer-top' | 'drawer-bottom'
+  modalClass: 'panel drawer drawer-left',
+  swipeToClose: true
+}).open(btnEl);`}
+    >
+      <div class="flex flex-wrap justify-center gap-3" id="fila-drawers">
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 5 · Texto viajero (PillModal) -->
+  <section id="lab-texto-viajero" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "5. Texto Viajero (PillModal en Center y Origin)" : "5. Flying Text (PillModal in Center & Origin)"}
+      description={isEs ? "El texto 'Crear cuenta' sale del botón a 14px, viaja por la pantalla creciendo y aterriza exactamente encima del [data-wisspop-title]." : "The label 'Crear cuenta' flies across the screen, smoothly interpolating font size, line-height, and position onto [data-wisspop-title]."}
+      code={`const auth = createModal({
+  modalClass: 'pill-panel',
+  flyingTextClass: 'flying',
+  width: 540,
+  radius: 40,
+  originRadius: 999,
+  placement: 'center'
+});
+
+// Apertura centrada
+auth.open(btnCenter, 'Crear cuenta', { placement: 'center' });
+
+// Apertura en el lugar
+auth.open(btnOrigin, 'Crear cuenta', { placement: 'origin' });`}
+    >
+      <div class="flex flex-wrap items-center justify-center gap-6">
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-semibold text-zinc-500">{isEs ? "Modal center:" : "Center modal:"}</span>
+          <button id="btn-auth-center" class="pill">{isEs ? "Crear cuenta" : "Create account"}</button>
+        </div>
+        <div class="flex items-center gap-3">
+          <span class="text-xs font-semibold text-zinc-500">{isEs ? "Modal origin:" : "Origin modal:"}</span>
+          <button id="btn-auth-origin" class="pill">{isEs ? "Crear cuenta" : "Create account"}</button>
+        </div>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 6 · Formatos del elemento viajero -->
+  <section id="lab-formatos" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "6. Formatos del Elemento Viajero (Texto, Icono, Imagen)" : "6. Flying Element Formats (Text, Icon, Image)"}
+      description={isEs ? "El core decide automáticamente cómo escalar: texto con font-size, nodos/SVG e imágenes con width/height (modo 'box')." : "Core automatically chooses how to scale: text interpolates font-size; SVG icons and images interpolate width/height ('box' mode)."}
+      code={`// 1. Texto suelto
+modal.open(btn, 'Solo texto');
+
+// 2. Icono SVG medido dentro del botón
+modal.open(btn, btn.querySelector('svg'));
+
+// 3. Miniatura de imagen
+modal.open(btn, btn.querySelector('img'));`}
+    >
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <button id="btn-f-texto" class="pill">{isEs ? "Solo texto" : "Plain text"}</button>
+        <button id="btn-f-mixto" class="pill">
+          <span class="con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572" />
+            </svg>
+            <span>{isEs ? "Me gusta" : "Like"}</span>
+          </span>
+        </button>
+        <button id="btn-f-icono" class="round" title={isEs ? "Solo icono" : "Icon only"}>
+          <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245" />
+          </svg>
+        </button>
+        <button id="btn-f-imagen" class="avatar-btn" title={isEs ? "Miniatura de foto" : "Photo thumbnail"}>
+          <img id="avatar" src="/gato.jpg" alt="Avatar" />
+        </button>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 7 · Casos de uso avanzados con elemento viajero -->
+  <section id="lab-casos-avanzados" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "7. Casos de Uso Avanzados (Checkout, Invitación, Búsqueda, Destructivo)" : "7. Advanced Real-World Use Cases"}
+      description={isEs ? "Demostraciones completas con sincronización de input, barra de búsqueda con morphing, tarjetas de pago y diálogos de confirmación." : "Production-ready patterns: checkout flow, command palette with input sync, team invite, and danger confirmation."}
+      code={`// Checkout Pro con Stagger
+checkoutModal.open(btn, 'Plan Pro — $29/mes');
+
+// Búsqueda con sincronización de inputs
+searchModal.open(searchBox, searchBox.querySelector('.search-filter-input-wrap'));
+
+// Modal destructivo de confirmación
+deleteModal.open(btn, btn.querySelector('.con-icono'));`}
+    >
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <button id="btn-demo-checkout" class="pill">
+          <span class="con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2l.01.002L6 2a2 2 0 0 1 2 2v2h8V4a2 2 0 0 1 2-2h.01M3 6h18a1 1 0 0 1 1 1v12a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V7a1 1 0 0 1 1-1zm6 4v2a3 3 0 0 0 6 0v-2"/></svg>
+            <span>Plan Pro — $29/mes</span>
+          </span>
+        </button>
+
+        <button id="btn-demo-invite" class="pill">
+          <span class="con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7m-4 0a4 4 0 1 0 8 0a4 4 0 1 0 -8 0M3 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2M16 3.13a4 4 0 0 1 0 7.75M21 21v-2a4 4 0 0 0 -3 -3.85"/></svg>
+            <span>{isEs ? "Invitar colaboradores" : "Invite Members"}</span>
+          </span>
+        </button>
+
+        <div id="btn-demo-search" class="search-filter-pill">
+          <div class="search-filter-input-wrap con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6"/></svg>
+            <input type="text" id="input-demo-search" placeholder={isEs ? "Buscar comercio..." : "Search..."} class="search-filter-input" autocomplete="off" />
+          </div>
+          <div class="search-filter-divider"></div>
+          <button type="button" id="btn-trigger-filters" class="search-filter-btn">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h16M8 4v4M16 10v4M10 16v4"/></svg>
+            <span>{isEs ? "Filtros" : "Filters"}</span>
+          </button>
+        </div>
+
+        <button id="btn-demo-delete" class="btn-danger">
+          <span class="con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12M9 7V4a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/></svg>
+            <span>{isEs ? "Eliminar Proyecto" : "Delete Project"}</span>
+          </span>
+        </button>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 8 · Cerrar con el gesto (Swipe to close) -->
+  <section id="lab-gesto" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "8. Cerrar con el Gesto (Swipe to Close)" : "8. Gesture Dismissal (Swipe to Close)"}
+      description={isEs ? "Arrastra el modal con el ratón o el dedo en cualquier dirección. Si superas el umbral, se descarta saliendo en esa misma trayectoria." : "Drag the panel in any direction with mouse or touch. Exceeding the threshold dismisses the modal along that trajectory."}
+      code={`createModal({
+  content: '<div class="panel-body"><h3>Arrastrame</h3><p>Hacia cualquier lado para descartar.</p></div>',
+  swipeToClose: true,
+  swipeThreshold: 90,
+  modalClass: 'panel'
+}).open(btnEl);`}
+    >
+      <button id="btn-swipe" class="demo-btn font-semibold">{isEs ? "Arrastrame para cerrar" : "Drag me to close"}</button>
+    </DocExampleCard>
+  </section>
+
+  <!-- 9 · FlipModal — Elementos compartidos -->
+  <section id="lab-flip" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "9. FLIP — Elementos Compartidos (Card a Pantalla Completa)" : "9. FLIP — Shared Elements (Card Expansion)"}
+      description={isEs ? "Múltiples elementos marcados con data-flip-id (imagen, título, tarjeta) viajan simultáneamente conservando su identidad gráfica." : "Multiple elements with data-flip-id (photo, title, card container) smoothly morph into full detail view."}
+      code={`createFlipModal({
+  trigger: document.getElementById('card-flip-trigger'),
+  flipId: 'demo',
+  closeButton: true,
+  swipeToClose: true
+});`}
+    >
+      <div id="card-flip-trigger" data-flip-id="demo-card" class="card-demo cursor-pointer p-4 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl w-64 shadow-sm hover:shadow-md transition-shadow">
+        <img data-flip-id="demo-img" src="/gato.jpg" class="w-full h-28 object-cover rounded-xl" alt="Gato Viajero" />
+        <h3 data-flip-id="demo-title" class="mt-3 font-bold text-base text-zinc-900 dark:text-zinc-100">{isEs ? "Gato Viajero" : "Travelling Cat"}</h3>
+        <p class="trigger-fade-item-demo text-xs text-zinc-500 dark:text-zinc-400 mt-1">{isEs ? "Clic para expandir detalle FLIP" : "Click to expand FLIP card"}</p>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 10 · DropdownPanel — Despliegue elástico -->
+  <section id="lab-dropdown" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "10. DropdownPanel — Despliegue Elástico (4 Direcciones)" : "10. Elastic Dropdown Menu (4 Directions)"}
+      description={isEs ? "Animación scaleY elástica ultra ligera mediante enterDropdownAnimation y leaveDropdownAnimation." : "Snappy scaleY elastic bounce animation configured in 4 directions."}
+      code={`import { enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
+
+// Abrir hacia abajo
+enterDropdownAnimation(panelEl, null, { transformOrigin: 'top center' });
+
+// Cerrar
+leaveDropdownAnimation(panelEl, () => panelEl.style.display = 'none', {
+  transformOrigin: 'top center'
+});`}
+    >
+      <div class="flex flex-wrap justify-center gap-3 relative">
+        <button id="btn-dropdown-demo" data-dir="down" class="demo-btn">↓ {isEs ? "Abajo" : "Down"}</button>
+        <button id="btn-dropdown-demo-up" data-dir="up" class="demo-btn">↑ {isEs ? "Arriba" : "Up"}</button>
+        <button id="btn-dropdown-demo-right" data-dir="right" class="demo-btn">→ {isEs ? "Derecha" : "Right"}</button>
+        <button id="btn-dropdown-demo-left" data-dir="left" class="demo-btn">← {isEs ? "Izquierda" : "Left"}</button>
+
+        <div id="dropdown-demo-panel" class="panel" style="display: none; position: absolute; padding: 0.75rem 1rem; z-index: 50;">
+          <ul class="menu text-sm">
+            <li>{isEs ? "Opción 1: Ver detalles" : "Option 1: View details"}</li>
+            <li>{isEs ? "Opción 2: Editar preferencias" : "Option 2: Edit preferences"}</li>
+            <li>{isEs ? "Opción 3: Exportar archivo" : "Option 3: Export file"}</li>
+          </ul>
+        </div>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 11 · Animación de contenido (contentAnimation) -->
+  <section id="lab-content-anim" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "11. Tipos de Animación de Contenido (contentAnimation)" : "11. Content Transition Modes (contentAnimation)"}
+      description={isEs ? "El contenedor morph crece mientras el contenido interior entra con la animación seleccionada: slide-up, slide-down, scale, fade o none." : "Select the inner content entrance transition while the outer morph box smoothly expands."}
+      code={`createModal({
+  contentAnimation: 'scale', // 'slide-up' | 'slide-down' | 'scale' | 'fade' | 'none'
+  placement: 'center',
+  modalClass: 'panel'
+}).open(btnEl);`}
+    >
+      <div class="flex flex-wrap justify-center gap-3" id="fila-content-anim">
+        <button data-anim="slide-up" class="demo-btn">slide-up (Default)</button>
+        <button data-anim="slide-down" class="demo-btn">slide-down</button>
+        <button data-anim="scale" class="demo-btn">scale (Zoom in)</button>
+        <button data-anim="fade" class="demo-btn">fade (Opacidad)</button>
+        <button data-anim="none" class="demo-btn">none (Inmediato)</button>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 12 · Cascada de elementos (contentStagger) -->
+  <section id="lab-stagger" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "12. Cascada de Elementos (contentStagger)" : "12. Staggered Cascade Entrance (contentStagger)"}
+      description={isEs ? "contentStagger: true aplica automáticamente una entrada progresiva con delay de 30ms a cada uno de los elementos hijos." : "contentStagger: true automatically coordinates a 30ms progressive entrance for all direct child elements."}
+      code={`createModal({
+  contentStagger: true,
+  placement: 'center',
+  modalClass: 'panel'
+}).open(btnEl);`}
+    >
+      <button id="btn-stagger-demo" class="pill">{isEs ? "Abrir lista con Stagger" : "Open list with Stagger"}</button>
+    </DocExampleCard>
+  </section>
+
+  <!-- 13 · Curvas y Física de Aceleración (ease / closeEase) -->
+  <section id="lab-eases" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "13. Físicas y Curvas GSAP (ease / closeEase)" : "13. GSAP Acceleration Physics (ease / closeEase)"}
+      description={isEs ? "Prueba diferentes dinámicas de movimiento: rebote elástico, desaceleración suave, resorte o snap instantáneo." : "Test custom GSAP physics curves for open and close transitions."}
+      code={`createModal({
+  ease: 'elastic.out(1, 0.75)',
+  closeEase: 'power3.in',
+  duration: 0.7,
+  closeDuration: 0.4,
+  modalClass: 'panel'
+}).open(btnEl);`}
+    >
+      <div class="flex flex-wrap justify-center gap-3" id="fila-eases">
+        <button data-ease="back.out(1.7)" class="demo-btn">back.out(1.7) (Rebote)</button>
+        <button data-ease="power3.out" class="demo-btn">power3.out (Suave)</button>
+        <button data-ease="elastic.out(1, 0.75)" class="demo-btn">elastic.out (Resorte)</button>
+        <button data-ease="expo.out" class="demo-btn">expo.out (Snap rápido)</button>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 14 · Rendimiento Móvil (fullscreenOnMobile) -->
+  <section id="lab-mobile-perf" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "14. Optimización Móvil y Rendimiento (fullscreenOnMobile)" : "14. Mobile Performance (fullscreenOnMobile)"}
+      description={isEs ? "En pantallas menores a 640px conmuta a pantalla completa, desactiva filtros blur pesados y libera la memoria VRAM de la GPU." : "Automatically adapts to full screen on screens < 640px, disables heavy blur, and frees GPU VRAM after transition."}
+      code={`createModal({
+  fullscreenOnMobile: true,
+  contentBlur: false,
+  swipeToClose: true,
+  modalClass: 'panel'
+}).open(btnEl);`}
+    >
+      <button id="btn-mobile-perf" class="pill">{isEs ? "Modal Optimizado Móvil" : "Mobile Optimized Modal"}</button>
+    </DocExampleCard>
+  </section>
+
+  <!-- 15 · Pantalla completa en PC y Móvil (placement: "fullscreen") -->
+  <section id="lab-fullscreen" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "15. Pantalla Completa Viewport (placement: 'fullscreen')" : "15. Fullscreen Viewport (100vw × 100vh)"}
+      description={isEs ? "Expande el modal al 100% exacto de la pantalla (100vw × 100vh) con aceleración física desde el botón disparador." : "Expands the modal to 100% viewport width and height starting from the trigger button."}
+      code={`// 1. Dashboard Pantalla Completa
+createModal({
+  placement: 'fullscreen',
+  contentAnimation: 'scale',
+  modalClass: 'fullscreen-modal'
+}).open(btnEl);
+
+// 2. Experiencia Inmersiva con Texto Viajero
+createModal({
+  placement: 'fullscreen',
+  flyingTextClass: 'flying',
+  contentStagger: true,
+  modalClass: 'fullscreen-modal'
+}).open(btnEl, 'Experiencia Inmersiva');`}
+    >
+      <div class="flex flex-wrap justify-center gap-4">
+        <button id="btn-pc-fullscreen" class="pill">
+          <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 4a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v12a1 1 0 0 1 -1 1h-16a1 1 0 0 1 -1 -1v-12zM7 20h10M9 16v4M15 16v4"/></svg>
+          <span>{isEs ? "Dashboard Fullscreen (PC)" : "Fullscreen Dashboard"}</span>
+        </button>
+        <button id="btn-pc-fullscreen-pill" class="btn-plan">
+          <span class="con-icono">
+            <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/></svg>
+            <span>{isEs ? "Experiencia Inmersiva" : "Immersive Experience"}</span>
+          </span>
+        </button>
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 16 · Scroll con el panel abierto -->
+  <section id="lab-scroll" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "16. Seguimiento de Scroll en Vivo (Repositioning)" : "16. Live Scroll Follow & Tracking"}
+      description={isEs ? "Los modales anclados (top, bottom, left, right, origin) siguen en tiempo real al botón al scrollear la página con tracking 1:1." : "Anchored modals (top, bottom, left, right, origin) track their origin trigger during scroll seamlessly."}
+      code={`// Abre cualquier modal anclado de arriba y haz scroll:
+// el panel se mantendrá anclado matemáticamente a su botón disparador.`}
+    >
+      <div class="text-center text-sm text-zinc-600 dark:text-zinc-400">
+        {isEs 
+          ? "💡 Abre cualquier modal de la sección 1 o 3 y haz scroll: verás cómo acompaña al botón sin desfasarse." 
+          : "💡 Open any anchored modal from section 1 or 3 and scroll the page to see live origin tracking in action."}
+      </div>
+    </DocExampleCard>
+  </section>
+
+  <!-- 17 · Alto reactivo (resync y changeView) -->
+  <section id="lab-reactivo" class="scroll-mt-28 space-y-4">
+    <DocExampleCard
+      title={isEs ? "17. Alto Reactivo (resync y changeView)" : "17. Reactive Height (resync & changeView)"}
+      description={isEs ? "Demuestra mutaciones dinámicas de altura: resync() al desplegar mensajes de error y changeView() al alternar entre vistas." : "Demonstrates live dynamic height morphing: resync() on error toggles and changeView() on subview switches."}
+      code={`// Reajustar altura tras cambiar el contenido
+authModal.resync();
+
+// Cambiar de vista con animación suave de altura
+authModal.changeView(() => {
+  vista = vista === 'signup' ? 'login' : 'signup';
+  render();
+});`}
+    >
+      <div class="text-center text-sm text-zinc-600 dark:text-zinc-400">
+        {isEs 
+          ? "💡 Abre el modal de 'Crear cuenta' en la sección 5 y haz clic en 'Mostrar un error' o 'Ya tengo cuenta' para ver el reajuste dinámico de altura." 
+          : "💡 Open the 'Create account' modal in section 5 and click 'Mostrar un error' or 'Ya tengo cuenta' to see live height morphing."}
+      </div>
+    </DocExampleCard>
+  </section>
+</div>
+
+<script>
+  import { createModal, createFlipModal, enterDropdownAnimation, leaveDropdownAnimation } from 'wisspop/vanilla';
+
+  function initLabs() {
+    const isEs = document.documentElement.lang === 'es';
+    const $ = (sel: string) => document.querySelector(sel);
+    const menu = (items: string[]) => `<ul class="menu">${items.map((i) => `<li>${i}</li>`).join('')}</ul>`;
+
+    const wire = (btn: HTMLElement | null, modal: any, label?: any) => {
+      if (!btn || !modal) return;
+      btn.addEventListener('click', () => modal.open(btn, label));
+      modal.content?.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modal.close();
+      });
+    };
+
+    // --- 1. Anclados ---
+    const matriz = $('#matriz-anclado');
+    if (matriz && matriz.children.length === 0) {
+      const ANCLADOS = [
+        { placement: 'top', align: 'start', etiqueta: isEs ? '↑ inicio' : '↑ start' },
+        { placement: 'top', align: 'center', etiqueta: isEs ? '↑ centro' : '↑ center' },
+        { placement: 'top', align: 'end', etiqueta: isEs ? '↑ final' : '↑ end' },
+        { placement: 'left', align: 'center', etiqueta: isEs ? '← izquierda' : '← left' },
+        { placement: 'right', align: 'center', etiqueta: isEs ? 'derecha →' : 'right →' },
+        { placement: 'bottom', align: 'center', etiqueta: isEs ? '↓ abajo' : '↓ bottom' },
+      ];
+
+      const menuItems = isEs 
+        ? ['Más recientes', 'Más antiguos', 'Mayor monto'] 
+        : ['Most recent', 'Oldest', 'Highest amount'];
+
+      for (const { placement, align, etiqueta } of ANCLADOS) {
+        const btn = document.createElement('button');
+        btn.textContent = etiqueta;
+        btn.className = 'demo-btn';
+        matriz.append(btn);
+
+        wire(
+          btn,
+          createModal({
+            swipeToClose: true,
+            content: menu(menuItems.map((o) => `<span data-close>${o}</span>`)),
+            modalClass: 'panel',
+            placement,
+            align,
+          }),
+        );
+      }
+    }
+
+    // --- 2. Botón circular FAB ---
+    const btnFab = $('#btn-fab') as HTMLElement;
+    if (btnFab && !btnFab.dataset.wired) {
+      btnFab.dataset.wired = 'true';
+      wire(
+        btnFab,
+        createModal({
+          swipeToClose: true,
+          content: `
+            <div class="panel-body" style="width: 22rem">
+              <h3><span data-wisspop-title>+</span> ${isEs ? 'Nuevo movimiento' : 'New entry'}</h3>
+              <label class="block text-xs text-zinc-500 mb-1">${isEs ? 'Concepto' : 'Description'}</label>
+              <input class="w-full p-2 mb-3 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700 text-sm" placeholder="${isEs ? 'Café' : 'Coffee'}" />
+              <label class="block text-xs text-zinc-500 mb-1">${isEs ? 'Monto' : 'Amount'}</label>
+              <input class="w-full p-2 mb-4 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700 text-sm" placeholder="2500" />
+              <button data-close class="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg text-xs">${isEs ? 'Guardar' : 'Save'}</button>
+            </div>`,
+          modalClass: 'panel',
+          flyingTextClass: 'flying-icon',
+          placement: 'center',
+          ease: 'power3.out',
+          duration: 0.65,
+          closeDuration: 0.7,
+          labelOffsetX: 20,
+        }),
+        '+',
+      );
+    }
+
+    // --- 3. Crecer en el lugar ---
+    const btnInline = $('#btn-inline') as HTMLElement;
+    if (btnInline && !btnInline.dataset.wired) {
+      btnInline.dataset.wired = 'true';
+      wire(
+        btnInline,
+        createModal({
+          swipeToClose: true,
+          closeButton: true,
+          content: `
+            <div class="panel-body" style="width: 20rem">
+              <h3>${isEs ? 'Renombrar' : 'Rename'}</h3>
+              <label class="block text-xs text-zinc-500 mb-1">${isEs ? 'Nombre' : 'Name'}</label>
+              <input class="w-full p-2 mb-4 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700 text-sm" placeholder="${isEs ? 'Supermercado' : 'Supermarket'}" />
+              <button data-close class="w-full py-2 bg-indigo-600 text-white font-semibold rounded-lg text-xs">${isEs ? 'Listo' : 'Done'}</button>
+            </div>`,
+          modalClass: 'panel',
+          placement: 'origin',
+        }),
+      );
+    }
+
+    // --- 4. Drawers ---
+    const filaDrawers = $('#fila-drawers');
+    if (filaDrawers && filaDrawers.children.length === 0) {
+      const drawerItems = isEs 
+        ? ['Inicio', 'Movimientos', 'Presupuestos', 'Ajustes']
+        : ['Home', 'Transactions', 'Budgets', 'Settings'];
+
+      for (const lado of ['left', 'right', 'top', 'bottom']) {
+        const btn = document.createElement('button');
+        btn.textContent = `drawer-${lado}`;
+        btn.className = 'demo-btn';
+        filaDrawers.append(btn);
+
+        wire(
+          btn,
+          createModal({
+            swipeToClose: true,
+            content: menu(drawerItems.map((o) => `<span data-close>${o}</span>`)),
+            modalClass: `panel drawer drawer-${lado}`,
+            placement: `drawer-${lado}`,
+          }),
+        );
+      }
+    }
+
+    // --- 5. Auth Pill Modal ---
+    const btnAuthCenter = $('#btn-auth-center') as HTMLElement;
+    const btnAuthOrigin = $('#btn-auth-origin') as HTMLElement;
+
+    if (btnAuthCenter && !btnAuthCenter.dataset.wired) {
+      btnAuthCenter.dataset.wired = 'true';
+      let vista = 'signup';
+      let error = false;
+
+      const campos = (v: string) => `
+        <label>Email</label><input placeholder="hola@ejemplo.com" />
+        <label>${isEs ? 'Contraseña' : 'Password'}</label><input type="password" placeholder="••••••••" />
+        ${v === 'signup' ? `<label>${isEs ? 'Repetir contraseña' : 'Confirm password'}</label><input type="password" placeholder="••••••••" />` : ''}`;
+
+      const authModal = createModal({
+        swipeToClose: true,
+        modalClass: 'pill-panel',
+        flyingTextClass: 'flying',
+        width: 540,
+        radius: 40,
+        originRadius: 999,
+        fullscreenOnMobile: true,
+        duration: 0.55,
+        ease: 'power3.inOut',
+        closeDuration: 0.7,
+        contentBlur: false,
+      });
+
+      const pintar = () => {
+        const title = vista === 'signup' 
+          ? (isEs ? 'Crear cuenta' : 'Create account')
+          : (isEs ? 'Iniciar sesión' : 'Sign in');
+
+        const switchText = vista === 'signup'
+          ? (isEs ? 'Ya tengo cuenta' : 'I already have an account')
+          : (isEs ? 'Quiero crear una cuenta' : 'I want to create an account');
+
+        const errorToggleText = error
+          ? (isEs ? 'Ocultar error' : 'Hide error')
+          : (isEs ? 'Mostrar un error (resync)' : 'Trigger error (resync)');
+
+        const errorMsg = isEs ? 'Las contraseñas no coinciden.' : 'Passwords do not match.';
+        const continueBtn = isEs ? 'Continuar' : 'Continue';
+
+        authModal.content.innerHTML = `
+          <div class="pill-body">
+            <h2 data-wisspop-title>${title}</h2>
+            ${campos(vista)}
+            ${error ? `<p class="error">${errorMsg}</p>` : ''}
+            <button data-close class="pill w-full mt-2">${continueBtn}</button>
+            <button class="switch" data-error>${errorToggleText}</button>
+            <button class="switch" data-vista>${switchText}</button>
+          </div>`;
+      };
+
+      pintar();
+
+      authModal.content.addEventListener('click', (e: Event) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('[data-close]')) authModal.close();
+        if (target.closest('[data-error]')) {
+          error = !error;
+          pintar();
+          authModal.resync();
+        }
+        if (target.closest('[data-vista]')) {
+          authModal.changeView(() => {
+            vista = vista === 'signup' ? 'login' : 'signup';
+            error = false;
+            pintar();
+          });
+        }
+      });
+
+      btnAuthCenter.addEventListener('click', () => {
+        vista = 'signup';
+        error = false;
+        pintar();
+        authModal.open(btnAuthCenter, isEs ? 'Crear cuenta' : 'Create account', { placement: 'center' });
+      });
+
+      btnAuthOrigin?.addEventListener('click', () => {
+        vista = 'signup';
+        error = false;
+        pintar();
+        authModal.open(btnAuthOrigin, isEs ? 'Crear cuenta' : 'Create account', { placement: 'origin' });
+      });
+    }
+
+    // --- 6. Formatos Viajeros ---
+    const setupFormato = (sel: string, titulo: string, nota: string, payloadFn: (btn: HTMLElement) => any) => {
+      const btn = $(sel) as HTMLElement;
+      if (!btn || btn.dataset.wired) return;
+      btn.dataset.wired = 'true';
+
+      const modal = createModal({
+        swipeToClose: true,
+        content: `
+          <div class="panel-body" style="width: 21rem">
+            <h3>${titulo}</h3>
+            <p class="nota"><span>${nota}</span></p>
+            <button data-close class="demo-btn w-full mt-2">${isEs ? 'Cerrar' : 'Close'}</button>
+          </div>`,
+        modalClass: 'panel',
+        flyingTextClass: 'flying',
+        placement: 'center',
+        ease: 'power3.out',
+        duration: 0.65,
+        closeDuration: 0.7,
+      });
+
+      wire(btn, modal, payloadFn(btn));
+    };
+
+    setupFormato(
+      '#btn-f-texto',
+      `<span data-wisspop-title>${isEs ? 'Solo texto' : 'Plain text'}</span>`,
+      isEs ? 'No hay nodo que medir, así que el punto de partida sale de labelOffsetX.' : 'No DOM node to measure, origin point computed from labelOffsetX.',
+      () => isEs ? 'Solo texto' : 'Plain text'
+    );
+    setupFormato(
+      '#btn-f-mixto',
+      `<span data-wisspop-title class="con-icono"><svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19.5 12.572l-7.5 7.428l-7.5 -7.428a5 5 0 1 1 7.5 -6.566a5 5 0 1 1 7.5 6.572"/></svg><span>${isEs ? 'Me gusta' : 'Like'}</span></span>`,
+      isEs ? 'El icono va en em: crece junto con el texto sin ninguna cuenta aparte.' : 'The icon is sized in em: scales proportionally with text.',
+      (btn) => btn.querySelector('.con-icono')
+    );
+    setupFormato(
+      '#btn-f-icono',
+      `<span data-wisspop-title class="ico-destino"><svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873l-6.158 -3.245"/></svg></span>`,
+      isEs ? 'Sin texto que escalar, el core pasa a box: anima width/height.' : 'Without text to scale, core switches to box mode animating width/height.',
+      (btn) => btn.querySelector('svg')
+    );
+    setupFormato(
+      '#btn-f-imagen',
+      `<span data-wisspop-title class="foto-destino"><img src="/gato.jpg" alt="" /></span><h3 class="font-bold text-base text-zinc-900 dark:text-zinc-100 mt-3">${isEs ? 'No hace nada, HD' : 'Cat Portrait, HD'}</h3><p class="nota">${isEs ? 'Despega desde la miniatura y aterriza en el destino manteniendo proporción.' : 'Takes off from thumbnail and lands into destination size.'}</p>`,
+      '',
+      (btn) => btn.querySelector('img')
+    );
+
+    // --- 7. Casos de Uso Avanzados ---
+    const btnCheckout = $('#btn-demo-checkout') as HTMLElement;
+    if (btnCheckout && !btnCheckout.dataset.wired) {
+      btnCheckout.dataset.wired = 'true';
+      const planTitle = isEs ? 'Plan Pro — $29/mes' : 'Pro Plan — $29/mo';
+      const modalCheckout = createModal({
+        swipeToClose: true,
+        closeButton: true,
+        placement: 'center',
+        flyingTextClass: 'flying',
+        contentStagger: true,
+        contentAnimation: 'slide-up',
+        ease: 'power3.out',
+        duration: 0.6,
+        modalClass: 'panel',
+        content: `
+          <div class="panel-body" style="width: 25rem">
+            <h3 class="con-icono" data-wisspop-title style="margin-bottom: 0.25rem;">
+              <span>${planTitle}</span>
+            </h3>
+            <p class="nota" style="margin-bottom: 0.75rem;">${isEs ? 'Acceso ilimitado a todas las herramientas de animación.' : 'Unlimited access to all animation features.'}</p>
+            
+            <label class="block text-xs font-semibold text-zinc-500 mb-2">${isEs ? 'Método de pago preferido' : 'Preferred payment method'}</label>
+            <div class="payment-options">
+              <div class="payment-card">💳 ${isEs ? 'Tarjeta Crédito' : 'Credit Card'}</div>
+              <div class="payment-card"> Apple Pay</div>
+              <div class="payment-card">PayPal</div>
+              <div class="payment-card">Google Pay</div>
+            </div>
+
+            <label class="block text-xs font-semibold text-zinc-500 mb-1 mt-3">${isEs ? 'Correo de facturación' : 'Billing email'}</label>
+            <input type="email" value="alex@acme-design.studio" class="w-full p-2 mb-4 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700 text-sm" />
+
+            <button style="width: 100%; background: var(--accent); color: #fff; font-weight: 700; padding: 0.75rem; border: none; border-radius: 10px;" data-close>
+              ${isEs ? 'Confirmar Suscripción ($29)' : 'Confirm Subscription ($29)'}
+            </button>
+          </div>`,
+      });
+      btnCheckout.addEventListener('click', () => modalCheckout.open(btnCheckout, btnCheckout.querySelector('.con-icono')));
+      modalCheckout.content.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modalCheckout.close();
+      });
+    }
+
+    const btnInvite = $('#btn-demo-invite') as HTMLElement;
+    if (btnInvite && !btnInvite.dataset.wired) {
+      btnInvite.dataset.wired = 'true';
+      const inviteTitle = isEs ? 'Invitar colaboradores' : 'Invite Members';
+      const modalInvite = createModal({
+        swipeToClose: true,
+        closeButton: true,
+        placement: 'center',
+        flyingTextClass: 'flying',
+        contentAnimation: 'scale',
+        ease: 'back.out(1.5)',
+        duration: 0.55,
+        modalClass: 'panel',
+        content: `
+          <div class="panel-body" style="width: 23rem">
+            <h3 class="con-icono" data-wisspop-title><span>${inviteTitle}</span></h3>
+            <p class="nota">${isEs ? 'Comparte acceso a tus componentes con tu equipo.' : 'Share access to your components with your team.'}</p>
+            
+            <label class="block text-xs text-zinc-500 mb-1">${isEs ? 'Correo electrónico' : 'Email address'}</label>
+            <input type="email" placeholder="companero@empresa.com" class="w-full p-2 mb-3 bg-zinc-100 dark:bg-zinc-800 rounded border border-zinc-200 dark:border-zinc-700 text-sm" />
+            
+            <label class="block text-xs text-zinc-500 mb-1">${isEs ? 'Rol asignado' : 'Assigned role'}</label>
+            <div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+              <button class="demo-btn" style="flex: 1; padding: 0.4rem; font-size: 0.85rem; border-color: var(--accent); color: var(--accent);">${isEs ? 'Editor' : 'Editor'}</button>
+              <button class="demo-btn" style="flex: 1; padding: 0.4rem; font-size: 0.85rem;">Admin</button>
+              <button class="demo-btn" style="flex: 1; padding: 0.4rem; font-size: 0.85rem;">${isEs ? 'Lector' : 'Viewer'}</button>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button class="demo-btn" data-close>${isEs ? 'Cancelar' : 'Cancel'}</button>
+              <button class="pill" style="padding: 0.5rem 1rem;" data-close>${isEs ? 'Enviar invitación' : 'Send invite'}</button>
+            </div>
+          </div>`,
+      });
+      btnInvite.addEventListener('click', () => modalInvite.open(btnInvite, btnInvite.querySelector('.con-icono')));
+      modalInvite.content.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modalInvite.close();
+      });
+    }
+
+    const searchBox = $('#btn-demo-search');
+    const btnFilters = $('#btn-trigger-filters');
+    const searchInput = $('#input-demo-search') as HTMLInputElement;
+
+    if (searchBox && btnFilters && !searchBox.dataset.wired) {
+      searchBox.dataset.wired = 'true';
+      const modalSearch = createModal({
+        swipeToClose: true,
+        placement: 'center',
+        flyingTextClass: 'flying',
+        contentAnimation: 'slide-down',
+        trapFocus: true,
+        modalClass: 'panel filter-modal-panel',
+        content: `
+          <div class="filter-modal-header">
+            <div class="filter-modal-search-wrap con-icono" data-wisspop-title>
+              <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 10m-7 0a7 7 0 1 0 14 0a7 7 0 1 0 -14 0M21 21l-6 -6"/></svg>
+              <input type="text" class="filter-modal-input" placeholder="${isEs ? 'Buscar comercio...' : 'Search merchants...'}" autofocus />
+            </div>
+            <button type="button" class="filter-close-btn" data-close aria-label="Cerrar">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6 6 18M6 6l12 12"/></svg>
+            </button>
+          </div>
+
+          <div class="filter-col" style="gap: 1.15rem;">
+            <div class="filter-group">
+              <label class="filter-label">${isEs ? 'RANGO DE FECHA' : 'DATE RANGE'}</label>
+              <button type="button" class="filter-select-btn">
+                <span>${isEs ? 'Cualquier Fecha' : 'Any Date'}</span>
+              </button>
+            </div>
+
+            <div style="margin-top: 0.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;">
+              <button class="demo-btn" data-close>${isEs ? 'Cancelar' : 'Cancel'}</button>
+              <button class="pill" style="padding: 0.45rem 1.1rem;" data-close>${isEs ? 'Aplicar Filtros' : 'Apply Filters'}</button>
+            </div>
+          </div>`,
+      });
+
+      btnFilters.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const wrap = searchBox.querySelector('.search-filter-input-wrap');
+        modalSearch.open(searchBox, wrap);
+        const modalInput = modalSearch.content.querySelector('.filter-modal-input') as HTMLInputElement;
+        if (modalInput && searchInput) {
+          modalInput.value = searchInput.value;
+          setTimeout(() => modalInput.focus(), 60);
+        }
+      });
+
+      modalSearch.content.addEventListener('input', (e: Event) => {
+        const target = e.target as HTMLInputElement;
+        if (target.matches('.filter-modal-input') && searchInput) {
+          searchInput.value = target.value;
+        }
+      });
+
+      modalSearch.content.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modalSearch.close();
+      });
+    }
+
+    const btnDelete = $('#btn-demo-delete') as HTMLElement;
+    if (btnDelete && !btnDelete.dataset.wired) {
+      btnDelete.dataset.wired = 'true';
+      const deleteTitle = isEs ? 'Eliminar Proyecto' : 'Delete Project';
+      const deleteDesc = isEs 
+        ? '¿Estás seguro de que deseas eliminar este proyecto? Esta acción destruirá todas las vistas y no se puede deshacer.'
+        : 'Are you sure you want to delete this project? This action will destroy all views and cannot be undone.';
+      const modalDelete = createModal({
+        swipeToClose: true,
+        closeButton: true,
+        placement: 'center',
+        flyingTextClass: 'flying',
+        contentAnimation: 'fade',
+        ease: 'power3.out',
+        duration: 0.45,
+        modalClass: 'panel',
+        content: `
+          <div class="panel-body" style="width: 22rem">
+            <h3 class="con-icono" data-wisspop-title style="color: #dc2626;"><span>${deleteTitle}</span></h3>
+            <p style="font-size: 0.9rem; color: var(--muted); margin: 0.75rem 0 1.25rem; line-height: 1.4;">
+              ${deleteDesc}
+            </p>
+            <div style="display: flex; gap: 0.5rem; justify-content: flex-end;">
+              <button class="demo-btn" data-close>${isEs ? 'Cancelar' : 'Cancel'}</button>
+              <button class="btn-danger" data-close>${isEs ? 'Sí, eliminar' : 'Yes, delete'}</button>
+            </div>
+          </div>`,
+      });
+      btnDelete.addEventListener('click', () => modalDelete.open(btnDelete, btnDelete.querySelector('.con-icono')));
+      modalDelete.content.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modalDelete.close();
+      });
+    }
+
+    // --- 8. Swipe to close ---
+    const btnSwipe = $('#btn-swipe') as HTMLElement;
+    if (btnSwipe && !btnSwipe.dataset.wired) {
+      btnSwipe.dataset.wired = 'true';
+      wire(
+        btnSwipe,
+        createModal({
+          swipeToClose: true,
+          content: `
+            <div class="panel-body" style="width: 20rem">
+              <h3>${isEs ? 'Arrastrame' : 'Drag me'}</h3>
+              <p class="nota">${isEs ? 'Hacia cualquier lado, con el mouse o el dedo. Si soltás antes del umbral, vuelve solo.' : 'In any direction with mouse or finger. If released before threshold, snaps back.'}</p>
+              <button data-close class="demo-btn w-full mt-2">${isEs ? 'O cerrame así' : 'Or close me like this'}</button>
+            </div>`,
+          modalClass: 'panel',
+          placement: 'center',
+        }),
+      );
+    }
+
+    // --- 9. Flip Modal ---
+    const cardTrigger = $('#card-flip-trigger');
+    if (cardTrigger && !cardTrigger.dataset.wired) {
+      cardTrigger.dataset.wired = 'true';
+      const catTitle = isEs ? 'Gato Viajero' : 'Travelling Cat';
+      const catDesc = isEs
+        ? 'Esta foto y título viajaron directamente desde la tarjeta usando GSAP Flip conservando dimensiones reales.'
+        : 'This photo and heading travelled directly from the card using GSAP Flip.';
+      const flipModal = createFlipModal({
+        trigger: cardTrigger,
+        flipId: 'demo',
+        closeButton: true,
+        swipeToClose: true,
+        content: `
+          <div data-flip-id="demo-card" class="panel" style="padding: 1.5rem; width: 24rem; max-width: 90vw;">
+            <img data-flip-id="demo-img" src="/gato.jpg" style="width: 100%; height: 220px; object-fit: cover; border-radius: 0.75rem;" alt="" />
+            <h3 data-flip-id="demo-title" style="margin-top: 1rem; font-size: 1.5rem;" class="font-bold">${catTitle}</h3>
+            <p class="modal-fade-item-demo" style="margin-top: 0.5rem; color: var(--muted); line-height: 1.4; font-size: 0.9rem;">
+              ${catDesc}
+            </p>
+          </div>`,
+      });
+      cardTrigger.addEventListener('click', () => flipModal.open());
+    }
+
+    // --- 10. Dropdown Elastic ---
+    const panelDropdown = $('#dropdown-demo-panel') as HTMLElement;
+    const GAP = 8;
+    const DROPDOWN_DIRS: Record<string, any> = {
+      down: { origin: 'top center', pos: (b: HTMLElement) => ({ top: `${b.offsetTop + b.offsetHeight + GAP}px`, left: `${b.offsetLeft}px` }) },
+      up: { origin: 'bottom center', pos: (b: HTMLElement, row: HTMLElement) => ({ bottom: `${row.offsetHeight - b.offsetTop + GAP}px`, left: `${b.offsetLeft}px` }) },
+      right: { origin: 'left center', pos: (b: HTMLElement) => ({ top: `${b.offsetTop}px`, left: `${b.offsetLeft + b.offsetWidth + GAP}px` }) },
+      left: { origin: 'right center', pos: (b: HTMLElement, row: HTMLElement) => ({ top: `${b.offsetTop}px`, right: `${row.offsetWidth - b.offsetLeft + GAP}px` }) },
+    };
+
+    let dropdownDir: string | null = null;
+    const filaDropdown = panelDropdown?.closest('.p-8') as HTMLElement;
+
+    function closeDropdown() {
+      if (!dropdownDir || !panelDropdown) return;
+      const { origin } = DROPDOWN_DIRS[dropdownDir];
+      dropdownDir = null;
+      leaveDropdownAnimation(panelDropdown, () => (panelDropdown.style.display = 'none'), {
+        transformOrigin: origin,
+      });
+    }
+
+    function openDropdown(dir: string, btn: HTMLElement) {
+      if (!panelDropdown) return;
+      dropdownDir = dir;
+      const { origin, pos } = DROPDOWN_DIRS[dir];
+      Object.assign(panelDropdown.style, {
+        top: '',
+        bottom: '',
+        left: '',
+        right: '',
+        ...pos(btn, filaDropdown),
+        display: 'block',
+      });
+      enterDropdownAnimation(panelDropdown, null, { transformOrigin: origin });
+    }
+
+    if (panelDropdown && !panelDropdown.dataset.wired) {
+      panelDropdown.dataset.wired = 'true';
+      for (const dir of Object.keys(DROPDOWN_DIRS)) {
+        const btn = $(dir === 'down' ? '#btn-dropdown-demo' : `#btn-dropdown-demo-${dir}`) as HTMLElement;
+        if (!btn) continue;
+        btn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          dropdownDir === dir ? closeDropdown() : openDropdown(dir, btn);
+        });
+      }
+
+      document.addEventListener('click', (e) => {
+        if (!dropdownDir || panelDropdown.contains(e.target as Node)) return;
+        if ((e.target as HTMLElement).closest('[data-dir]')) return;
+        closeDropdown();
+      });
+    }
+
+    // --- 11. Content Animation ---
+    const filaContentAnim = $('#fila-content-anim');
+    if (filaContentAnim && !filaContentAnim.dataset.wired) {
+      filaContentAnim.dataset.wired = 'true';
+      const animDescriptions: Record<string, string> = {
+        'slide-up': isEs ? 'Entrada suave desplazándose hacia arriba (+12px translateY con cubic-bezier).' : 'Smooth entrance sliding upwards (+12px translateY with cubic-bezier).',
+        'slide-down': isEs ? 'Entrada suave desplazándose hacia abajo (-12px translateY con cubic-bezier).' : 'Smooth entrance sliding downwards (-12px translateY with cubic-bezier).',
+        'scale': isEs ? 'Efecto de escala suave (scale 0.95 → 1.0) con transición de opacidad.' : 'Smooth scale effect (0.95 → 1.0) with opacity transition.',
+        'fade': isEs ? 'Transición pura de opacidad progresiva (opacity 0 → 1).' : 'Pure progressive opacity transition (0 → 1).',
+        'none': isEs ? 'El contenido se renderiza inmediatamente sin animación CSS interna.' : 'Content renders immediately without internal CSS transition.',
+      };
+
+      filaContentAnim.querySelectorAll<HTMLElement>('button[data-anim]').forEach((btn) => {
+        const animType = btn.dataset.anim!;
+        const modal = createModal({
+          swipeToClose: true,
+          closeButton: true,
+          placement: 'center',
+          contentAnimation: animType,
+          modalClass: 'panel',
+          content: `
+            <div class="panel-body" style="width: 22rem">
+              <h3>${isEs ? 'Animación' : 'Animation'}: <span class="tag-pill">${animType}</span></h3>
+              <p class="nota"><span>${animDescriptions[animType]}</span></p>
+              <button data-close class="demo-btn w-full mt-2">${isEs ? 'Cerrar modal' : 'Close modal'}</button>
+            </div>`,
+        });
+
+        btn.addEventListener('click', () => modal.open(btn));
+        modal.content.addEventListener('click', (e: Event) => {
+          if ((e.target as HTMLElement).closest('[data-close]')) modal.close();
+        });
+      });
+    }
+
+    // --- 12. Stagger ---
+    const btnStagger = $('#btn-stagger-demo') as HTMLElement;
+    if (btnStagger && !btnStagger.dataset.wired) {
+      btnStagger.dataset.wired = 'true';
+      const modalStagger = createModal({
+        swipeToClose: true,
+        closeButton: true,
+        placement: 'center',
+        contentStagger: true,
+        modalClass: 'panel',
+        content: `
+          <div class="panel-body" style="width: 24rem">
+            <h3>${isEs ? 'Efecto Cascada (Stagger)' : 'Cascade Stagger Effect'}</h3>
+            <p class="nota">${isEs ? 'Cada hijo entra con un delay escalonado de 30ms.' : 'Each child enters with a progressive 30ms delay.'}</p>
+            <div class="stagger-demo-list">
+              <div class="stagger-item"><span>✨ ${isEs ? 'Notificación del sistema' : 'System notification'}</span><span class="badge">${isEs ? 'Nuevo' : 'New'}</span></div>
+              <div class="stagger-item"><span>📦 ${isEs ? 'Paquete v0.1.9 publicado' : 'Package v0.1.9 published'}</span><span class="badge">NPM</span></div>
+              <div class="stagger-item"><span>🚀 ${isEs ? 'Optimización GPU 120 FPS' : 'GPU Optimization 120 FPS'}</span><span class="badge">Core</span></div>
+              <div class="stagger-item"><span>📱 ${isEs ? 'Soporte móvil y táctil' : 'Mobile & touch support'}</span><span class="badge">${isEs ? 'Móvil' : 'Mobile'}</span></div>
+              <div class="stagger-item"><span>⚡ ${isEs ? 'Animación CSS desacoplada' : 'Decoupled CSS animation'}</span><span class="badge">CSS</span></div>
+            </div>
+            <button data-close class="pill w-full mt-2">${isEs ? 'Entendido' : 'Understood'}</button>
+          </div>`,
+      });
+      wire(btnStagger, modalStagger);
+    }
+
+    // --- 13. Eases ---
+    const filaEases = $('#fila-eases');
+    if (filaEases && !filaEases.dataset.wired) {
+      filaEases.dataset.wired = 'true';
+      const easeDetails: Record<string, any> = {
+        'back.out(1.7)': { desc: isEs ? 'Rebote con overshoot elástico al expandirse.' : 'Bounce with elastic overshoot when expanding.', closeEase: 'power3.in', dur: 0.65, closeDur: 0.35 },
+        'power3.out': { desc: isEs ? 'Desaceleración suave, profesional y fluida.' : 'Smooth, professional deceleration.', closeEase: 'power2.in', dur: 0.5, closeDur: 0.3 },
+        'elastic.out(1, 0.75)': { desc: isEs ? 'Efecto resorte gomoso pronunciado.' : 'Spring-like rubbery bounce.', closeEase: 'power2.inOut', dur: 0.85, closeDur: 0.4 },
+        'expo.out': { desc: isEs ? 'Aceleración inicial instantánea con frenada suave.' : 'Instant initial snap with smooth stop.', closeEase: 'expo.in', dur: 0.55, closeDur: 0.3 },
+      };
+
+      filaEases.querySelectorAll<HTMLElement>('button[data-ease]').forEach((btn) => {
+        const easeType = btn.dataset.ease!;
+        const config = easeDetails[easeType];
+
+        const modal = createModal({
+          swipeToClose: true,
+          closeButton: true,
+          placement: 'center',
+          ease: easeType,
+          closeEase: config.closeEase,
+          duration: config.dur,
+          closeDuration: config.closeDur,
+          modalClass: 'panel',
+          content: `
+            <div class="panel-body" style="width: 23rem">
+              <h3>${isEs ? 'Curva' : 'Curve'}: <span class="tag-pill">${easeType}</span></h3>
+              <p class="nota"><span>${config.desc}</span></p>
+              <button data-close class="demo-btn w-full mt-2">${isEs ? 'Cerrar y ver closeEase' : 'Close to see closeEase'}</button>
+            </div>`,
+        });
+
+        btn.addEventListener('click', () => modal.open(btn));
+        modal.content.addEventListener('click', (e: Event) => {
+          if ((e.target as HTMLElement).closest('[data-close]')) modal.close();
+        });
+      });
+    }
+
+    // --- 14. Mobile Performance ---
+    const btnMobilePerf = $('#btn-mobile-perf') as HTMLElement;
+    if (btnMobilePerf && !btnMobilePerf.dataset.wired) {
+      btnMobilePerf.dataset.wired = 'true';
+      const modalMobile = createModal({
+        swipeToClose: true,
+        closeButton: true,
+        placement: 'center',
+        fullscreenOnMobile: true,
+        contentBlur: false,
+        modalClass: 'panel',
+        content: `
+          <div class="panel-body" style="width: 24rem; max-width: 100%;">
+            <h3>${isEs ? 'Optimización Móvil (120 FPS)' : 'Mobile Optimization (120 FPS)'}</h3>
+            <p class="nota">${isEs ? 'En pantallas menores a 640px, este modal se abre a pantalla completa con aceleración por capa GPU nativa.' : 'On screens < 640px, this modal opens fullscreen with native GPU acceleration.'}</p>
+            <button data-close class="pill w-full mt-2">${isEs ? 'Cerrar modal' : 'Close modal'}</button>
+          </div>`,
+      });
+      wire(btnMobilePerf, modalMobile);
+    }
+
+    // --- 15. Fullscreen Viewport ---
+    const btnPcFullscreen = $('#btn-pc-fullscreen') as HTMLElement;
+    if (btnPcFullscreen && !btnPcFullscreen.dataset.wired) {
+      btnPcFullscreen.dataset.wired = 'true';
+      const modalPcFs = createModal({
+        placement: 'fullscreen',
+        contentAnimation: 'scale',
+        ease: 'power3.out',
+        duration: 0.5,
+        closeButton: true,
+        swipeToClose: true,
+        modalClass: 'fullscreen-modal',
+        content: `
+          <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
+            <header class="fs-nav" style="padding-right: 4rem;">
+              <h2>${isEs ? 'Panel de Control — 100% Pantalla Completa' : 'Dashboard — 100% Fullscreen'}</h2>
+              <span class="tag-pill">100vw × 100vh</span>
+            </header>
+            <main class="fs-container">
+              <p class="lead">${isEs ? 'Este modal ocupa el 100% del ancho y alto de la pantalla (100vw × 100vh) en PC y monitores de cualquier resolución.' : 'This modal spans 100% of viewport width and height (100vw × 100vh) across any screen resolution.'}</p>
+              <div class="fs-grid">
+                <div class="fs-card"><div style="font-size: 0.85rem; color: var(--muted);">${isEs ? 'Peticiones / Seg' : 'Requests / Sec'}</div><div class="stat">14.2k</div><div style="font-size: 0.8rem; color: #16a34a;">↑ +18.4%</div></div>
+                <div class="fs-card"><div style="font-size: 0.85rem; color: var(--muted);">${isEs ? 'FPS de Render' : 'Render FPS'}</div><div class="stat">120 FPS</div><div style="font-size: 0.8rem; color: #16a34a;">⚡ GPU</div></div>
+                <div class="fs-card"><div style="font-size: 0.85rem; color: var(--muted);">${isEs ? 'Memoria VRAM' : 'VRAM Memory'}</div><div class="stat">0 MB</div><div style="font-size: 0.8rem; color: var(--muted);">Auto</div></div>
+              </div>
+              <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                <button data-close class="pill">${isEs ? 'Cerrar vista completa' : 'Close fullscreen view'}</button>
+              </div>
+            </main>
+          </div>`,
+      });
+      wire(btnPcFullscreen, modalPcFs);
+    }
+
+    const btnPcFsPill = $('#btn-pc-fullscreen-pill') as HTMLElement;
+    if (btnPcFsPill && !btnPcFsPill.dataset.wired) {
+      btnPcFsPill.dataset.wired = 'true';
+      const modalPcFsPill = createModal({
+        placement: 'fullscreen',
+        flyingTextClass: 'flying',
+        contentStagger: true,
+        ease: 'power3.out',
+        closeEase: 'power2.inOut',
+        duration: 0.65,
+        closeDuration: 0.65,
+        closeButton: true,
+        swipeToClose: true,
+        modalClass: 'fullscreen-modal',
+        content: `
+          <div style="display: flex; flex-direction: column; height: 100vh; width: 100vw; box-sizing: border-box; overflow-y: auto;">
+            <header class="fs-nav" style="padding-right: 4rem;">
+              <h2 class="con-icono" data-wisspop-title style="margin: 0; font-size: 1.25rem; font-weight: 700;">
+                <svg class="ico" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 13a8 8 0 0 1 7 7a6 6 0 0 0 3 -5a9 9 0 0 0 6 -8a3 3 0 0 0 -3 -3a9 9 0 0 0 -8 6a6 6 0 0 0 -5 3M7 14a6 6 0 0 0 -3 6a6 6 0 0 0 6 -3M15 9m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/></svg>
+                <span>${isEs ? 'Experiencia Inmersiva' : 'Immersive Experience'}</span>
+              </h2>
+              <span class="tag-pill">GSAP Flying + Fullscreen</span>
+            </header>
+            <main class="fs-container">
+              <div class="stagger-demo-list" style="margin-top: 1rem;">
+                <div class="stagger-item" style="padding: 1.25rem;"><span>🌐 ${isEs ? '1. El botón de origen se expandió al 100% de la pantalla del monitor.' : '1. Origin button expanded to 100% of the screen.'}</span><span class="badge">Viewport 100vw</span></div>
+                <div class="stagger-item" style="padding: 1.25rem;"><span>✨ ${isEs ? '2. El título voló desde el botón hasta el encabezado superior.' : '2. Title flew from the trigger to header.'}</span><span class="badge">GSAP Flying</span></div>
+                <div class="stagger-item" style="padding: 1.25rem;"><span>⚡ ${isEs ? '3. Todas las tarjetas hijas entraron en cascada progresiva de 30ms.' : '3. Child elements entered with 30ms stagger.'}</span><span class="badge">Stagger CSS</span></div>
+                <div class="stagger-item" style="padding: 1.25rem;"><span>🛡️ ${isEs ? '4. Al cerrar, regresa limpiamente al botón original sin distorsiones.' : '4. On close, morphs cleanly back into trigger.'}</span><span class="badge">Morph Core</span></div>
+              </div>
+              <div style="margin-top: 2.5rem; text-align: center;">
+                <button data-close class="pill" style="font-size: 1.1rem; padding: 0.8rem 2rem;">${isEs ? 'Regresar al sitio' : 'Return to site'}</button>
+              </div>
+            </main>
+          </div>`,
+      });
+      btnPcFsPill.addEventListener('click', () => modalPcFsPill.open(btnPcFsPill, btnPcFsPill.querySelector('.con-icono')));
+      modalPcFsPill.content.addEventListener('click', (e: Event) => {
+        if ((e.target as HTMLElement).closest('[data-close]')) modalPcFsPill.close();
+      });
+    }
+  }
+
+  initLabs();
+  document.addEventListener('astro:page-load', initLabs);
+  document.addEventListener('astro:after-swap', initLabs);
+</script>
