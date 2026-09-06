@@ -44,6 +44,43 @@ const ANCLADOS = [
     etiqueta: isEs ? "bottom center" : "bottom center",
   },
 ];
+
+const vueIntegrationCode = `<` + `script setup>
+import { ref } from 'vue';
+import { WissPopMorph } from 'wisspop/vue';
+
+const open = ref(false);
+const btnRef = ref(null);
+<` + `/script>
+
+<template>
+  <button ref="btnRef" @click="open = true">Abrir</button>
+  <WissPopMorph v-model="open" :origin-ref="btnRef" placement="bottom" modalClass="panel">
+    <template #default="{ close }">
+      <p>Contenido Vue...</p>
+      <button @click="close">Cerrar</button>
+    </template>
+  </WissPopMorph>
+</template>`;
+
+const astroIntegrationCode = `---
+// MiModal.astro
+---
+<button id="mi-btn">Abrir modal</button>
+
+<` + `script>
+  import { createModal } from 'wisspop/vanilla';
+
+  const modal = createModal({
+    content: '<div class="p-6"><h2 data-wisspop-title>Hola Astro</h2><p>Contenido del modal</p></div>',
+    placement: 'bottom',
+    modalClass: 'panel',
+    closeButton: true,
+  });
+
+  document.getElementById('mi-btn')
+    ?.addEventListener('click', (e) => modal.open(e.currentTarget));
+<` + `/script>`;
 ---
 
 <div class="flex-1 min-w-0 space-y-16 pb-24">
@@ -1358,23 +1395,7 @@ const modal = createModal({
         </h4>
         <CodeBlock
           lang="vue"
-          code={`<script setup>
-import { ref } from 'vue';
-import { WissPopMorph } from 'wisspop/vue';
-
-const open = ref(false);
-const btnRef = ref(null);
-</script>
-
-<template>
-  <button ref="btnRef" @click="open = true">Abrir</button>
-  <WissPopMorph v-model="open" :origin-ref="btnRef" placement="bottom" modalClass="panel">
-    <template #default="{ close }">
-      <p>Contenido Vue...</p>
-      <button @click="close">Cerrar</button>
-    </template>
-  </WissPopMorph>
-</template>`}
+          code={vueIntegrationCode}
         />
       </div>
 
@@ -1409,30 +1430,15 @@ document.querySelector('#btn').addEventListener('click', (e) => {
           </span>
         </div>
         <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3 leading-relaxed">
-          {isEs
-            ? "Astro no necesita wrapper reactivo. Usa la API vanilla directamente en un <script> del componente .astro."
-            : "Astro doesn't need a reactive wrapper. Use the vanilla API directly in a <script> inside your .astro component."}
+          {isEs ? (
+            <>Astro no necesita wrapper reactivo. Usa la API vanilla directamente en una etiqueta <code>&lt;script&gt;</code> del componente .astro.</>
+          ) : (
+            <>Astro doesn't need a reactive wrapper. Use the vanilla API directly in a <code>&lt;script&gt;</code> tag inside your .astro component.</>
+          )}
         </p>
         <CodeBlock
           lang="astro"
-          code={`---
-// MiModal.astro
----
-<button id="mi-btn">Abrir modal</button>
-
-<script>
-  import { createModal } from 'wisspop/vanilla';
-
-  const modal = createModal({
-    content: '<div class="p-6"><h2 data-wisspop-title>Hola Astro</h2><p>Contenido del modal</p></div>',
-    placement: 'bottom',
-    modalClass: 'panel',
-    closeButton: true,
-  });
-
-  document.getElementById('mi-btn')
-    ?.addEventListener('click', (e) => modal.open(e.currentTarget));
-</script>`}
+          code={astroIntegrationCode}
         />
       </div>
 
@@ -1476,6 +1482,42 @@ export default function MiModal() {
     </button>
   );
 }`}
+        />
+      </div>
+
+      <div class="p-5 rounded-xl border border-zinc-200 dark:border-zinc-800">
+        <div class="flex items-center gap-2 mb-2">
+          <h4 class="font-bold text-sm text-blue-600 dark:text-blue-400">
+            TypeScript
+          </h4>
+          <span class="text-[10px] font-medium px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-800">
+            {isEs ? "Tipos incluidos" : "Types included"}
+          </span>
+        </div>
+        <p class="text-xs text-zinc-500 dark:text-zinc-400 mb-3 leading-relaxed">
+          {isEs
+            ? "WissPop incluye definiciones de tipos automáticas (.d.ts) para Vanilla, Vue 3 y Core. No necesitas instalar paquetes de tipos adicionales."
+            : "WissPop ships with built-in TypeScript declarations (.d.ts) for Vanilla, Vue 3, and Core. No need to install extra @types packages."}
+        </p>
+        <CodeBlock
+          lang="typescript"
+          label="TypeScript"
+          code={`import { createModal, createFlipModal, setDefaults } from 'wisspop/vanilla';
+
+// Todas las opciones, métodos y estados cuentan con autocompletado y tipado estricto
+const modal = createModal({
+  content: '<div class="p-6"><h2>Modal Tipado</h2></div>',
+  placement: 'center',
+  duration: 0.6,
+  overlay: true,
+  overlayBlur: true,
+  swipeToClose: true,
+});
+
+const trigger = document.querySelector<HTMLButtonElement>('#mi-boton');
+trigger?.addEventListener('click', () => {
+  modal.open(trigger);
+});`}
         />
       </div>
     </div>

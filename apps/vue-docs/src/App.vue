@@ -673,7 +673,7 @@
                 <span class="badge">Nuevo</span>
               </div>
               <div class="stagger-item">
-                <span>📦 Paquete v0.1.9 publicado</span>
+                <span>📦 Paquete v0.2.0 publicado</span>
                 <span class="badge">NPM</span>
               </div>
               <div class="stagger-item">
