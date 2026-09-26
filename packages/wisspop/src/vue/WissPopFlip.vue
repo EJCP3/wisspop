@@ -73,6 +73,15 @@ const props = defineProps({
   ease: { type: String, default: undefined },
   overlayDuration: { type: Number, default: undefined },
   stagger: { type: Number, default: undefined },
+  /**
+   * Ocultar el trigger mientras el modal está abierto (default `true` en el
+   * core). Con `false` el trigger se vuelve un FANTASMA: conserva fondo y
+   * lugar —sin hueco negro en tarjetas oscuras— pero sin su contenido —sin
+   * sombra ni gemelo detrás—; el contenido vuelve al aterrizar el cierre.
+   * Sin default propio: manda el core, así `setDefaults()` puede fijarlo
+   * global.
+   */
+  hideOrigin: { type: Boolean, default: undefined },
   overlayClass: { type: String, default: "" },
   overlay: { type: Boolean, default: true },
   overlayBlur: { type: Boolean, default: false },
@@ -112,6 +121,7 @@ const core = createFlip(
       ease: props.ease,
       overlayDuration: props.overlayDuration,
       stagger: props.stagger,
+      hideOrigin: props.hideOrigin,
     }),
     closeOnEscape: props.closeOnEscape,
     trapFocus: props.trapFocus,

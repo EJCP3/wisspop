@@ -577,6 +577,62 @@
       </div>
     </section>
 
+    <!-- 9b · FlipModal — hideOrigin en triggers oscuros -->
+    <section>
+      <h2>FlipModal — <code>hideOrigin</code> en triggers oscuros</h2>
+      <p class="hint">
+        Izquierda: comportamiento histórico (el origen se oculta → hueco negro en
+        tarjetas oscuras). Derecha: <code>:hide-origin="false"</code>, el origen
+        conserva fondo y lugar pero sin duplicar su contenido: ni hueco ni sombra.
+      </p>
+
+      <div class="row" style="gap: 2rem;">
+        <WissPopFlip flip-id="dark-antes" close-button>
+          <template #trigger="{ open }">
+            <div
+              data-flip-id="dark-antes-card"
+              style="cursor: pointer; padding: 1rem; background: #141414; color: #f5f5f5; border: 1px solid #333; border-radius: 1rem; width: 16rem;"
+              @click="open"
+            >
+              <img data-flip-id="dark-antes-img" src="/gato.jpg" style="width: 100%; height: 100px; object-fit: cover; border-radius: 0.5rem;" alt="" />
+              <h3 data-flip-id="dark-antes-title" style="margin-top: 0.5rem; font-size: 1.1rem;">Antes (default)</h3>
+              <p class="trigger-fade-item-dark-antes" style="font-size: 0.85rem; color: #999;">El origen se oculta: parpadea</p>
+            </div>
+          </template>
+
+          <template #modal="{ close }">
+            <div data-flip-id="dark-antes-card" class="panel" style="padding: 1.5rem; width: 24rem; max-width: 90vw;">
+              <img data-flip-id="dark-antes-img" src="/gato.jpg" style="width: 100%; height: 220px; object-fit: cover; border-radius: 0.75rem;" alt="" />
+              <h3 data-flip-id="dark-antes-title" style="margin-top: 1rem; font-size: 1.5rem;">Antes (default)</h3>
+              <button class="modal-fade-item-dark-antes" style="margin-top: 1rem;" @click="close">Cerrar</button>
+            </div>
+          </template>
+        </WissPopFlip>
+
+        <WissPopFlip flip-id="dark-despues" close-button :hide-origin="false">
+          <template #trigger="{ open }">
+            <div
+              data-flip-id="dark-despues-card"
+              style="cursor: pointer; padding: 1rem; background: #141414; color: #f5f5f5; border: 1px solid #333; border-radius: 1rem; width: 16rem;"
+              @click="open"
+            >
+              <img data-flip-id="dark-despues-img" src="/gato.jpg" style="width: 100%; height: 100px; object-fit: cover; border-radius: 0.5rem;" alt="" />
+              <h3 data-flip-id="dark-despues-title" style="margin-top: 0.5rem; font-size: 1.1rem;">Después (:hide-origin=false)</h3>
+              <p class="trigger-fade-item-dark-despues" style="font-size: 0.85rem; color: #999;">El origen queda: sin parpadeo</p>
+            </div>
+          </template>
+
+          <template #modal="{ close }">
+            <div data-flip-id="dark-despues-card" class="panel" style="padding: 1.5rem; width: 24rem; max-width: 90vw;">
+              <img data-flip-id="dark-despues-img" src="/gato.jpg" style="width: 100%; height: 220px; object-fit: cover; border-radius: 0.75rem;" alt="" />
+              <h3 data-flip-id="dark-despues-title" style="margin-top: 1rem; font-size: 1.5rem;">Después (:hide-origin=false)</h3>
+              <button class="modal-fade-item-dark-despues" style="margin-top: 1rem;" @click="close">Cerrar</button>
+            </div>
+          </template>
+        </WissPopFlip>
+      </div>
+    </section>
+
     <!-- 10 · DropdownPanel — Despliegue elástico -->
     <section>
       <h2>DropdownPanel — Despliegue elástico</h2>

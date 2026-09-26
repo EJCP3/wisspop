@@ -29,6 +29,18 @@ const DEFAULTS = {
   swipeToClose: false,
   /** px de arrastre para que el gesto cuente como descarte. */
   swipeThreshold: 90,
+  /**
+   * Ocultar el trigger mientras el modal está abierto. `true` (default)
+   * preserva el comportamiento histórico: la raíz pasa a
+   * `visibility: hidden` y los secundarios (`.trigger-fade-item-*`) se
+   * desvanecen. Con `false` el trigger se vuelve un FANTASMA: la raíz
+   * conserva fondo y lugar —sin hueco negro en tarjetas oscuras— pero su
+   * contenido (compartidos + secundarios) se oculta —sin sombra ni gemelo
+   * detrás—; el contenido vuelve al aterrizar el cierre, en el mismo tick
+   * que el desmontaje.
+   * @type {boolean}
+   */
+  hideOrigin: true,
   closeOnEscape: true,
   trapFocus: true,
   restoreFocus: true,
@@ -92,6 +104,12 @@ export function createFlip(els, options = {}) {
   let isScrollLocked = false;
   /** @type {null | (() => void)} soltar los listeners del gesto */
   let soltarGesto = null;
+  /**
+   * Contenido del trigger oculto a la ida con `hideOrigin: false` (fantasma:
+   * compartidos del trigger salvo la raíz + secundarios). Se devuelve en el
+   * mismo tick que el desmontaje, al aterrizar el cierre.
+   */
+  let contenidoOculto = [];
 
   const setState = (s) => {
     state = s;
@@ -289,9 +307,12 @@ export function createFlip(els, options = {}) {
       isScrollLocked = true;
     }
 
-    // 1. Fade out trigger secondary items while trigger is still visible
+    // 1. Fade out trigger secondary items while trigger is still visible.
+    // Con `hideOrigin: false` no se desvanecen acá: se ocultan con el resto
+    // del contenido en el paso 2 (fantasma).
+    const shouldHideOrigin = opts.hideOrigin ?? true;
     const triggerFadeItems = getFadeItems(els.trigger, "trigger");
-    if (triggerFadeItems.length && d > 0) {
+    if (shouldHideOrigin && triggerFadeItems.length && d > 0) {
       gsap.to(triggerFadeItems, { autoAlpha: 0, duration: 0.08, ease: "none" });
       await new Promise((r) => setTimeout(r, 40));
     }
@@ -299,6 +320,19 @@ export function createFlip(els, options = {}) {
     // 2. Capture trigger state while it's STILL VISIBLE in the DOM
     const triggerTargets = getTargets(els.trigger);
     const flipState = Flip.getState(triggerTargets, { props: "borderRadius" });
+
+    // 2b. Fantasma con `hideOrigin: false`: el contenido del trigger se oculta
+    // pero la raíz conserva fondo y lugar —ni hueco negro ni sombra detrás—.
+    // Se hace acá, con el modal todavía exactamente encima: swap invisible.
+    // (`visibility` no mueve el layout ni invalida la geometría ya medida.
+    // Con `d === 0` no hay vuelo que lo tape: directo al reposo oculto.)
+    if (!shouldHideOrigin && d > 0) {
+      contenidoOculto = [
+        ...triggerTargets.filter((el) => el !== trigger),
+        ...triggerFadeItems,
+      ];
+      if (contenidoOculto.length) gsap.set(contenidoOculto, { visibility: "hidden" });
+    }
 
     // 3. Mount the modal into the DOM (overlay + box)
     await opts.mount?.();
@@ -333,7 +367,8 @@ export function createFlip(els, options = {}) {
     setupAria(modal);
 
     // 4. Now hide the trigger so both aren't visible at once
-    if (trigger) {
+    // (salvo `hideOrigin: false`: queda el fantasma del paso 2b).
+    if (trigger && shouldHideOrigin) {
       trigger.style.visibility = "hidden";
     }
 
@@ -384,6 +419,8 @@ export function createFlip(els, options = {}) {
       if (modal) modal.style.visibility = "";
       if (modalFadeItems.length) gsap.set(modalFadeItems, { autoAlpha: 1, y: 0 });
       if (closeBtn) gsap.set(closeBtn, { autoAlpha: 1, scale: 1 });
+      // Sin vuelo no hay hueco que evitar: directo al estado de reposo.
+      if (!shouldHideOrigin && trigger) trigger.style.visibility = "hidden";
       setState("open");
       setupFocus(modal);
       if (opts.closeOnEscape || opts.trapFocus) addEventListener("keydown", handleKeydown);
@@ -402,6 +439,8 @@ export function createFlip(els, options = {}) {
         modal.style.minWidth = "";
         modal.style.minHeight = "";
       }
+      // Con `hideOrigin: false` la raíz sigue visible en reposo: es el
+      // fantasma (fondo y lugar, sin contenido) —ni hueco ni gemelo—.
       setState("open");
       setupFocus(modal);
       if (opts.closeOnEscape || opts.trapFocus) addEventListener("keydown", handleKeydown);
@@ -508,10 +547,19 @@ export function createFlip(els, options = {}) {
       await new Promise((r) => setTimeout(r, 40));
     }
 
-    // 3. Medir el destino SIN tocar el trigger. Sigue en `visibility: hidden`,
-    // así que conserva su lugar en el layout —nada de la página se mueve— y su
-    // geometría ya es válida: `getBoundingClientRect` mide igual un elemento
-    // oculto por `visibility`.
+    // 3. Medir el destino SIN tocar el trigger. Con `hideOrigin` (default)
+    // sigue en `visibility: hidden`, así que conserva su lugar en el layout
+    // —nada de la página se mueve— y su geometría ya es válida:
+    // `getBoundingClientRect` mide igual un elemento oculto por `visibility`.
+    // Con `hideOrigin: false` está el fantasma (fondo y lugar, sin contenido)
+    // y se mide igual de bien, sin tocarlo.
+    const shouldHideOriginClose = opts.hideOrigin ?? true;
+    // Con `hideOrigin: false` la raíz ya está visible (fantasma); esto solo
+    // cubre el camino `d === 0`, que reposa oculto. El CONTENIDO no vuelve
+    // acá a propósito: vuelve al aterrizar, en `finishClose`.
+    if (!shouldHideOriginClose && trigger) {
+      gsap.set(trigger, { clearProps: "opacity,visibility" });
+    }
     const triggerFadeItems = getFadeItems(els.trigger, "trigger");
     const triggerTargets = getTargets(els.trigger);
     const triggerState = Flip.getState(triggerTargets, { props: "borderRadius" });
@@ -542,9 +590,18 @@ export function createFlip(els, options = {}) {
       // Relevo atómico: el trigger reaparece y el modal se desmonta en el mismo
       // bloque síncrono, así no hay ningún frame con los dos ni con ninguno
       // (misma regla que el relevo del texto viajero, design.md §6).
+      // Con `hideOrigin: false` el contenido vuelve ACÁ: la tarjeta ya
+      // aterrizó exactamente encima del fantasma, así que el swap es
+      // invisible —sin gemelo durante el vuelo ni hueco al aterrizar—.
+      if (contenidoOculto.length) {
+        gsap.set(contenidoOculto, { clearProps: "visibility" });
+        contenidoOculto = [];
+      }
       if (trigger) trigger.style.visibility = "";
       opts.unmount?.();
-      if (triggerFadeItems.length) {
+      // Los secundarios solo se restauran si se desvanecieron a la ida, es
+      // decir con `hideOrigin` (default): con `false` nunca se tocaron.
+      if (shouldHideOriginClose && triggerFadeItems.length) {
         if (d > 0) {
           gsap.to(triggerFadeItems, { autoAlpha: 1, duration: 0.18, ease: "power2.out" });
         } else {
@@ -610,6 +667,12 @@ export function createFlip(els, options = {}) {
       removeEventListener("keydown", handleKeydown);
       soltarGesto?.();
       soltarGesto = null;
+      // Si se destruye con el fantasma activo, el contenido quedaría oculto
+      // para siempre y sin nadie que lo devuelva.
+      if (contenidoOculto.length) {
+        gsap.set(contenidoOculto, { clearProps: "visibility" });
+        contenidoOculto = [];
+      }
       if (isScrollLocked) {
         releaseScrollLock();
         isScrollLocked = false;

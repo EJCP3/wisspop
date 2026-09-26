@@ -401,3 +401,97 @@ test("swipeToClose: la próxima apertura NO arranca en el punto donde se soltó"
   assert.equal(gsap.getProperty(card(), "x"), 0, "la tarjeta vuelve a abrir sin el desplazamiento del gesto");
   assert.equal(gsap.getProperty(card(), "y"), 0);
 });
+
+// ── hideOrigin ────────────────────────────────────────────────────────
+
+test("hideOrigin:false vuelve fantasma al trigger (fondo y lugar, sin contenido)", async () => {
+  // Regresión del parpadeo negro en triggers oscuros: el flip escondía
+  // siempre la raíz (`visibility: hidden`), dejando el hueco vacío durante
+  // el vuelo de ida y de vuelta. Con `false` la raíz conserva fondo y lugar
+  // —sin hueco— pero su contenido se oculta —sin sombra ni gemelo detrás—,
+  // desde la ida (swap invisible bajo el modal) hasta el aterrizaje del
+  // cierre (swap invisible en el mismo tick del desmontaje).
+  const esc = armarEscenario();
+  // Geometría real para que Flip arranque de verdad (con 0x0 no hay vuelo).
+  esc.trigger.getBoundingClientRect = () => ({ top: 100, left: 50, width: 80, height: 60, right: 130, bottom: 160 });
+  esc.modal.querySelector('[data-flip-id="demo-card"]').getBoundingClientRect = () => ({ top: 0, left: 0, width: 300, height: 400, right: 300, bottom: 400 });
+  const tituloTrigger = () => esc.trigger.querySelector('[data-flip-id="demo-title"]');
+  const flip = createFlip(esc, {
+    flipId: "demo",
+    duration: 0.3,
+    hideOrigin: false,
+    mount: esc.mount,
+    unmount: esc.unmount,
+  });
+
+  await flip.open();
+  assert.equal(flip.state, "opening");
+  assert.equal(esc.trigger.style.visibility, "", "la raíz conserva fondo y lugar durante el vuelo (sin hueco negro)");
+  assert.equal(tituloTrigger().style.visibility, "hidden", "pero su contenido se oculta desde la ida (sin sombra)");
+
+  completarFlips();
+  assert.equal(flip.state, "open");
+  assert.equal(esc.trigger.style.visibility, "", "el fantasma persiste en reposo (sin gemelo)");
+  assert.equal(tituloTrigger().style.visibility, "hidden", "el contenido sigue oculto en reposo");
+
+  await flip.close();
+  completarFlips();
+  assert.equal(flip.state, "closed");
+  assert.equal(esc.trigger.style.visibility, "", "la raíz sigue en su lugar");
+  assert.equal(tituloTrigger().style.visibility, "", "el contenido vuelve al aterrizar, con el desmontaje");
+  assert.equal(esc.trigger.style.opacity, "", "sin residuo de opacidad (RNF-1)");
+  assert.equal(esc.unmountCalls(), 1);
+});
+
+test("hideOrigin:false oculta los secundarios del trigger sin desvanecerlos", async () => {
+  // Los `.trigger-fade-item-*` van en el mismo lote del fantasma: `visibility`
+  // a la ida, restaurados al aterrizar. Nunca pasan por `autoAlpha`.
+  document.body.innerHTML = "";
+  const trigger = document.createElement("div");
+  trigger.setAttribute("data-flip-id", "demo-card");
+  trigger.innerHTML = `<span class="trigger-fade-item-demo">secundario</span>`;
+  document.body.append(trigger);
+  trigger.getBoundingClientRect = () => ({ top: 100, left: 50, width: 80, height: 60, right: 130, bottom: 160 });
+  const modal = document.createElement("div");
+  modal.innerHTML = `<div data-flip-id="demo-card"></div>`;
+  modal.querySelector('[data-flip-id="demo-card"]').getBoundingClientRect = () => ({ top: 0, left: 0, width: 300, height: 400, right: 300, bottom: 400 });
+  const mount = () => document.body.append(modal);
+  const unmount = () => modal.remove();
+
+  const flip = createFlip(
+    { trigger, modal, mount, unmount },
+    { flipId: "demo", duration: 0.3, hideOrigin: false },
+  );
+  await flip.open();
+  const fade = trigger.querySelector(".trigger-fade-item-demo");
+  assert.equal(fade.style.visibility, "hidden", "el secundario se oculta con el fantasma");
+  assert.notEqual(fade.style.opacity, "0", "pero nunca se desvanece por autoAlpha");
+  completarFlips();
+  assert.equal(flip.state, "open");
+
+  await flip.close();
+  completarFlips();
+  assert.equal(flip.state, "closed");
+  assert.equal(trigger.style.visibility, "", "el trigger sigue en su lugar");
+  assert.equal(fade.style.visibility, "", "el secundario vuelve al aterrizar");
+  assert.notEqual(fade.style.opacity, "0", "y nunca pasó por autoAlpha");
+});
+
+test("hideOrigin llega por setDefaults global", async () => {
+  const { setDefaults } = await import("./index.js");
+  setDefaults({ hideOrigin: false });
+  try {
+    const esc = armarEscenario();
+    esc.trigger.getBoundingClientRect = () => ({ top: 100, left: 50, width: 80, height: 60, right: 130, bottom: 160 });
+    esc.modal.querySelector('[data-flip-id="demo-card"]').getBoundingClientRect = () => ({ top: 0, left: 0, width: 300, height: 400, right: 300, bottom: 400 });
+    const flip = createFlip(esc, { flipId: "demo", duration: 0.3, mount: esc.mount, unmount: esc.unmount });
+    await flip.open();
+    assert.equal(esc.trigger.style.visibility, "", "el default global `false` viaja visible");
+    completarFlips();
+    await flip.close();
+    completarFlips();
+    assert.equal(flip.state, "closed");
+  } finally {
+    setDefaults({ hideOrigin: true }); // devolver el histórico para el resto de la suite
+  }
+});
