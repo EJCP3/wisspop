@@ -1,6 +1,6 @@
 {
   "name": "wisspop",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Modales y dropdowns con animaciones ancladas al origen: el panel nace del elemento que lo abrió",
   "license": "MIT",
